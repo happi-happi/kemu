@@ -1,0 +1,1 @@
+<iframe src="public/assets/{{$data->file_path}}"></iframe>
