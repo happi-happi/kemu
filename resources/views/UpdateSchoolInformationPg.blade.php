@@ -55,6 +55,18 @@
             <x-text-input id="SecondContact" class="block mt-1 w-full" type="text" name="SecondContact"  value="{{ $schoolinformation->SecondContact}}" required autofocus autocomplete="SecondContact" />
             </div>
 
+            <div>
+            <x-input-label for="Studentfees" :value="__('Studentfees')" />
+            <x-text-input id="Studentfees" class="block mt-1 w-full" type="text" name="Studentfees"  value="{{ $schoolinformation->Studentfees}}" required autofocus autocomplete="Studentfees" />
+            </div>
+
+            <div>
+            <x-input-label for="Studentamount" :value="__('Studentamount')" />
+            <x-text-input id="Studentamount" class="block mt-1 w-full" type="text" name="Studentamount"  value="{{ $schoolinformation->Studentamount}}" required autofocus autocomplete="Studentamount" />
+            </div>
+
+
+
    
     
     <!-- Add other fields as needed -->

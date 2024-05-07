@@ -54,6 +54,22 @@ use App\Imports\standard_seven_first_midtermresult;
 use App\Imports\standard_seven_second_midtermresult;
 use App\Imports\standard_seven_semi_annualresult;
 use App\Imports\standard_seven_annualresult;
+use App\Imports\formone_first_midtermresult;
+use App\Imports\formone_semi_annualresult;
+use App\Imports\formone_second_midtermtresult;
+use App\Imports\formone_annualresult;
+use App\Imports\formtwo_first_midtermresult;
+use App\Imports\formtwo_semi_annualresult;
+use App\Imports\formtwo_second_midtermtresult;
+use App\Imports\formtwo_annualresult;
+use App\Imports\formthree_first_midtermresult;
+use App\Imports\formthree_semi_annualresult;
+use App\Imports\formthree_second_midtermresult;
+use App\Imports\formthree_annualresult;
+use App\Imports\formfour_first_midtermresult;
+use App\Imports\formfour_semi_annualresult;
+use App\Imports\formfour_second_midtermresult;
+use App\Imports\formfour_annualresult;
 use App\Exports\Exportuserimport;
 use App\Exports\StdIVPrintReceipt;
 use App\Exports\StdVPrintReceipt;
@@ -63,6 +79,10 @@ use App\Exports\STDIVstudentlist;
 use App\Exports\STDVstudentlist;
 use App\Exports\STDVIstudentlist;
 use App\Exports\STDVIIstudentlist;
+use App\Exports\FormIstudentlist;
+use App\Exports\FormIIstudentlist;
+use App\Exports\FormIIIstudentlist;
+use App\Exports\FormIVstudentlist;
 
 class ProfileController extends Controller
 {
@@ -102,6 +122,27 @@ class ProfileController extends Controller
     return view('standardseven');
    }
 
+   Public function standardformoneimport(){
+
+    return view('formone');
+   }
+
+   Public function standardformtwoimport(){
+
+    return view('formtwo');
+   }
+
+   Public function standardformthreeimport(){
+
+    return view('formthree');
+   }
+
+
+   Public function standardformfourimport(){
+
+    return view('formfour');
+   }
+
     public function import(Request $request){
          
         $request->validate([
@@ -135,6 +176,22 @@ class ProfileController extends Controller
         return Excel::download(new STDVIIstudentlist, 'user.xlsx');
     }
 
+
+    public function FormI(Request $request){
+        return Excel::download(new FormIstudentlist, 'user.xlsx');
+    }
+
+    public function FormII(Request $request){
+        return Excel::download(new FormIIstudentlist, 'user.xlsx');
+    }
+
+    public function FormIII(Request $request){
+        return Excel::download(new FormIIIstudentlist, 'user.xlsx');
+    }
+
+    public function FormIV(Request $request){
+        return Excel::download(new FormIVstudentlist, 'user.xlsx');
+    }
 
 
 
@@ -359,6 +416,214 @@ class ProfileController extends Controller
 
             Excel::import(new standard_seven_annualresult, $request->file('import_file'));
            return redirect()->back()->with('notifications','import successfull');
+    }
+
+    public function standardformonefirstmidterm(Request $request){
+        $request ->validate(
+            [
+                'import_file' => [
+                    'required',
+                      'file'
+                ],
+            ]);
+
+            Excel::import(new formone_first_midtermresult, $request->file('import_file'));
+           return redirect()->back()->with('message','import successfull');
+    }
+
+    public function standardformoneSemiAnnual(Request $request){
+        $request ->validate(
+            [
+                'import_file' => [
+                    'required',
+                      'file'
+                ],
+            ]);
+
+            Excel::import(new formone_semi_annualresult, $request->file('import_file'));
+           return redirect()->back()->with('Alert','import successfull');
+    }
+
+    public function standardformonesecondmidterm(Request $request){
+        $request ->validate(
+            [
+                'import_file' => [
+                    'required',
+                      'file'
+                ],
+            ]);
+
+            Excel::import(new formone_second_midtermtresult, $request->file('import_file'));
+           return redirect()->back()->with('notifications','import successfull');
+    }
+
+    public function standardformoneAnnual(Request $request){
+        $request ->validate(
+            [
+                'import_file' => [
+                    'required',
+                      'file'
+                ],
+            ]);
+
+            Excel::import(new formone_annualresult, $request->file('import_file'));
+           return redirect()->back()->with('notification','import successfull');
+    }
+
+    public function standardformtwofirstmidterm(Request $request){
+        $request ->validate(
+            [
+                'import_file' => [
+                    'required',
+                      'file'
+                ],
+            ]);
+
+            Excel::import(new formtwo_first_midtermresult, $request->file('import_file'));
+           return redirect()->back()->with('message','import successfull');
+    }
+
+    public function  standardformtwoSemiAnnual(Request $request){
+        $request ->validate(
+            [
+                'import_file' => [
+                    'required',
+                      'file'
+                ],
+            ]);
+
+            Excel::import(new formtwo_semi_annualresult, $request->file('import_file'));
+           return redirect()->back()->with('Alert','import successfull');
+    }
+
+    public function standardformtwosecondmidterm(Request $request){
+        $request ->validate(
+            [
+                'import_file' => [
+                    'required',
+                      'file'
+                ],
+            ]);
+
+            Excel::import(new formtwo_second_midtermtresult, $request->file('import_file'));
+           return redirect()->back()->with('notifications','import successfull');
+    }
+
+    public function standardformtwoAnnual(Request $request){
+        $request ->validate(
+            [
+                'import_file' => [
+                    'required',
+                      'file'
+                ],
+            ]);
+
+            Excel::import(new formtwo_annualresult, $request->file('import_file'));
+           return redirect()->back()->with('notification','import successfull');
+    }
+
+    public function standardformthreefirstmidterm(Request $request){
+        $request ->validate(
+            [
+                'import_file' => [
+                    'required',
+                      'file'
+                ],
+            ]);
+
+            Excel::import(new formthree_first_midtermresult, $request->file('import_file'));
+           return redirect()->back()->with('message','import successfull');
+    }
+
+    public function  standardformthreeSemiAnnual(Request $request){
+        $request ->validate(
+            [
+                'import_file' => [
+                    'required',
+                      'file'
+                ],
+            ]);
+
+            Excel::import(new formthree_semi_annualresult, $request->file('import_file'));
+           return redirect()->back()->with('Alert','import successfull');
+    }
+
+    public function standardformthreesecondmidterm(Request $request){
+        $request ->validate(
+            [
+                'import_file' => [
+                    'required',
+                      'file'
+                ],
+            ]);
+
+            Excel::import(new formthree_second_midtermresult, $request->file('import_file'));
+           return redirect()->back()->with('notifications','import successfull');
+    }
+
+    public function standardformthreeAnnual(Request $request){
+        $request ->validate(
+            [
+                'import_file' => [
+                    'required',
+                      'file'
+                ],
+            ]);
+
+            Excel::import(new formthree_annualresult, $request->file('import_file'));
+           return redirect()->back()->with('notification','import successfull');
+    }
+
+    public function standardformfourfirstmidterm(Request $request){
+        $request ->validate(
+            [
+                'import_file' => [
+                    'required',
+                      'file'
+                ],
+            ]);
+
+            Excel::import(new formfour_first_midtermresult, $request->file('import_file'));
+           return redirect()->back()->with('message','import successfull');
+    }
+
+    public function  standardformfourSemiAnnual(Request $request){
+        $request ->validate(
+            [
+                'import_file' => [
+                    'required',
+                      'file'
+                ],
+            ]);
+
+            Excel::import(new formfour_semi_annualresult, $request->file('import_file'));
+           return redirect()->back()->with('Alert','import successfull');
+    }
+
+    public function standardformfoursecondmidterm(Request $request){
+        $request ->validate(
+            [
+                'import_file' => [
+                    'required',
+                      'file'
+                ],
+            ]);
+
+            Excel::import(new formfour_second_midtermresult, $request->file('import_file'));
+           return redirect()->back()->with('notifications','import successfull');
+    }
+
+    public function standardformfourAnnual(Request $request){
+        $request ->validate(
+            [
+                'import_file' => [
+                    'required',
+                      'file'
+                ],
+            ]);
+
+            Excel::import(new formfour_annualresult, $request->file('import_file'));
+           return redirect()->back()->with('notification','import successfull');
     }
 
     //student Page 
@@ -2970,6 +3235,8 @@ return redirect()->back()->with('message','student registration succesful');
         $data->BankAccount =$request->BankAccount;
         $data->FirstContact =$request->FirstContact;
         $data->SecondContact =$request->SecondContact;
+        $data->Studentfees =$request->Studentfees;
+        $data->Studentamount =$request->Studentamount;
 
         $data->save();
         return redirect()->back()->with('message','Succesfull sent');

@@ -65,6 +65,18 @@
             <x-text-input id="SecondContact" class="block mt-1 w-full" type="text" name="SecondContact" :value="old('SecondContact')" required autocomplete="SecondContact" />
             <x-input-error :messages="$errors->get('SecondContact')" class="mt-2" />
         </div>
+
+        <div class="mt-4">
+            <x-input-label for="Studentfees" :value="__('Studentfees')" />
+            <x-text-input id="Studentfees" class="block mt-1 w-full" type="text" name="Studentfees" :value="old('Studentfees')" required autocomplete="Studentfees" />
+            <x-input-error :messages="$errors->get('Studentfees')" class="mt-2" />
+        </div>
+
+        <div class="mt-4">
+            <x-input-label for="Studentamount" :value="__('Studentamount')" />
+            <x-text-input id="Studentamount" class="block mt-1 w-full" type="text" name="Studentamount" :value="old('Studentamount')" required autocomplete="Studentamount" />
+            <x-input-error :messages="$errors->get('Studentamount')" class="mt-2" />
+        </div>
         <br><br>
             <x-primary-button class="ms-4">
                 {{ __('Register') }}

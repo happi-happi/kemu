@@ -46,6 +46,10 @@
   <option value="Standardfive">Standard five</option>
   <option value="Standardsix">Standard six</option>
   <option value="Standardseven">Standard seven</option>
+  <option value="Formone">Form One</option>
+  <option value="Formtwo">Form two</option>
+  <option value="Formthree">Form three</option>
+  <option value="Formfour">Form four</option>
 </select>
 </div>
         <!-- Email Address -->

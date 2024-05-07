@@ -55,6 +55,10 @@ Route::middleware('auth')->group(function () {
        Route::get('STDVstudentlist',[ProfileController::class,'STDVstudentlist'])->name('STDVstudentlist');
        Route::get('STDVIstudentlist',[ProfileController::class,'STDVIstudentlist'])->name('STDVIstudentlist');
        Route::get('STDVIIstudentlist',[ProfileController::class,'STDVIIstudentlist'])->name('STDVIIstudentlist');
+       Route::get('FormI',[ProfileController::class,'FormI'])->name('FormI');
+       Route::get('FormII',[ProfileController::class,'FormII'])->name('FormII');
+       Route::get('FormIII',[ProfileController::class,'FormIII'])->name('FormIII');
+       Route::get('FormIV',[ProfileController::class,'FormIV'])->name('FormIV');
 
        //import student standard four result
     Route::get('/import-excel',[ProfileController::class, 'importexcel'])->name('import-excel');  
@@ -86,7 +90,36 @@ Route::middleware('auth')->group(function () {
     Route::post('standardsevenSemiAnnual',[ProfileController::class,'standardsevenSemiAnnual'])->name('standardsevenSemiAnnual');
     Route::post('standardsevenAnnual',[ProfileController::class,'standardsevenAnnual'])->name('standardsevenAnnual');
 
+
+   //import student formone  result
+   Route::get('/standardformoneimport',[ProfileController::class, 'standardformoneimport'])->name('standardformoneimport');
+   Route::post('standardformonefirstmidterm',[ProfileController::class,'standardformonefirstmidterm'])->name('standardformonefirstmidterm');
+   Route::post('standardformonesecondmidterm',[ProfileController::class,'standardformonesecondmidterm'])->name('standardformonesecondmidterm');
+   Route::post('standardformoneSemiAnnual',[ProfileController::class,'standardformoneSemiAnnual'])->name('standardformoneSemiAnnual');
+   Route::post('standardformoneAnnual',[ProfileController::class,'standardformoneAnnual'])->name('standardformoneAnnual');
+
+  //import student formtwo  result
+      Route::get('/standardformtwoimport',[ProfileController::class, 'standardformtwoimport'])->name('standardformtwoimport');
+      Route::post('standardformtwofirstmidterm',[ProfileController::class,'standardformtwofirstmidterm'])->name('standardformtwofirstmidterm');
+      Route::post('standardformtwosecondmidterm',[ProfileController::class,'standardformtwosecondmidterm'])->name('standardformtwosecondmidterm');
+      Route::post('standardformtwoSemiAnnual',[ProfileController::class,'standardformtwoSemiAnnual'])->name('standardformtwoSemiAnnual');
+      Route::post('standardformtwoAnnual',[ProfileController::class,'standardformtwoAnnual'])->name('standardformtwoAnnual');
+
+ 
       
+ //import student formthree  result
+ Route::get('/standardformthreeimport',[ProfileController::class, 'standardformthreeimport'])->name('standardformthreeimport');
+ Route::post('standardformthreefirstmidterm',[ProfileController::class,'standardformthreefirstmidterm'])->name('standardformthreefirstmidterm');
+ Route::post('standardformthreesecondmidterm',[ProfileController::class,'standardformthreesecondmidterm'])->name('standardformthreesecondmidterm');
+ Route::post('standardformthreeSemiAnnual',[ProfileController::class,'standardformthreeSemiAnnual'])->name('standardformthreeSemiAnnual');
+ Route::post('standardformthreeAnnual',[ProfileController::class,'standardformthreeAnnual'])->name('standardformthreeAnnual');
+
+  //import student formfour  result
+  Route::get('/standardformfourimport',[ProfileController::class, 'standardformfourimport'])->name('standardformfourimport');
+  Route::post('standardformfourfirstmidterm',[ProfileController::class,'standardformfourfirstmidterm'])->name('standardformfourfirstmidterm');
+  Route::post('standardformfoursecondmidterm',[ProfileController::class,'standardformfoursecondmidterm'])->name('standardformfoursecondmidterm');
+  Route::post('standardformfourSemiAnnual',[ProfileController::class,'standardformfourSemiAnnual'])->name('standardformfourSemiAnnual');
+  Route::post('standardformfourAnnual',[ProfileController::class,'standardformfourAnnual'])->name('standardformfourAnnual');
 
   
 

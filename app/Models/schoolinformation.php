@@ -21,6 +21,8 @@ class schoolinformation extends Model
         'BankAccount',
         'FirstContact',
         'SecondContact',
+        'Studentfees',
+        'Studentamount',
 
     ];
 }
