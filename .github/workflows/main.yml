@@ -18,7 +18,7 @@ jobs:
         FTP_USERNAME: ${{secrets.ftp_username}}
         FTP_PASSWORD: ${{secrets.ftp_password}}
         LOCAL_DIR: ./
-        REMOTE_DIR: ./api.conturetz.com/
+        REMOTE_DIR: ./kemuschoolinformationsystem.com/School-app/
         METHOD: sftp
         PORT: 22
         ARGS: --verbose
