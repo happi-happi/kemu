@@ -21,6 +21,25 @@
   </ul>
 </div> 
 
+<br>
+
+<div class="dropdown">
+  <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown">
+   Secondary   Semester
+  </button>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="{{route('FormOneFM')}}">Form one  First midterm  And semi annual result</a></li>
+    <li><a class="dropdown-item" href="{{route('FormTwoFM')}}">Form two first midterm  And semi annual result</a></li>
+    <li><a class="dropdown-item" href="{{route('FormTwoSM')}}"> Form two  second midterm  And annual result</a></li>
+    <li><a class="dropdown-item" href="{{route('FormThreeFM')}}">Form Three first  midterm  And semi  annual result </a></li>
+    <li><a class="dropdown-item" href="{{route('FormThreeSM')}}">Form Three  second midterm  And annual result </a></li>
+    <li><a class="dropdown-item" href="{{route('FormFourFM')}}">Form four first midterm  And semi annual result</a></li>
+    <li><a class="dropdown-item" href="{{route('FormFourSM')}}">Form four  second midterm  And annual result</a></li>
+  </ul>
+</div>
+@if(isset($errorMessage))
+    <p>{{ $errorMessage }}</p>
+@else
     @if($data )
     <table class="table table-striped table-bordered">
     <p>Standard Four First Midterm Data</p>
@@ -56,12 +75,16 @@
         </tbody>
     </table>
     @else
-    <p>No data found for the authenticated user.</p>
+    <p>{{ $errorMessage }}</p>
+    @endif
     @endif
 
-
+    @if(isset($errorMessage))
+    <p>{{ $errorMessage }}</p>
+@else
 
     @if($standardfourSAR)
+
     <table class="table   table-striped table-bordered">
 
  <p>Standard Four semi annual Data</p>
@@ -97,7 +120,7 @@
     @else
     <p>No data found for the authenticated user.</p>
     @endif
-
+    @endif
    
 </body>
 </html>

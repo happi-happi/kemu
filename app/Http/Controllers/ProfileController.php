@@ -35,7 +35,22 @@ use App\Models\stdvii_payment_fee;
 use App\Models\comment;
 use App\Models\message;
 use App\Models\schoolinformation;
-
+use App\Models\formi_first_midterm;
+use App\Models\formi_semi_annual;
+use App\Models\formi_second_midterm;
+use App\Models\formi_annual;
+use App\Models\formii_first_midterm;
+use App\Models\formii_semi_annual;
+use App\Models\formii_second_midterm;
+use App\Models\formii_annual;
+use App\Models\formiii_first_midterm;
+use App\Models\formiii_semi_annual;
+use App\Models\formiii_second_midterm;
+use App\Models\formiii_annual;
+use App\Models\formiv_first_midterm;
+use App\Models\formiv_semi_annual;
+use App\Models\formiv_second_midterm;
+use App\Models\formiv_annual;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\standard_OneImport;
 use App\Imports\standard_four_first_midtermresult;
@@ -641,6 +656,8 @@ class ProfileController extends Controller
         }
     }
 
+  
+
    
 
     public function calculatePositionSTDIV($id) {
@@ -809,6 +826,11 @@ class ProfileController extends Controller
     {
         $userId = Auth::id();
         $data = standard_four_first_midterm::where('id', $userId)->first();
+     
+        if (!$data) {
+            $errorMessage = "No data found for the authenticated user.";
+            return view('Student', compact('errorMessage'));
+        }
 
         $positionArabic = $this->calculatePositionSTDIV($userId);
         $positionCivicsandMorals = $this->calculatePositionSTDIV($userId);
@@ -833,7 +855,7 @@ class ProfileController extends Controller
         $TotalSubjectMarks = $Arabic + $CivicsandMorals +$English +$EDK+$Mathematics + $Science +$Socialsstudies+$Kiswahili;
         $AverageFM = $TotalSubjectMarks/$TotalSubject;
         
-
+ 
         
     
         // Calculating grades
@@ -847,8 +869,14 @@ class ProfileController extends Controller
             'Socialsstudies' => $this->calculateGrade($Socialsstudies),
             'Kiswahili' => $this->calculateGrade($Kiswahili)
         ];
+
+   
     
         $standardfourSAR = standard_four_semi_annual::where('id', $userId)->first();
+        if (!$standardfourSAR) {
+            $errorMessage = "No data found for the authenticated user.";
+            return view('Student', compact('errorMessage'));
+        }
 
         $positionArabicSA = $this->calculatePositionSTDIV($userId);
         $positionCivicsandMoralsSA = $this->calculatePositionSTDIV($userId);
@@ -890,7 +918,7 @@ class ProfileController extends Controller
             'grades' => $grades,
             'standardfourSAR' => $standardfourSAR,
             'gradesSTDIVSM' => $gradesSTDIVSM,
-
+        
             'positionArabic' => $positionArabic,           
     'positionCivicsandMorals' => $positionCivicsandMorals,
     'positionEnglish' => $positionEnglish,
@@ -910,7 +938,7 @@ class ProfileController extends Controller
     'positionScienceSA' => $positionScienceSA,
     'positionSocialsstudiesSA' => $positionSocialsstudiesSA,
     'positionKiswahiliSA' => $positionKiswahiliSA,
-    'AverageSA' => $AverageSA,
+    'AverageSA' => $AverageSA,           
     
 
         ],compact('AverageFM','AverageSA'));
@@ -921,6 +949,12 @@ class ProfileController extends Controller
     Public function standardfourSM(){
         $userId = Auth::id();
         $standardfourSM = standard_four_second_midterm::where('id',$userId)->first();
+
+
+        if (!$standardfourSM) {
+            $errorMessage = "No data found for the authenticated user.";
+            return view('Student', compact('errorMessage'));
+        }
 
         $positionArabicSM = $this->calculatePositionSTDIV($userId);
         $positionCivicsandMoralsSM = $this->calculatePositionSTDIV($userId);
@@ -2159,6 +2193,3279 @@ public function calculatePositionSTDV($id) {
             'positionKiswahiliAL' => $positionKiswahiliAL,
         ],compact('AverageSM','AverageAL'));
     }
+
+         //Secondary  Grade  
+        private function SecondarycalculateGrade($score) {
+            if ($score >= 75) {
+                return 'A';
+            } elseif ($score >= 74) {
+                return 'B';
+            } elseif ($score >= 64) {
+                return 'C';
+            } elseif ($score >= 44) {
+                return 'D';
+            } else {
+                return 'F';
+            }
+        }
+
+
+    public function calculatePositionFormI($id) {
+        // Fetch all scores from the database
+        $ArabiclanguageFM = formi_first_midterm::pluck('Arabiclanguage', 'id')->toArray();
+        $BasicmathematicsallScoresFM = formi_first_midterm::pluck('Basicmathematics', 'id')->toArray();
+        $BibleknowledgeallScoresFM = formi_first_midterm::pluck('Bibleknowledge', 'id')->toArray();
+        $BookkeepingallScoresFM = formi_first_midterm::pluck('Bookkeeping', 'id')->toArray();
+        $BiologyallScoresFM = formi_first_midterm::pluck('Biology', 'id')->toArray();
+        $CivicsScoresFM = formi_first_midterm::pluck('Civics', 'id')->toArray();
+        $ChemistryallScoresFM =formi_first_midterm::pluck('Chemistry', 'id')->toArray();
+        $ComputerstudyScoresFM = formi_first_midterm::pluck('Computerstudy', 'id')->toArray();
+        $CreativeartsallScoresFM = formi_first_midterm::pluck('Creativearts', 'id')->toArray();
+        $CommerceallScoresFM = formi_first_midterm::pluck('Commerce', 'id')->toArray();
+        $EnglishallScoresFM = formi_first_midterm::pluck('Bibleknowledge', 'id')->toArray();
+        $EnglishliteratureallScoresFM = formi_first_midterm::pluck('Englishliterature', 'id')->toArray();
+        $FrenchallScoresFM = formi_first_midterm::pluck('French', 'id')->toArray();
+        $GeographyScoresFM = formi_first_midterm::pluck('Geography', 'id')->toArray();
+        $HistoryallScoresFM =formi_first_midterm::pluck('History', 'id')->toArray();
+        $IslamicknowledgeScoresFM = formi_first_midterm::pluck('Islamicknowledge', 'id')->toArray();
+        $KiswahiliallScoresFM = formi_first_midterm::pluck('Kiswahili', 'id')->toArray();
+        $LifeskillScoresFM = formi_first_midterm::pluck('Lifeskill', 'id')->toArray();
+        $PhysicsallScoresFM =formi_first_midterm::pluck('Physics', 'id')->toArray();
+        $SwimmingScoresFM = formi_first_midterm::pluck('Swimming', 'id')->toArray();
+        $NutritionScoresFM = formi_first_midterm::pluck('Nutrition', 'id')->toArray();
+
+        $ArabiclanguageallScoresSA = formi_semi_annual::pluck('Arabiclanguage', 'id')->toArray();
+        $BasicmathematicsallScoresSA = formi_semi_annual::pluck('Basicmathematics', 'id')->toArray();
+        $BibleknowledgeallScoresSA = formi_semi_annual::pluck('Bibleknowledge', 'id')->toArray();
+        $BookkeepingallScoresSA= formi_semi_annual::pluck('Bookkeeping', 'id')->toArray();
+        $BiologyallScoresSA = formi_semi_annual::pluck('Biology', 'id')->toArray();
+        $CivicsScoresSA = formi_semi_annual::pluck('Civics', 'id')->toArray();
+        $ChemistryallScoresSA =formi_semi_annual::pluck('Chemistry', 'id')->toArray();
+        $ComputerstudyScoresSA = formi_semi_annual::pluck('Computerstudy', 'id')->toArray();
+        $CreativeartsallScoresSA = formi_semi_annual::pluck('Creativearts', 'id')->toArray();
+        $CommerceallScoresSA = formi_semi_annual::pluck('Commerce', 'id')->toArray();
+        $EnglishallScoresSA = formi_semi_annual::pluck('Bibleknowledge', 'id')->toArray();
+        $EnglishliteratureallScoresSA = formi_semi_annual::pluck('Englishliterature', 'id')->toArray();
+        $FrenchallScoresSA = formi_semi_annual::pluck('French', 'id')->toArray();
+        $GeographyScoresSA =formi_semi_annual::pluck('Geography', 'id')->toArray();
+        $HistoryallScoresSA =formi_semi_annual::pluck('History', 'id')->toArray();
+        $IslamicknowledgeScoresSA= formi_semi_annual::pluck('Islamicknowledge', 'id')->toArray();
+        $KiswahiliallScoresSA = formi_semi_annual::pluck('Kiswahili', 'id')->toArray();
+        $LifeskillScoresSA = formi_semi_annual::pluck('Lifeskill', 'id')->toArray();
+        $PhysicsallScoresSA =formi_semi_annual::pluck('Physics', 'id')->toArray();
+        $SwimmingScoresSA = formi_semi_annual::pluck('Swimming', 'id')->toArray();
+        $NutritionScoresSA = formi_semi_annual::pluck('Nutrition', 'id')->toArray();
+
+
+        $ArabiclanguageallScoresSM = formi_second_midterm::pluck('Arabiclanguage', 'id')->toArray();
+        $BasicmathematicsallScoresSM = formi_second_midterm::pluck('Basicmathematics', 'id')->toArray();
+        $BibleknowledgeallScoresSM = formi_second_midterm::pluck('Bibleknowledge', 'id')->toArray();
+        $BookkeepingallScoresSM = formi_second_midterm::pluck('Bookkeeping', 'id')->toArray();
+        $BiologyallScoresSM = formi_second_midterm::pluck('Biology', 'id')->toArray();
+        $CivicsScoresSM = formi_second_midterm::pluck('Civics', 'id')->toArray();
+        $ChemistryallScoresSM =formi_second_midterm::pluck('Chemistry', 'id')->toArray();
+        $ComputerstudyScoresSM = formi_second_midterm::pluck('Computerstudy', 'id')->toArray();
+        $CreativeartsallScoresSM = formi_second_midterm::pluck('Creativearts', 'id')->toArray();
+        $CommerceallScoresSM = formi_second_midterm::pluck('Commerce', 'id')->toArray();
+        $EnglishallScoresSM= formi_second_midterm::pluck('Bibleknowledge', 'id')->toArray();
+        $EnglishliteratureallScoresSM = formi_second_midterm::pluck('Englishliterature', 'id')->toArray();
+        $FrenchallScoresSM = formi_second_midterm::pluck('French', 'id')->toArray();
+        $GeographyScoresSM =formi_second_midterm::pluck('Geography', 'id')->toArray();
+        $HistoryallScoresSM =formi_second_midterm::pluck('History', 'id')->toArray();
+        $IslamicknowledgeScoresSM = formi_second_midterm::pluck('Islamicknowledge', 'id')->toArray();
+        $KiswahiliallScoresSM = formi_second_midterm::pluck('Kiswahili', 'id')->toArray();
+        $LifeskillScoresSM = formi_second_midterm::pluck('Lifeskill', 'id')->toArray();
+        $PhysicsallScoresSM=formi_second_midterm::pluck('Physics', 'id')->toArray();
+        $SwimmingScoresSM = formi_second_midterm::pluck('Swimming', 'id')->toArray();
+        $NutritionScoresSM = formi_second_midterm::pluck('Nutrition', 'id')->toArray();
+
+
+        $ArabiclanguageallScoresAL = formi_annual::pluck('Arabiclanguage', 'id')->toArray();
+        $BasicmathematicsallScoresAL = formi_annual::pluck('Basicmathematics', 'id')->toArray();
+        $BibleknowledgeallScoresAL = formi_annual::pluck('Bibleknowledge', 'id')->toArray();
+        $BookkeepingallScoresAL = formi_annual::pluck('Bookkeeping', 'id')->toArray();
+        $BiologyallScoresAL = formi_annual::pluck('Biology', 'id')->toArray();
+        $CivicsScoresAL =formi_annual::pluck('Civics', 'id')->toArray();
+        $ChemistryallScoresAL =formi_annual::pluck('Chemistry', 'id')->toArray();
+        $ComputerstudyScoresAL= formi_annual::pluck('Computerstudy', 'id')->toArray();
+        $CreativeartsallScoresAL = formi_annual::pluck('Creativearts', 'id')->toArray();
+        $CommerceallScoresAL = formi_annual::pluck('Commerce', 'id')->toArray();
+        $EnglishallScoresAL = formi_annual::pluck('Bibleknowledge', 'id')->toArray();
+        $EnglishliteratureallScoresAL = formi_annual::pluck('Englishliterature', 'id')->toArray();
+        $FrenchallScoresAL = formi_annual::pluck('French', 'id')->toArray();
+        $GeographyScoresAL = formi_annual::pluck('Geography', 'id')->toArray();
+        $HistoryallScoresAL =formi_annual::pluck('History', 'id')->toArray();
+        $IslamicknowledgeScoresAL = formi_annual::pluck('Islamicknowledge', 'id')->toArray();
+        $KiswahiliallScoresAL = formi_annual::pluck('Kiswahili', 'id')->toArray();
+        $LifeskillScoresAL = formi_annual::pluck('Lifeskill', 'id')->toArray();
+        $PhysicsallScoresAL =formi_annual::pluck('Physics', 'id')->toArray();
+        $SwimmingScoresAL = formi_annual::pluck('Swimming', 'id')->toArray();
+        $NutritionScoresAL = formi_annual::pluck('Nutrition', 'id')->toArray();
+
+        // Sort the scores in descending order
+        arsort($ArabiclanguageFM );
+        arsort($BasicmathematicsallScoresFM);
+        arsort($BibleknowledgeallScoresFM);
+        arsort($BookkeepingallScoresFM);
+        arsort($BiologyallScoresFM);
+        arsort($CivicsScoresFM);
+        arsort($ChemistryallScoresFM);
+        arsort($ComputerstudyScoresFM);
+        arsort($CreativeartsallScoresFM);
+        arsort($CommerceallScoresFM);
+        arsort($EnglishallScoresFM);
+        arsort($FrenchallScoresFM);
+        arsort($GeographyScoresFM);
+        arsort($HistoryallScoresFM);
+        arsort($IslamicknowledgeScoresFM);
+        arsort($KiswahiliallScoresFM);
+        arsort($LifeskillScoresFM);
+        arsort($PhysicsallScoresFM);
+        arsort($SwimmingScoresFM);
+        arsort($NutritionScoresFM);
+
+        arsort($ArabiclanguageallScoresSM );
+        arsort($BasicmathematicsallScoresSM);
+        arsort($BibleknowledgeallScoresSM);
+        arsort($BookkeepingallScoresSM);
+        arsort($BiologyallScoresSM);
+        arsort($CivicsScoresSM);
+        arsort($ChemistryallScoresSM);
+        arsort($ComputerstudyScoresSM);
+        arsort($CreativeartsallScoresSM);
+        arsort($CommerceallScoresSM);
+        arsort($EnglishallScoresSM);
+        arsort($FrenchallScoresSM);
+        arsort($GeographyScoresSM);
+        arsort($HistoryallScoresSM);
+        arsort($IslamicknowledgeScoresSM);
+        arsort($KiswahiliallScoresSM);
+        arsort($LifeskillScoresSM);
+        arsort($PhysicsallScoresSM);
+        arsort($SwimmingScoresSM);
+        arsort($NutritionScoresSM);
+
+        arsort($ArabiclanguageallScoresSA );
+        arsort($BasicmathematicsallScoresSA);
+        arsort($BibleknowledgeallScoresSA);
+        arsort($BookkeepingallScoresSA);
+        arsort($BiologyallScoresSA);
+        arsort($CivicsScoresSA);
+        arsort($ChemistryallScoresSA);
+        arsort($ComputerstudyScoresSA);
+        arsort($CreativeartsallScoresSA);
+        arsort($CommerceallScoresSA);
+        arsort($EnglishallScoresSA);
+        arsort($FrenchallScoresSA);
+        arsort($GeographyScoresSA);
+        arsort($HistoryallScoresSA);
+        arsort($IslamicknowledgeScoresSA);
+        arsort($KiswahiliallScoresSA);
+        arsort($LifeskillScoresSA);
+        arsort($PhysicsallScoresSA);
+        arsort($SwimmingScoresSA);
+        arsort($NutritionScoresSA);
+
+        arsort($ArabiclanguageallScoresAL );
+        arsort($BasicmathematicsallScoresAL);
+        arsort($BibleknowledgeallScoresAL);
+        arsort($BookkeepingallScoresAL);
+        arsort($BiologyallScoresAL);
+        arsort($CivicsScoresAL);
+        arsort($ChemistryallScoresAL);
+        arsort($ComputerstudyScoresAL);
+        arsort($CreativeartsallScoresAL);
+        arsort($CommerceallScoresAL);
+        arsort($EnglishallScoresAL);
+        arsort($FrenchallScoresAL);
+        arsort($GeographyScoresAL);
+        arsort($HistoryallScoresAL);
+        arsort($IslamicknowledgeScoresAL);
+        arsort($KiswahiliallScoresAL);
+        arsort($LifeskillScoresAL);
+        arsort($PhysicsallScoresAL);
+        arsort($SwimmingScoresAL);
+        arsort($NutritionScoresAL);
+
+
+
+    
+        // Find the position of the user
+        $positionArabiclanguageFM = array_search($id, array_keys($ArabiclanguageFM )) + 1;
+        $positionBasicmathematicFM = array_search($id, array_keys($BasicmathematicsallScoresFM)) + 1;
+        $positionBibleknowledgeFM = array_search($id, array_keys($BibleknowledgeallScoresFM)) + 1;
+        $positionBookkeepingFM  = array_search($id, array_keys($BookkeepingallScoresFM)) + 1;
+        $positionBiologyFM = array_search($id, array_keys($BiologyallScoresFM)) + 1;
+        $positionCivicsFM = array_search($id, array_keys($CivicsScoresFM)) + 1;
+        $positionChemistryFM = array_search($id, array_keys($ChemistryallScoresFM)) + 1;
+        $positionComputerstudyFM = array_search($id, array_keys($ComputerstudyScoresFM)) + 1;
+        $positionCreativeartFM = array_search($id, array_keys($CreativeartsallScoresFM )) + 1;
+        $positionCommerceFM = array_search($id, array_keys($CommerceallScoresFM)) + 1;
+        $positionEnglishliteratureFM = array_search($id, array_keys($EnglishallScoresFM)) + 1;
+        $positionFrenchFM = array_search($id, array_keys($FrenchallScoresFM)) + 1;
+        $positionGeographyFM = array_search($id, array_keys($GeographyScoresFM)) + 1;
+        $positionHistoryFM = array_search($id, array_keys($HistoryallScoresFM)) + 1;
+        $positionIslamicknowledgeFM = array_search($id, array_keys($IslamicknowledgeScoresFM)) + 1;
+        $positionKiswahiliFM = array_search($id, array_keys($KiswahiliallScoresFM)) + 1;
+        $positionLifeskillFM = array_search($id, array_keys($LifeskillScoresFM)) + 1;
+        $positionPhysicsFM = array_search($id, array_keys($PhysicsallScoresFM)) + 1;
+        $positionSwimmingFM = array_search($id, array_keys($SwimmingScoresFM)) + 1;
+        $positionNutritionFM = array_search($id, array_keys($NutritionScoresFM)) + 1;
+
+       
+
+        $positionArabiclanguageSA = array_search($id, array_keys($ArabiclanguageallScoresSA )) + 1;
+        $positionBasicmathematicSA = array_search($id, array_keys($BasicmathematicsallScoresSA)) + 1;
+        $positionBibleknowledgeSA = array_search($id, array_keys($BibleknowledgeallScoresSA)) + 1;
+        $positionBookkeepingSA  = array_search($id, array_keys($BookkeepingallScoresSA)) + 1;
+        $positionBiologySA = array_search($id, array_keys($BiologyallScoresSA)) + 1;
+        $positionCivicsSA = array_search($id, array_keys($CivicsScoresSA)) + 1;
+        $positionChemistrySA = array_search($id, array_keys($ChemistryallScoresSA)) + 1;
+        $positionComputerstudySA = array_search($id, array_keys($ComputerstudyScoresSA)) + 1;
+        $positionCreativeartsSA = array_search($id, array_keys($CreativeartsallScoresSA)) + 1;
+        $positionCommerceSA = array_search($id, array_keys($CommerceallScoresSA)) + 1;
+        $positionEnglishliteratureSA = array_search($id, array_keys($EnglishallScoresSA)) + 1;
+        $positionFrenchSA = array_search($id, array_keys($FrenchallScoresSA)) + 1;
+        $positionGeographySA = array_search($id, array_keys($GeographyScoresSA)) + 1;
+        $positionHistorySA = array_search($id, array_keys($HistoryallScoresSA)) + 1;
+        $positionIslamicknowledgeSA = array_search($id, array_keys($IslamicknowledgeScoresSA)) + 1;
+        $positionKiswahiliSA = array_search($id, array_keys($KiswahiliallScoresSA)) + 1;
+        $positionLifeskillSA = array_search($id, array_keys($LifeskillScoresSA)) + 1;
+        $positionPhysicsSA = array_search($id, array_keys($PhysicsallScoresSA)) + 1;
+        $positionSwimmingSA = array_search($id, array_keys($SwimmingScoresSA)) + 1;
+        $positionNutritionSA = array_search($id, array_keys($NutritionScoresSA)) + 1;
+
+
+
+        $positionArabiclanguageSM = array_search($id, array_keys($ArabiclanguageallScoresSM )) + 1;
+        $positionBasicmathematicSM = array_search($id, array_keys($BasicmathematicsallScoresSM)) + 1;
+        $positionBibleknowledgeSM = array_search($id, array_keys($BibleknowledgeallScoresSM)) + 1;
+        $positionBookkeepingSM  = array_search($id, array_keys($BookkeepingallScoresSM)) + 1;
+        $positionBiologySM = array_search($id, array_keys($BiologyallScoresSM)) + 1;
+        $positionCivicsSM = array_search($id, array_keys($CivicsScoresSM)) + 1;
+        $positionChemistrySM = array_search($id, array_keys($ChemistryallScoresSM)) + 1;
+        $positionComputerstudySM = array_search($id, array_keys($ComputerstudyScoresSM)) + 1;
+        $positionCreativeartSM = array_search($id, array_keys($CreativeartsallScoresSM)) + 1;
+        $positionCommerceSM = array_search($id, array_keys($CommerceallScoresSM)) + 1;
+        $positionEnglishliteratureSM = array_search($id, array_keys($EnglishallScoresSM)) + 1;
+        $positionFrenchSM = array_search($id, array_keys($FrenchallScoresSM)) + 1;
+        $positionGeographySM = array_search($id, array_keys($GeographyScoresSM)) + 1;
+        $positionHistorySM = array_search($id, array_keys($HistoryallScoresSM)) + 1;
+        $positionIslamicknowledgeSM = array_search($id, array_keys($IslamicknowledgeScoresSM)) + 1;
+        $positionKiswahiliSM = array_search($id, array_keys($KiswahiliallScoresSM)) + 1;
+        $positionLifeskillSM = array_search($id, array_keys($LifeskillScoresSM)) + 1;
+        $positionPhysicsSM = array_search($id, array_keys($PhysicsallScoresSM)) + 1;
+        $positionSwimmingSM= array_search($id, array_keys($SwimmingScoresSM)) + 1;
+        $positionNutritionSM = array_search($id, array_keys($NutritionScoresSM)) + 1;
+
+ 
+
+   
+        $positionArabiclanguageAL = array_search($id, array_keys($ArabiclanguageallScoresAL )) + 1;
+        $positionBasicmathematicAL = array_search($id, array_keys($BasicmathematicsallScoresAL)) + 1;
+        $positionBibleknowledgeAL = array_search($id, array_keys($BibleknowledgeallScoresAL)) + 1;
+        $positionBookkeepingAL  = array_search($id, array_keys($BookkeepingallScoresAL)) + 1;
+        $positionBiologyAL = array_search($id, array_keys($BiologyallScoresAL)) + 1;
+        $positionCivicsAL = array_search($id, array_keys($CivicsScoresAL)) + 1;
+        $positionChemistryAL = array_search($id, array_keys($ChemistryallScoresAL)) + 1;
+        $positionComputerstudyAL = array_search($id, array_keys($ComputerstudyScoresAL)) + 1;
+        $positionCreativeartAL = array_search($id, array_keys($CreativeartsallScoresAL)) + 1;
+        $positionCommerceAL = array_search($id, array_keys($CommerceallScoresAL)) + 1;
+        $positionEnglishliteratureAL = array_search($id, array_keys($EnglishallScoresAL)) + 1;
+        $positionFrenchAL = array_search($id, array_keys($FrenchallScoresAL)) + 1;
+        $positionGeographyAL= array_search($id, array_keys($GeographyScoresAL)) + 1;
+        $positionHistoryAL = array_search($id, array_keys($HistoryallScoresAL)) + 1;
+        $positionIslamicknowledgeAL = array_search($id, array_keys($IslamicknowledgeScoresAL)) + 1;
+        $positionKiswahiliAL = array_search($id, array_keys($KiswahiliallScoresAL)) + 1;
+        $positionLifeskillAL = array_search($id, array_keys($LifeskillScoresAL)) + 1;
+        $positionPhysicsAL = array_search($id, array_keys($PhysicsallScoresAL)) + 1;
+        $positionSwimmingAL = array_search($id, array_keys($SwimmingScoresAL)) + 1;
+        $positionNutritionAL = array_search($id, array_keys($NutritionScoresAL)) + 1;
+
+        return [
+            'FirstMidterm' => [
+                'Arabiclanguage' => $positionArabiclanguageFM,
+                'Basicmathematics' => $positionBasicmathematicFM,
+                'Bibleknowledge' => $positionBibleknowledgeFM,
+                'Bookkeeping' => $positionBookkeepingFM,
+                'Biology' => $positionBiologyFM,
+                'Civics' => $positionCivicsFM,
+                'Chemistry' => $positionChemistryFM,
+                'Computerstudy' => $positionComputerstudyFM,
+                'Creativearts' => $positionCreativeartFM,
+                'Commerce' => $positionCommerceFM,
+                'Englishliterature' => $positionEnglishliteratureFM,
+                'French' => $positionFrenchFM,
+                'Geography' => $positionGeographyFM,
+                'History' => $positionHistoryFM,
+                'Islamicknowledge' => $positionIslamicknowledgeFM,
+                'Kiswahili' => $positionKiswahiliFM,
+                'Lifeskill' => $positionLifeskillFM,
+                'Physics' => $positionPhysicsFM,
+                'Swimming' => $positionSwimmingFM,
+                'Nutrition' => $positionNutritionFM,
+
+            ],
+            'SemiAnnual' => [
+                'Arabiclanguage' => $positionArabiclanguageSA,
+                'Basicmathematics' => $positionBasicmathematicSA,
+                'Bibleknowledge' => $positionBibleknowledgeSA,
+                'Bookkeeping' => $positionBookkeepingSA,
+                'Biology' => $positionBiologySA,
+                'Civics' => $positionCivicsSA,
+                'Chemistry' => $positionChemistrySA,
+                'Computerstudy' => $positionComputerstudySA,
+                'Creativearts' => $positionCreativeartsSA,
+                'Commerce' => $positionCommerceSA,
+                'Englishliterature' => $positionEnglishliteratureSA,
+                'French' => $positionFrenchSA,
+                'Geography' => $positionGeographySA,
+                'History' => $positionHistorySA,
+                'Islamicknowledge' => $positionIslamicknowledgeSA,
+                'Kiswahili' => $positionKiswahiliSA,
+                'Lifeskill' => $positionLifeskillSA,
+                'Physics' => $positionPhysicsSA,
+                'Swimming' => $positionSwimmingSA,
+                'Nutrition' => $positionNutritionSA,
+            ],
+            'SecondMidterm' => [
+                'Arabiclanguage' => $positionArabiclanguageSM,
+                'Basicmathematics' => $positionBasicmathematicSM,
+                'Bibleknowledge' => $positionBibleknowledgeSM,
+                'Bookkeeping' => $positionBookkeepingSM,
+                'Biology' => $positionBiologySM,
+                'Civics' => $positionCivicsSM,
+                'Chemistry' => $positionChemistrySM,
+                'Computerstudy' => $positionComputerstudySM,
+                'Creativearts' => $positionCreativeartSM,
+                'Commerce' => $positionCommerceSM,
+                'Englishliterature' => $positionEnglishliteratureSM,
+                'French' => $positionFrenchSM,
+                'Geography' => $positionGeographySM,
+                'History' => $positionHistorySM,
+                'Islamicknowledge' => $positionIslamicknowledgeSM,
+                'Kiswahili' => $positionKiswahiliSM,
+                'Lifeskill' => $positionLifeskillSM,
+                'Physics' => $positionPhysicsSM,
+                'Swimming' => $positionSwimmingSM,
+                'Nutrition' => $positionNutritionSM,
+            ],
+            'Annual' => [
+                'Arabiclanguage' => $positionArabiclanguageAL,
+                'Basicmathematics' => $positionBasicmathematicAL,
+                'Bibleknowledge' => $positionBibleknowledgeAL,
+                'Bookkeeping' => $positionBookkeepingAL,
+                'Biology' => $positionBiologyAL,
+                'Civics' => $positionCivicsAL,
+                'Chemistry' => $positionChemistryAL,
+                'Computerstudy' => $positionComputerstudyAL,
+                'Creativearts' => $positionCreativeartAL,
+                'Commerce' => $positionCommerceAL,
+                'Englishliterature' => $positionEnglishliteratureAL,
+                'French' => $positionFrenchAL,
+                'Geography' => $positionGeographyAL,
+                'History' => $positionHistoryAL,
+                'Islamicknowledge' => $positionIslamicknowledgeAL,
+                'Kiswahili' => $positionKiswahiliAL,
+                'Lifeskill' => $positionLifeskillAL,
+                'Physics' => $positionPhysicsAL,
+                'Swimming' => $positionSwimmingAL,
+                'Nutrition' => $positionNutritionAL,
+            ],
+        ];
+        
+    }
+
+
+    public function FormOneFM()
+    {
+        $userId = Auth::id();
+        $data = formi_first_midterm::where('id', $userId)->first(); 
+
+        if (!$data) {
+            $errorMessage = "No data found for the authenticated user.";
+            return view('FormoneFM', compact('errorMessage'));
+        }
+
+
+       $positionArabiclanguageFM = $this->calculatePositionFormI($userId);
+        $positionBasicmathematicFM = $this->calculatePositionFormI($userId);
+        $positionBibleknowledgeFM = $this->calculatePositionFormI($userId);
+        $positionBookkeepingFM = $this->calculatePositionFormI($userId);
+        $positionBiologyFM = $this->calculatePositionFormI($userId);
+        $positionCivicsFM = $this->calculatePositionFormI($userId);
+        $positionChemistryFM = $this->calculatePositionFormI($userId);
+        $positionComputerstudyFM = $this->calculatePositionFormI($userId);
+        $positionCreativeartFM = $this->calculatePositionFormI($userId);
+        $positionCommerceFM = $this->calculatePositionFormI($userId);                        
+        $positionEnglishliteratureFM = $this->calculatePositionFormI($userId);
+        $positionFrenchFM = $this->calculatePositionFormI($userId);
+        $positionGeographyFM = $this->calculatePositionFormI($userId);
+        $positionHistoryFM = $this->calculatePositionFormI($userId);
+        $positionIslamicknowledgeFM = $this->calculatePositionFormI($userId);
+        $positionKiswahiliFM = $this->calculatePositionFormI($userId);
+        $positionLifeskillFM = $this->calculatePositionFormI($userId);
+        $positionPhysicsFM = $this->calculatePositionFormI($userId);
+        $positionSwimmingFM = $this->calculatePositionFormI($userId);
+        $positionNutritionFM = $this->calculatePositionFormI($userId);    
+        
+        $ArabiclanguageFM = $data->Arabiclanguage;
+        $BasicmathematicsFM = $data->Basicmathematics;
+        $BibleknowledgeFM = $data->Bibleknowledge;
+        $BookkeepingFM= $data->Bookkeeping;
+        $BiologyFM = $data->Biology; 
+        $CivicsFM = $data->Civics;
+        $ChemistryFM = $data->Chemistry;
+        $ComputerstudyFM = $data->Computerstudy;
+        $CreativeartsFM= $data->Creativearts;
+        $CommerceFM = $data->Commerce; 
+        $EnglishliteratureFM = $data->Englishliterature;
+        $FrenchFM = $data->French;
+        $GeographyFM = $data->Geography;
+        $HistoryFM= $data->History;
+        $IslamicknowledgeFM = $data->Islamicknowledge; 
+        $KiswahiliFM = $data->Kiswahili;
+        $LifeskillFM = $data->Lifeskill;
+        $PhysicsFM = $data->Physics;
+        $SwimmingFM = $data->Swimming;
+        $NutritionFM = $data->Nutrition;
+
+        $TotalSubject = 8;
+        $TotalSubjectMarks = $ArabiclanguageFM + $BasicmathematicsFM +$BibleknowledgeFM +$BookkeepingFM +$BiologyFM + 
+        $CivicsFM +$ChemistryFM +$ComputerstudyFM +$CreativeartsFM +$CommerceFM +$EnglishliteratureFM +$FrenchFM+$GeographyFM
+        +$HistoryFM+ $IslamicknowledgeFM+$KiswahiliFM+$LifeskillFM+$PhysicsFM+$SwimmingFM +$NutritionFM;
+
+        $AverageFM = $TotalSubjectMarks/$TotalSubject;
+        
+
+        
+    
+        // Calculating grades
+       $grades = [
+            'Arabiclanguage' => $this->SecondarycalculateGrade($ArabiclanguageFM),
+            'Basicmathematics' => $this->SecondarycalculateGrade($BasicmathematicsFM),
+            'Bibleknowledge' => $this->SecondarycalculateGrade($BibleknowledgeFM),
+            'Bookkeeping' => $this->SecondarycalculateGrade($BookkeepingFM),
+            'Biology' => $this->SecondarycalculateGrade($BiologyFM),
+            'Civics' => $this->SecondarycalculateGrade($CivicsFM),
+            'Chemistry' => $this->SecondarycalculateGrade($ChemistryFM),
+            'Computerstudy' => $this->SecondarycalculateGrade($ComputerstudyFM),
+            'Creativearts' => $this->SecondarycalculateGrade($CreativeartsFM),
+            'Commerce' => $this->SecondarycalculateGrade($CommerceFM),
+            'Englishliterature' => $this->SecondarycalculateGrade($EnglishliteratureFM),
+            'French' => $this->SecondarycalculateGrade($FrenchFM),
+            'Geography' => $this->SecondarycalculateGrade($GeographyFM),
+            'History' => $this->SecondarycalculateGrade($HistoryFM),
+            'Islamicknowledge' => $this->SecondarycalculateGrade($IslamicknowledgeFM),
+            'Kiswahili' => $this->SecondarycalculateGrade($KiswahiliFM),
+            'Lifeskill' => $this->SecondarycalculateGrade($LifeskillFM),
+            'Physics' => $this->SecondarycalculateGrade($PhysicsFM),
+            'Islamicknowledge' => $this->SecondarycalculateGrade($IslamicknowledgeFM),
+            'Swimming' => $this->SecondarycalculateGrade($SwimmingFM),
+            'Nutrition' => $this->SecondarycalculateGrade($NutritionFM)
+        ];
+    
+       $FormISA = formi_semi_annual::where('id', $userId)->first();
+
+       if (!$data) {
+        $errorMessage = "No data found for the authenticated user.";
+        return view('FormoneFM', compact('errorMessage'));
+    }
+
+       $positionArabiclanguageSA = $this->calculatePositionFormI($userId);
+        $positionBasicmathematicSA= $this->calculatePositionFormI($userId);
+        $positionBibleknowledgeSA = $this->calculatePositionFormI($userId);
+        $positionBookkeepingSA = $this->calculatePositionFormI($userId);
+        $positionBiologySA = $this->calculatePositionFormI($userId);
+        $positionCivicsSA = $this->calculatePositionFormI($userId);
+        $positionChemistrySA = $this->calculatePositionFormI($userId);
+        $positionComputerstudySA = $this->calculatePositionFormI($userId);
+        $positionCreativeartsSA = $this->calculatePositionFormI($userId);
+        $positionCommerceSA= $this->calculatePositionFormI($userId);
+        $positionEnglishliteratureSA = $this->calculatePositionFormI($userId);
+        $positionFrenchSA = $this->calculatePositionFormI($userId);
+        $positionGeographySA = $this->calculatePositionFormI($userId);
+        $positionHistorySA= $this->calculatePositionFormI($userId);
+        $positionIslamicknowledgeSA = $this->calculatePositionFormI($userId);
+        $positionKiswahiliSA = $this->calculatePositionFormI($userId);
+        $positionLifeskillSA= $this->calculatePositionFormI($userId);
+        $positionPhysicsSA = $this->calculatePositionFormI($userId);
+        $positionSwimmingSA = $this->calculatePositionFormI($userId);
+        $positionNutritionSA = $this->calculatePositionFormI($userId);
+
+        $ArabiclanguageSA = $FormISA->Arabiclanguage;
+        $BasicmathematicsSA = $FormISA->Basicmathematics;
+        $BibleknowledgeSA = $FormISA->Bibleknowledge;
+        $BookkeepingSA= $FormISA->Bookkeeping;
+        $BiologySA = $FormISA->Biology; 
+        $CivicsSA = $FormISA->Civics;
+        $ChemistrySA = $FormISA->Chemistry;
+        $ComputerstudySA = $FormISA->Computerstudy;
+        $CreativeartsSA= $FormISA->Creativearts;
+        $CommerceSA = $FormISA->Commerce; 
+        $EnglishliteratureSA = $FormISA->Englishliterature;
+        $FrenchSA = $FormISA->French;
+        $GeographySA = $FormISA->Geography;
+        $HistorySA= $FormISA->History;
+        $IslamicknowledgeSA = $FormISA->Islamicknowledge; 
+        $KiswahiliSA = $FormISA->Kiswahili;
+        $LifeskillSA = $FormISA->Lifeskill;
+        $PhysicsSA = $FormISA->Physics;
+        $SwimmingSA = $FormISA->Swimming;
+        $NutritionSA = $FormISA->Nutrition;
+
+        $TotalSubject = 8;
+        $TotalSubjectMarks = $ArabiclanguageSA + $BasicmathematicsSA +$BibleknowledgeSA +$BookkeepingSA+$BiologySA + 
+        $CivicsSA +$ChemistrySA +$ComputerstudySA+$CreativeartsSA+$CommerceSA+$EnglishliteratureSA+$FrenchSA+$GeographySA+$HistorySA+
+        $IslamicknowledgeSA+$KiswahiliSA+$LifeskillSA+$PhysicsSA+$SwimmingSA +$NutritionSA;
+
+        $AverageSA = $TotalSubjectMarks/$TotalSubject;
+    
+        // Calculating grades
+        $FormIgradesSA = [
+            'Arabiclanguage' => $this->SecondarycalculateGrade($ArabiclanguageSA),
+            'Basicmathematics' => $this->SecondarycalculateGrade($BasicmathematicsSA),
+            'Bibleknowledge' => $this->SecondarycalculateGrade($BibleknowledgeSA),
+            'Bookkeeping' => $this->SecondarycalculateGrade($BookkeepingSA),
+            'Biology' => $this->SecondarycalculateGrade($BiologySA),
+            'Civics' => $this->SecondarycalculateGrade($CivicsSA),
+            'Chemistry' => $this->SecondarycalculateGrade($ChemistrySA),
+            'Computerstudy' => $this->SecondarycalculateGrade($ComputerstudySA),
+            'Creativearts' => $this->SecondarycalculateGrade($CreativeartsSA),
+            'Commerce' => $this->SecondarycalculateGrade($CommerceSA),
+            'Englishliterature' => $this->SecondarycalculateGrade($EnglishliteratureSA),
+            'French' => $this->SecondarycalculateGrade($FrenchSA),
+            'Geography' => $this->SecondarycalculateGrade($GeographySA),
+            'History' => $this->SecondarycalculateGrade($HistorySA),
+            'Islamicknowledge' => $this->SecondarycalculateGrade($IslamicknowledgeSA),
+            'Kiswahili' => $this->SecondarycalculateGrade($KiswahiliSA),
+            'Lifeskill' => $this->SecondarycalculateGrade($LifeskillSA),
+            'Physics' => $this->SecondarycalculateGrade($PhysicsSA),
+            'Islamicknowledge' => $this->SecondarycalculateGrade($IslamicknowledgeSA),
+            'Swimming' => $this->SecondarycalculateGrade($SwimmingSA),
+            'Nutrition' => $this->SecondarycalculateGrade($NutritionSA)
+        ];
+        
+        // Pass all data to the view as a single array
+        return view('FormoneFM', [
+            'data' => $data,
+            'FormISA' => $FormISA,
+            'grades' => $grades,           
+    'FormIgradesSA' => $FormIgradesSA,
+
+    'positionArabiclanguageFM' => $positionArabiclanguageFM,
+    'positionBasicmathematicFM' => $positionBasicmathematicFM, 
+    'positionBibleknowledgeFM' => $positionBibleknowledgeFM, 
+    'positionBookkeepingFM' =>$positionBookkeepingFM,
+    'positionBiologyFM' => $positionBiologyFM,
+    'positionCivicsFM' => $positionCivicsFM,
+    'positionChemistryFM' => $positionChemistryFM,
+    'positionComputerstudyFM' => $positionComputerstudyFM, 
+    'positionCreativeartFM' => $positionCreativeartFM,
+    'positionCommerceFM' => $positionCommerceFM,
+    'positionEnglishliteratureFM' => $positionEnglishliteratureFM, 
+    'positionFrenchFM' => $positionFrenchFM, 
+    'positionGeographyFM' => $positionGeographyFM, 
+    'positionHistoryFM' => $positionHistoryFM, 
+    'positionIslamicknowledgeFM' => $positionIslamicknowledgeFM,
+    'positionKiswahiliFM' => $positionKiswahiliFM, 
+    'positionLifeskillFM' => $positionLifeskillFM,
+    'positionPhysicsFM' => $positionPhysicsFM,
+    'positionSwimmingFM' =>$positionSwimmingFM, 
+    'positionNutritionFM' => $positionNutritionFM,
+    '$AverageFM'  => $AverageFM,
+
+    'positionArabiclanguageSA' => $positionArabiclanguageSA,
+    'positionBasicmathematicSA' => $positionBasicmathematicSA, 
+    'positionBibleknowledgeSA' => $positionBibleknowledgeSA, 
+    'positionBookkeepingSA' =>$positionBookkeepingSA,
+    'positionBiologySA' => $positionBiologySA,
+    'positionCivicsSA' => $positionCivicsSA,
+    'positionChemistrySA' => $positionChemistrySA,
+    'positionComputerstudySA' => $positionComputerstudySA, 
+    'positionCreativeartsSA' => $positionCreativeartsSA,
+    'positionCommerceSA' => $positionCommerceSA,
+    'positionEnglishliteratureSA' => $positionEnglishliteratureSA, 
+    'positionFrenchSA' => $positionFrenchSA, 
+    'positionGeographySA' => $positionGeographySA, 
+    'positionHistorySA' => $positionHistorySA, 
+    'positionIslamicknowledgeSA' => $positionIslamicknowledgeSA,
+    'positionKiswahiliSA' => $positionKiswahiliSA, 
+    'positionLifeskillSA' => $positionLifeskillSA,
+    'positionPhysicsSA' => $positionPhysicsSA,
+    'positionSwimmingSA' =>$positionSwimmingSA, 
+    'positionNutritionSA' => $positionNutritionSA,
+    'AverageSA' => $AverageSA,
+
+ ],compact('AverageFM','AverageSA'));
+      
+    }
+
+
+    public function FormOneSM()
+    {
+        $userId = Auth::id();
+        $data = formi_second_midterm::where('id', $userId)->first(); 
+
+         if (!$data) {
+            $errorMessage = "No data found for the authenticated user.";
+            return view('FormOneSM', compact('errorMessage'));
+        }
+
+       $positionArabiclanguageSM = $this->calculatePositionFormI($userId);
+        $positionBasicmathematicSM = $this->calculatePositionFormI($userId);
+        $positionBibleknowledgeSM = $this->calculatePositionFormI($userId);
+        $positionBookkeepingSM = $this->calculatePositionFormI($userId);
+        $positionBiologySM = $this->calculatePositionFormI($userId);
+        $positionCivicsSM = $this->calculatePositionFormI($userId);
+        $positionChemistrySM = $this->calculatePositionFormI($userId);
+        $positionComputerstudySM = $this->calculatePositionFormI($userId);
+        $positionCreativeartSM = $this->calculatePositionFormI($userId);
+        $positionCommerceSM = $this->calculatePositionFormI($userId);                        
+        $positionEnglishliteratureSM = $this->calculatePositionFormI($userId);
+        $positionFrenchSM = $this->calculatePositionFormI($userId);
+        $positionGeographySM = $this->calculatePositionFormI($userId);
+        $positionHistorySM = $this->calculatePositionFormI($userId);
+        $positionIslamicknowledgeSM = $this->calculatePositionFormI($userId);
+        $positionKiswahiliSM = $this->calculatePositionFormI($userId);
+        $positionLifeskillSM = $this->calculatePositionFormI($userId);
+        $positionPhysicsSM = $this->calculatePositionFormI($userId);
+        $positionSwimmingSM = $this->calculatePositionFormI($userId);
+        $positionNutritionSM = $this->calculatePositionFormI($userId);    
+        
+        $ArabiclanguageSM = $data->Arabiclanguage;
+        $BasicmathematicsSM = $data->Basicmathematics;
+        $BibleknowledgeSM = $data->Bibleknowledge;
+        $BookkeepingSM= $data->Bookkeeping;
+        $BiologySM = $data->Biology; 
+        $CivicsSM = $data->Civics;
+        $ChemistrySM = $data->Chemistry;
+        $ComputerstudySM = $data->Computerstudy;
+        $CreativeartsSM= $data->Creativearts;
+        $CommerceSM = $data->Commerce; 
+        $EnglishliteratureSM = $data->Englishliterature;
+        $FrenchSM = $data->French;
+        $GeographySM = $data->Geography;
+        $HistorySM= $data->History;
+        $IslamicknowledgeSM = $data->Islamicknowledge; 
+        $KiswahiliSM = $data->Kiswahili;
+        $LifeskillSM = $data->Lifeskill;
+        $PhysicsSM = $data->Physics;
+        $SwimmingSM = $data->Swimming;
+        $NutritionSM = $data->Nutrition;
+
+        $TotalSubject = 8;
+        $TotalSubjectMarks = $ArabiclanguageSM + $BasicmathematicsSM +$BibleknowledgeSM +$BookkeepingSM+$BiologySM + 
+        $CivicsSM +$ChemistrySM+$ComputerstudySM+$CreativeartsSM+$CommerceSM+$EnglishliteratureSM+$FrenchSM+$GeographySM+$HistorySM+
+        $IslamicknowledgeSM+$KiswahiliSM+$LifeskillSM+$PhysicsSM+$SwimmingSM +$NutritionSM;
+
+        $AverageSM = $TotalSubjectMarks/$TotalSubject;
+        
+
+        
+    
+        // Calculating grades
+       $grades = [
+            'Arabiclanguage' => $this->SecondarycalculateGrade($ArabiclanguageSM),
+            'Basicmathematics' => $this->SecondarycalculateGrade($BasicmathematicsSM),
+            'Bibleknowledge' => $this->SecondarycalculateGrade($BibleknowledgeSM),
+            'Bookkeeping' => $this->SecondarycalculateGrade($BookkeepingSM),
+            'Biology' => $this->SecondarycalculateGrade($BiologySM),
+            'Civics' => $this->SecondarycalculateGrade($CivicsSM),
+            'Chemistry' => $this->SecondarycalculateGrade($ChemistrySM),
+            'Computerstudy' => $this->SecondarycalculateGrade($ComputerstudySM),
+            'Creativearts' => $this->SecondarycalculateGrade($CreativeartsSM),
+            'Commerce' => $this->SecondarycalculateGrade($CommerceSM),
+            'Englishliterature' => $this->SecondarycalculateGrade($EnglishliteratureSM),
+            'French' => $this->SecondarycalculateGrade($FrenchSM),
+            'Geography' => $this->SecondarycalculateGrade($GeographySM),
+            'History' => $this->SecondarycalculateGrade($HistorySM),
+            'Islamicknowledge' => $this->SecondarycalculateGrade($IslamicknowledgeSM),
+            'Kiswahili' => $this->SecondarycalculateGrade($KiswahiliSM),
+            'Lifeskill' => $this->SecondarycalculateGrade($LifeskillSM),
+            'Physics' => $this->SecondarycalculateGrade($PhysicsSM),
+            'Islamicknowledge' => $this->SecondarycalculateGrade($IslamicknowledgeSM),
+            'Swimming' => $this->SecondarycalculateGrade($SwimmingSM),
+            'Nutrition' => $this->SecondarycalculateGrade($NutritionSM)
+        ];
+    
+       $FormIAL = formi_annual::where('id', $userId)->first();
+
+       if (!$data) {
+        $errorMessage = "No data found for the authenticated user.";
+        return view('FormOneSM', compact('errorMessage'));
+      }
+
+       $positionArabiclanguageAL = $this->calculatePositionFormI($userId);
+        $positionBasicmathematicAL= $this->calculatePositionFormI($userId);
+        $positionBibleknowledgeAL = $this->calculatePositionFormI($userId);
+        $positionBookkeepingAL = $this->calculatePositionFormI($userId);
+        $positionBiologyAL = $this->calculatePositionFormI($userId);
+        $positionCivicsAL = $this->calculatePositionFormI($userId);
+        $positionChemistryAL = $this->calculatePositionFormI($userId);
+        $positionComputerstudyAL = $this->calculatePositionFormI($userId);
+        $positionCreativeartsAL = $this->calculatePositionFormI($userId);
+        $positionCommerceAL= $this->calculatePositionFormI($userId);
+        $positionEnglishliteratureAL = $this->calculatePositionFormI($userId);
+        $positionFrenchAL = $this->calculatePositionFormI($userId);
+        $positionGeographyAL = $this->calculatePositionFormI($userId);
+        $positionHistoryAL= $this->calculatePositionFormI($userId);
+        $positionIslamicknowledgeAL = $this->calculatePositionFormI($userId);
+        $positionKiswahiliAL = $this->calculatePositionFormI($userId);
+        $positionLifeskillAL= $this->calculatePositionFormI($userId);
+        $positionPhysicsAL = $this->calculatePositionFormI($userId);
+        $positionSwimmingAL = $this->calculatePositionFormI($userId);
+        $positionNutritionAL = $this->calculatePositionFormI($userId);
+
+        $ArabiclanguageAL = $FormIAL->Arabiclanguage;
+        $BasicmathematicsAL = $FormIAL->Basicmathematics;
+        $BibleknowledgeAL = $FormIAL->Bibleknowledge;
+        $BookkeepingAL= $FormIAL->Bookkeeping;
+        $BiologyAL = $FormIAL->Biology; 
+        $CivicsAL = $FormIAL->Civics;
+        $ChemistryAL= $FormIAL->Chemistry;
+        $ComputerstudyAL = $FormIAL->Computerstudy;
+        $CreativeartsAL= $FormIAL->Creativearts;
+        $CommerceAL = $FormIAL->Commerce; 
+        $EnglishliteratureAL = $FormIAL->English;
+        $FrenchAL = $FormIAL->French;
+        $GeographyAL = $FormIAL->Geography;
+        $HistoryAL= $FormIAL->History;
+        $IslamicknowledgeAL = $FormIAL->Islamicknowledge; 
+        $KiswahiliAL = $FormIAL->Kiswahili;
+        $LifeskillAL = $FormIAL->Lifeskill;
+        $PhysicsAL = $FormIAL->Physics;
+        $SwimmingAL = $FormIAL->Swimming;
+        $NutritionAL= $FormIAL->Nutrition;
+
+        $TotalSubject = 8;
+        $TotalSubjectMarks = $ArabiclanguageAL + $BasicmathematicsAL +$BibleknowledgeAL +$BookkeepingAL+$BiologyAL + 
+        $CivicsAL +$ChemistryAL +$ComputerstudyAL +$CreativeartsAL +$CommerceAL + $EnglishliteratureAL +$FrenchAL +$GeographyAL +$HistoryAL +
+        $IslamicknowledgeAL +$KiswahiliAL +$LifeskillAL +$PhysicsAL +$SwimmingAL +$NutritionAL;
+
+        $AverageAL = $TotalSubjectMarks/$TotalSubject;
+    
+        // Calculating grades
+        $FormIgradesAL = [
+            'Arabiclanguage' => $this->SecondarycalculateGrade($ArabiclanguageAL),
+            'Basicmathematics' => $this->SecondarycalculateGrade($BasicmathematicsAL),
+            'Bibleknowledge' => $this->SecondarycalculateGrade($BibleknowledgeAL),
+            'Bookkeeping' => $this->SecondarycalculateGrade($BookkeepingAL),
+            'Biology' => $this->SecondarycalculateGrade($BiologyAL),
+            'Civics' => $this->SecondarycalculateGrade($CivicsAL),
+            'Chemistry' => $this->SecondarycalculateGrade($ChemistryAL),
+            'Computerstudy' => $this->SecondarycalculateGrade($ComputerstudyAL),
+            'Creativearts' => $this->SecondarycalculateGrade($CreativeartsAL),
+            'Commerce' => $this->SecondarycalculateGrade($CommerceAL),
+            'Englishliterature' => $this->SecondarycalculateGrade($EnglishliteratureAL),
+            'French' => $this->SecondarycalculateGrade($FrenchAL),
+            'Geography' => $this->SecondarycalculateGrade($GeographyAL),
+            'History' => $this->SecondarycalculateGrade($HistoryAL),
+            'Islamicknowledge' => $this->SecondarycalculateGrade($IslamicknowledgeAL),
+            'Kiswahili' => $this->SecondarycalculateGrade($KiswahiliAL),
+            'Lifeskill' => $this->SecondarycalculateGrade($LifeskillAL),
+            'Physics' => $this->SecondarycalculateGrade($PhysicsAL),
+            'Islamicknowledge' => $this->SecondarycalculateGrade($IslamicknowledgeAL),
+            'Swimming' => $this->SecondarycalculateGrade($SwimmingAL),
+            'Nutrition' => $this->SecondarycalculateGrade($NutritionAL)
+        ];
+        
+        // Pass all data to the view as a single array
+        return view('FormOneSM', [
+            'data' => $data,
+            'grades' => $grades,
+            'FormIAL' => $FormIAL,                     
+    'FormIgradesAL' => $FormIgradesAL,
+    'positionArabiclanguageSM' => $positionArabiclanguageSM,
+    'positionBasicmathematicSM' => $positionBasicmathematicSM, 
+    'positionBibleknowledgeSM' => $positionBibleknowledgeSM, 
+    'positionBookkeepingSM' =>$positionBookkeepingSM,
+    'positionBiologySM' => $positionBiologySM,
+    'positionCivicsSM' => $positionCivicsSM,
+    'positionChemistrySM' => $positionChemistrySM,
+    'positionComputerstudySM' => $positionComputerstudySM, 
+    'positionCreativeartSM' => $positionCreativeartSM,
+    'positionCommerceSM' => $positionCommerceSM,
+    'positionEnglishliteratureSM' => $positionEnglishliteratureSM, 
+    'positionFrenchSM' => $positionFrenchSM, 
+    'positionGeographySM' => $positionGeographySM, 
+    'positionHistorySM' => $positionHistorySM, 
+    'positionIslamicknowledgeSM' => $positionIslamicknowledgeSM,
+    'positionKiswahiliSM' => $positionKiswahiliSM, 
+    'positionLifeskillSM' => $positionLifeskillSM,
+    'positionPhysicsSM' => $positionPhysicsSM,
+    'positionSwimmingSM' =>$positionSwimmingSM, 
+    'positionNutritionSM' => $positionNutritionSM,
+    '$AverageSM'  => $AverageSM,
+
+    'positionArabiclanguageAL' => $positionArabiclanguageAL,
+    'positionBasicmathematicAL' => $positionBasicmathematicAL, 
+    'positionBibleknowledgeAL' => $positionBibleknowledgeAL, 
+    'positionBookkeepingAL' =>$positionBookkeepingAL,
+    'positionBiologyAL' => $positionBiologyAL,
+    'positionCivicsAL' => $positionCivicsAL,
+    'positionChemistryAL' => $positionChemistryAL,
+    'positionComputerstudyAL' => $positionComputerstudyAL, 
+    'positionCreativeartsAL' => $positionCreativeartsAL,
+    'positionCommerceAL' => $positionCommerceAL,
+    'positionEnglishliteratureAL' => $positionEnglishliteratureAL, 
+    'positionFrenchAL' => $positionFrenchAL, 
+    'positionGeographyAL' => $positionGeographyAL, 
+    'positionHistoryAL' => $positionHistoryAL, 
+    'positionIslamicknowledgeAL' => $positionIslamicknowledgeAL,
+    'positionKiswahiliAL' => $positionKiswahiliAL, 
+    'positionLifeskillAL' => $positionLifeskillAL,
+    'positionPhysicsAL' => $positionPhysicsAL,
+    'positionSwimmingAL' =>$positionSwimmingAL, 
+    'positionNutritionAL' => $positionNutritionAL,
+    'AverageAL' => $AverageAL,
+
+ ],compact('AverageSM','AverageAL'));
+      
+    }
+
+
+    public function calculatePositionFormII ($id) {
+        // Fetch all scores from the database
+        $ArabiclanguageFM = formii_first_midterm::pluck('Arabiclanguage', 'id')->toArray();
+        $BasicmathematicsallScoresFM = formii_first_midterm::pluck('Basicmathematics', 'id')->toArray();
+        $BibleknowledgeallScoresFM = formii_first_midterm::pluck('Bibleknowledge', 'id')->toArray();
+        $BookkeepingallScoresFM = formii_first_midterm::pluck('Bookkeeping', 'id')->toArray();
+        $BiologyallScoresFM = formii_first_midterm::pluck('Biology', 'id')->toArray();
+        $CivicsScoresFM = formii_first_midterm::pluck('Civics', 'id')->toArray();
+        $ChemistryallScoresFM =formii_first_midterm::pluck('Chemistry', 'id')->toArray();
+        $ComputerstudyScoresFM = formii_first_midterm::pluck('Computerstudy', 'id')->toArray();
+        $CreativeartsallScoresFM = formii_first_midterm::pluck('Creativearts', 'id')->toArray();
+        $CommerceallScoresFM = formii_first_midterm::pluck('Commerce', 'id')->toArray();
+        $EnglishallScoresFM = formii_first_midterm::pluck('Bibleknowledge', 'id')->toArray();
+        $EnglishliteratureallScoresFM = formii_first_midterm::pluck('Englishliterature', 'id')->toArray();
+        $FrenchallScoresFM = formii_first_midterm::pluck('French', 'id')->toArray();
+        $GeographyScoresFM = formii_first_midterm::pluck('Geography', 'id')->toArray();
+        $HistoryallScoresFM =formii_first_midterm::pluck('History', 'id')->toArray();
+        $IslamicknowledgeScoresFM = formii_first_midterm::pluck('Islamicknowledge', 'id')->toArray();
+        $KiswahiliallScoresFM = formii_first_midterm::pluck('Kiswahili', 'id')->toArray();
+        $LifeskillScoresFM = formii_first_midterm::pluck('Lifeskill', 'id')->toArray();
+        $PhysicsallScoresFM =formii_first_midterm::pluck('Physics', 'id')->toArray();
+        $SwimmingScoresFM = formii_first_midterm::pluck('Swimming', 'id')->toArray();
+        $NutritionScoresFM = formii_first_midterm::pluck('Nutrition', 'id')->toArray();
+
+        $ArabiclanguageallScoresSA = formii_semi_annual::pluck('Arabiclanguage', 'id')->toArray();
+        $BasicmathematicsallScoresSA = formii_semi_annual::pluck('Basicmathematics', 'id')->toArray();
+        $BibleknowledgeallScoresSA = formii_semi_annual::pluck('Bibleknowledge', 'id')->toArray();
+        $BookkeepingallScoresSA= formii_semi_annual::pluck('Bookkeeping', 'id')->toArray();
+        $BiologyallScoresSA = formii_semi_annual::pluck('Biology', 'id')->toArray();
+        $CivicsScoresSA = formii_semi_annual::pluck('Civics', 'id')->toArray();
+        $ChemistryallScoresSA =formii_semi_annual::pluck('Chemistry', 'id')->toArray();
+        $ComputerstudyScoresSA = formii_semi_annual::pluck('Computerstudy', 'id')->toArray();
+        $CreativeartsallScoresSA = formii_semi_annual::pluck('Creativearts', 'id')->toArray();
+        $CommerceallScoresSA = formii_semi_annual::pluck('Commerce', 'id')->toArray();
+        $EnglishallScoresSA = formii_semi_annual::pluck('Bibleknowledge', 'id')->toArray();
+        $EnglishliteratureallScoresSA = formii_semi_annual::pluck('Englishliterature', 'id')->toArray();
+        $FrenchallScoresSA = formii_semi_annual::pluck('French', 'id')->toArray();
+        $GeographyScoresSA =formii_semi_annual::pluck('Geography', 'id')->toArray();
+        $HistoryallScoresSA =formii_semi_annual::pluck('History', 'id')->toArray();
+        $IslamicknowledgeScoresSA= formii_semi_annual::pluck('Islamicknowledge', 'id')->toArray();
+        $KiswahiliallScoresSA = formii_semi_annual::pluck('Kiswahili', 'id')->toArray();
+        $LifeskillScoresSA = formii_semi_annual::pluck('Lifeskill', 'id')->toArray();
+        $PhysicsallScoresSA =formii_semi_annual::pluck('Physics', 'id')->toArray();
+        $SwimmingScoresSA = formii_semi_annual::pluck('Swimming', 'id')->toArray();
+        $NutritionScoresSA = formii_semi_annual::pluck('Nutrition', 'id')->toArray();
+
+
+        $ArabiclanguageallScoresSM = formii_second_midterm::pluck('Arabiclanguage', 'id')->toArray();
+        $BasicmathematicsallScoresSM = formii_second_midterm::pluck('Basicmathematics', 'id')->toArray();
+        $BibleknowledgeallScoresSM = formii_second_midterm::pluck('Bibleknowledge', 'id')->toArray();
+        $BookkeepingallScoresSM = formii_second_midterm::pluck('Bookkeeping', 'id')->toArray();
+        $BiologyallScoresSM = formii_second_midterm::pluck('Biology', 'id')->toArray();
+        $CivicsScoresSM = formii_second_midterm::pluck('Civics', 'id')->toArray();
+        $ChemistryallScoresSM =formii_second_midterm::pluck('Chemistry', 'id')->toArray();
+        $ComputerstudyScoresSM = formii_second_midterm::pluck('Computerstudy', 'id')->toArray();
+        $CreativeartsallScoresSM = formii_second_midterm::pluck('Creativearts', 'id')->toArray();
+        $CommerceallScoresSM = formii_second_midterm::pluck('Commerce', 'id')->toArray();
+        $EnglishallScoresSM= formii_second_midterm::pluck('Bibleknowledge', 'id')->toArray();
+        $EnglishliteratureallScoresSM = formii_second_midterm::pluck('Englishliterature', 'id')->toArray();
+        $FrenchallScoresSM = formii_second_midterm::pluck('French', 'id')->toArray();
+        $GeographyScoresSM =formii_second_midterm::pluck('Geography', 'id')->toArray();
+        $HistoryallScoresSM =formii_second_midterm::pluck('History', 'id')->toArray();
+        $IslamicknowledgeScoresSM = formii_second_midterm::pluck('Islamicknowledge', 'id')->toArray();
+        $KiswahiliallScoresSM = formii_second_midterm::pluck('Kiswahili', 'id')->toArray();
+        $LifeskillScoresSM = formii_second_midterm::pluck('Lifeskill', 'id')->toArray();
+        $PhysicsallScoresSM=formii_second_midterm::pluck('Physics', 'id')->toArray();
+        $SwimmingScoresSM = formii_second_midterm::pluck('Swimming', 'id')->toArray();
+        $NutritionScoresSM = formii_second_midterm::pluck('Nutrition', 'id')->toArray();
+
+
+        $ArabiclanguageallScoresAL = formii_annual::pluck('Arabiclanguage', 'id')->toArray();
+        $BasicmathematicsallScoresAL = formii_annual::pluck('Basicmathematics', 'id')->toArray();
+        $BibleknowledgeallScoresAL = formii_annual::pluck('Bibleknowledge', 'id')->toArray();
+        $BookkeepingallScoresAL = formii_annual::pluck('Bookkeeping', 'id')->toArray();
+        $BiologyallScoresAL = formii_annual::pluck('Biology', 'id')->toArray();
+        $CivicsScoresAL =formii_annual::pluck('Civics', 'id')->toArray();
+        $ChemistryallScoresAL =formii_annual::pluck('Chemistry', 'id')->toArray();
+        $ComputerstudyScoresAL= formii_annual::pluck('Computerstudy', 'id')->toArray();
+        $CreativeartsallScoresAL = formii_annual::pluck('Creativearts', 'id')->toArray();
+        $CommerceallScoresAL = formii_annual::pluck('Commerce', 'id')->toArray();
+        $EnglishallScoresAL = formii_annual::pluck('Bibleknowledge', 'id')->toArray();
+        $EnglishliteratureallScoresAL = formii_annual::pluck('Englishliterature', 'id')->toArray();
+        $FrenchallScoresAL = formii_annual::pluck('French', 'id')->toArray();
+        $GeographyScoresAL = formii_annual::pluck('Geography', 'id')->toArray();
+        $HistoryallScoresAL =formii_annual::pluck('History', 'id')->toArray();
+        $IslamicknowledgeScoresAL = formii_annual::pluck('Islamicknowledge', 'id')->toArray();
+        $KiswahiliallScoresAL = formii_annual::pluck('Kiswahili', 'id')->toArray();
+        $LifeskillScoresAL = formii_annual::pluck('Lifeskill', 'id')->toArray();
+        $PhysicsallScoresAL =formii_annual::pluck('Physics', 'id')->toArray();
+        $SwimmingScoresAL = formii_annual::pluck('Swimming', 'id')->toArray();
+        $NutritionScoresAL = formii_annual::pluck('Nutrition', 'id')->toArray();
+
+        // Sort the scores in descending order
+        arsort($ArabiclanguageFM );
+        arsort($BasicmathematicsallScoresFM);
+        arsort($BibleknowledgeallScoresFM);
+        arsort($BookkeepingallScoresFM);
+        arsort($BiologyallScoresFM);
+        arsort($CivicsScoresFM);
+        arsort($ChemistryallScoresFM);
+        arsort($ComputerstudyScoresFM);
+        arsort($CreativeartsallScoresFM);
+        arsort($CommerceallScoresFM);
+        arsort($EnglishallScoresFM);
+        arsort($FrenchallScoresFM);
+        arsort($GeographyScoresFM);
+        arsort($HistoryallScoresFM);
+        arsort($IslamicknowledgeScoresFM);
+        arsort($KiswahiliallScoresFM);
+        arsort($LifeskillScoresFM);
+        arsort($PhysicsallScoresFM);
+        arsort($SwimmingScoresFM);
+        arsort($NutritionScoresFM);
+
+        arsort($ArabiclanguageallScoresSM );
+        arsort($BasicmathematicsallScoresSM);
+        arsort($BibleknowledgeallScoresSM);
+        arsort($BookkeepingallScoresSM);
+        arsort($BiologyallScoresSM);
+        arsort($CivicsScoresSM);
+        arsort($ChemistryallScoresSM);
+        arsort($ComputerstudyScoresSM);
+        arsort($CreativeartsallScoresSM);
+        arsort($CommerceallScoresSM);
+        arsort($EnglishallScoresSM);
+        arsort($FrenchallScoresSM);
+        arsort($GeographyScoresSM);
+        arsort($HistoryallScoresSM);
+        arsort($IslamicknowledgeScoresSM);
+        arsort($KiswahiliallScoresSM);
+        arsort($LifeskillScoresSM);
+        arsort($PhysicsallScoresSM);
+        arsort($SwimmingScoresSM);
+        arsort($NutritionScoresSM);
+
+        arsort($ArabiclanguageallScoresSA );
+        arsort($BasicmathematicsallScoresSA);
+        arsort($BibleknowledgeallScoresSA);
+        arsort($BookkeepingallScoresSA);
+        arsort($BiologyallScoresSA);
+        arsort($CivicsScoresSA);
+        arsort($ChemistryallScoresSA);
+        arsort($ComputerstudyScoresSA);
+        arsort($CreativeartsallScoresSA);
+        arsort($CommerceallScoresSA);
+        arsort($EnglishallScoresSA);
+        arsort($FrenchallScoresSA);
+        arsort($GeographyScoresSA);
+        arsort($HistoryallScoresSA);
+        arsort($IslamicknowledgeScoresSA);
+        arsort($KiswahiliallScoresSA);
+        arsort($LifeskillScoresSA);
+        arsort($PhysicsallScoresSA);
+        arsort($SwimmingScoresSA);
+        arsort($NutritionScoresSA);
+
+        arsort($ArabiclanguageallScoresAL );
+        arsort($BasicmathematicsallScoresAL);
+        arsort($BibleknowledgeallScoresAL);
+        arsort($BookkeepingallScoresAL);
+        arsort($BiologyallScoresAL);
+        arsort($CivicsScoresAL);
+        arsort($ChemistryallScoresAL);
+        arsort($ComputerstudyScoresAL);
+        arsort($CreativeartsallScoresAL);
+        arsort($CommerceallScoresAL);
+        arsort($EnglishallScoresAL);
+        arsort($FrenchallScoresAL);
+        arsort($GeographyScoresAL);
+        arsort($HistoryallScoresAL);
+        arsort($IslamicknowledgeScoresAL);
+        arsort($KiswahiliallScoresAL);
+        arsort($LifeskillScoresAL);
+        arsort($PhysicsallScoresAL);
+        arsort($SwimmingScoresAL);
+        arsort($NutritionScoresAL);
+
+
+
+    
+        // Find the position of the user
+        $positionArabiclanguageFM = array_search($id, array_keys($ArabiclanguageFM )) + 1;
+        $positionBasicmathematicFM = array_search($id, array_keys($BasicmathematicsallScoresFM)) + 1;
+        $positionBibleknowledgeFM = array_search($id, array_keys($BibleknowledgeallScoresFM)) + 1;
+        $positionBookkeepingFM  = array_search($id, array_keys($BookkeepingallScoresFM)) + 1;
+        $positionBiologyFM = array_search($id, array_keys($BiologyallScoresFM)) + 1;
+        $positionCivicsFM = array_search($id, array_keys($CivicsScoresFM)) + 1;
+        $positionChemistryFM = array_search($id, array_keys($ChemistryallScoresFM)) + 1;
+        $positionComputerstudyFM = array_search($id, array_keys($ComputerstudyScoresFM)) + 1;
+        $positionCreativeartFM = array_search($id, array_keys($CreativeartsallScoresFM )) + 1;
+        $positionCommerceFM = array_search($id, array_keys($CommerceallScoresFM)) + 1;
+        $positionEnglishliteratureFM = array_search($id, array_keys($EnglishallScoresFM)) + 1;
+        $positionFrenchFM = array_search($id, array_keys($FrenchallScoresFM)) + 1;
+        $positionGeographyFM = array_search($id, array_keys($GeographyScoresFM)) + 1;
+        $positionHistoryFM = array_search($id, array_keys($HistoryallScoresFM)) + 1;
+        $positionIslamicknowledgeFM = array_search($id, array_keys($IslamicknowledgeScoresFM)) + 1;
+        $positionKiswahiliFM = array_search($id, array_keys($KiswahiliallScoresFM)) + 1;
+        $positionLifeskillFM = array_search($id, array_keys($LifeskillScoresFM)) + 1;
+        $positionPhysicsFM = array_search($id, array_keys($PhysicsallScoresFM)) + 1;
+        $positionSwimmingFM = array_search($id, array_keys($SwimmingScoresFM)) + 1;
+        $positionNutritionFM = array_search($id, array_keys($NutritionScoresFM)) + 1;
+
+       
+
+        $positionArabiclanguageSA = array_search($id, array_keys($ArabiclanguageallScoresSA )) + 1;
+        $positionBasicmathematicSA = array_search($id, array_keys($BasicmathematicsallScoresSA)) + 1;
+        $positionBibleknowledgeSA = array_search($id, array_keys($BibleknowledgeallScoresSA)) + 1;
+        $positionBookkeepingSA  = array_search($id, array_keys($BookkeepingallScoresSA)) + 1;
+        $positionBiologySA = array_search($id, array_keys($BiologyallScoresSA)) + 1;
+        $positionCivicsSA = array_search($id, array_keys($CivicsScoresSA)) + 1;
+        $positionChemistrySA = array_search($id, array_keys($ChemistryallScoresSA)) + 1;
+        $positionComputerstudySA = array_search($id, array_keys($ComputerstudyScoresSA)) + 1;
+        $positionCreativeartsSA = array_search($id, array_keys($CreativeartsallScoresSA)) + 1;
+        $positionCommerceSA = array_search($id, array_keys($CommerceallScoresSA)) + 1;
+        $positionEnglishliteratureSA = array_search($id, array_keys($EnglishallScoresSA)) + 1;
+        $positionFrenchSA = array_search($id, array_keys($FrenchallScoresSA)) + 1;
+        $positionGeographySA = array_search($id, array_keys($GeographyScoresSA)) + 1;
+        $positionHistorySA = array_search($id, array_keys($HistoryallScoresSA)) + 1;
+        $positionIslamicknowledgeSA = array_search($id, array_keys($IslamicknowledgeScoresSA)) + 1;
+        $positionKiswahiliSA = array_search($id, array_keys($KiswahiliallScoresSA)) + 1;
+        $positionLifeskillSA = array_search($id, array_keys($LifeskillScoresSA)) + 1;
+        $positionPhysicsSA = array_search($id, array_keys($PhysicsallScoresSA)) + 1;
+        $positionSwimmingSA = array_search($id, array_keys($SwimmingScoresSA)) + 1;
+        $positionNutritionSA = array_search($id, array_keys($NutritionScoresSA)) + 1;
+
+
+
+        $positionArabiclanguageSM = array_search($id, array_keys($ArabiclanguageallScoresSM )) + 1;
+        $positionBasicmathematicSM = array_search($id, array_keys($BasicmathematicsallScoresSM)) + 1;
+        $positionBibleknowledgeSM = array_search($id, array_keys($BibleknowledgeallScoresSM)) + 1;
+        $positionBookkeepingSM  = array_search($id, array_keys($BookkeepingallScoresSM)) + 1;
+        $positionBiologySM = array_search($id, array_keys($BiologyallScoresSM)) + 1;
+        $positionCivicsSM = array_search($id, array_keys($CivicsScoresSM)) + 1;
+        $positionChemistrySM = array_search($id, array_keys($ChemistryallScoresSM)) + 1;
+        $positionComputerstudySM = array_search($id, array_keys($ComputerstudyScoresSM)) + 1;
+        $positionCreativeartSM = array_search($id, array_keys($CreativeartsallScoresSM)) + 1;
+        $positionCommerceSM = array_search($id, array_keys($CommerceallScoresSM)) + 1;
+        $positionEnglishliteratureSM = array_search($id, array_keys($EnglishallScoresSM)) + 1;
+        $positionFrenchSM = array_search($id, array_keys($FrenchallScoresSM)) + 1;
+        $positionGeographySM = array_search($id, array_keys($GeographyScoresSM)) + 1;
+        $positionHistorySM = array_search($id, array_keys($HistoryallScoresSM)) + 1;
+        $positionIslamicknowledgeSM = array_search($id, array_keys($IslamicknowledgeScoresSM)) + 1;
+        $positionKiswahiliSM = array_search($id, array_keys($KiswahiliallScoresSM)) + 1;
+        $positionLifeskillSM = array_search($id, array_keys($LifeskillScoresSM)) + 1;
+        $positionPhysicsSM = array_search($id, array_keys($PhysicsallScoresSM)) + 1;
+        $positionSwimmingSM= array_search($id, array_keys($SwimmingScoresSM)) + 1;
+        $positionNutritionSM = array_search($id, array_keys($NutritionScoresSM)) + 1;
+
+ 
+
+   
+        $positionArabiclanguageAL = array_search($id, array_keys($ArabiclanguageallScoresAL )) + 1;
+        $positionBasicmathematicAL = array_search($id, array_keys($BasicmathematicsallScoresAL)) + 1;
+        $positionBibleknowledgeAL = array_search($id, array_keys($BibleknowledgeallScoresAL)) + 1;
+        $positionBookkeepingAL  = array_search($id, array_keys($BookkeepingallScoresAL)) + 1;
+        $positionBiologyAL = array_search($id, array_keys($BiologyallScoresAL)) + 1;
+        $positionCivicsAL = array_search($id, array_keys($CivicsScoresAL)) + 1;
+        $positionChemistryAL = array_search($id, array_keys($ChemistryallScoresAL)) + 1;
+        $positionComputerstudyAL = array_search($id, array_keys($ComputerstudyScoresAL)) + 1;
+        $positionCreativeartAL = array_search($id, array_keys($CreativeartsallScoresAL)) + 1;
+        $positionCommerceAL = array_search($id, array_keys($CommerceallScoresAL)) + 1;
+        $positionEnglishliteratureAL = array_search($id, array_keys($EnglishallScoresAL)) + 1;
+        $positionFrenchAL = array_search($id, array_keys($FrenchallScoresAL)) + 1;
+        $positionGeographyAL= array_search($id, array_keys($GeographyScoresAL)) + 1;
+        $positionHistoryAL = array_search($id, array_keys($HistoryallScoresAL)) + 1;
+        $positionIslamicknowledgeAL = array_search($id, array_keys($IslamicknowledgeScoresAL)) + 1;
+        $positionKiswahiliAL = array_search($id, array_keys($KiswahiliallScoresAL)) + 1;
+        $positionLifeskillAL = array_search($id, array_keys($LifeskillScoresAL)) + 1;
+        $positionPhysicsAL = array_search($id, array_keys($PhysicsallScoresAL)) + 1;
+        $positionSwimmingAL = array_search($id, array_keys($SwimmingScoresAL)) + 1;
+        $positionNutritionAL = array_search($id, array_keys($NutritionScoresAL)) + 1;
+
+        return [
+            'FirstMidterm' => [
+                'Arabiclanguage' => $positionArabiclanguageFM,
+                'Basicmathematics' => $positionBasicmathematicFM,
+                'Bibleknowledge' => $positionBibleknowledgeFM,
+                'Bookkeeping' => $positionBookkeepingFM,
+                'Biology' => $positionBiologyFM,
+                'Civics' => $positionCivicsFM,
+                'Chemistry' => $positionChemistryFM,
+                'Computerstudy' => $positionComputerstudyFM,
+                'Creativearts' => $positionCreativeartFM,
+                'Commerce' => $positionCommerceFM,
+                'Englishliterature' => $positionEnglishliteratureFM,
+                'French' => $positionFrenchFM,
+                'Geography' => $positionGeographyFM,
+                'History' => $positionHistoryFM,
+                'Islamicknowledge' => $positionIslamicknowledgeFM,
+                'Kiswahili' => $positionKiswahiliFM,
+                'Lifeskill' => $positionLifeskillFM,
+                'Physics' => $positionPhysicsFM,
+                'Swimming' => $positionSwimmingFM,
+                'Nutrition' => $positionNutritionFM,
+
+            ],
+            'SemiAnnual' => [
+                'Arabiclanguage' => $positionArabiclanguageSA,
+                'Basicmathematics' => $positionBasicmathematicSA,
+                'Bibleknowledge' => $positionBibleknowledgeSA,
+                'Bookkeeping' => $positionBookkeepingSA,
+                'Biology' => $positionBiologySA,
+                'Civics' => $positionCivicsSA,
+                'Chemistry' => $positionChemistrySA,
+                'Computerstudy' => $positionComputerstudySA,
+                'Creativearts' => $positionCreativeartsSA,
+                'Commerce' => $positionCommerceSA,
+                'Englishliterature' => $positionEnglishliteratureSA,
+                'French' => $positionFrenchSA,
+                'Geography' => $positionGeographySA,
+                'History' => $positionHistorySA,
+                'Islamicknowledge' => $positionIslamicknowledgeSA,
+                'Kiswahili' => $positionKiswahiliSA,
+                'Lifeskill' => $positionLifeskillSA,
+                'Physics' => $positionPhysicsSA,
+                'Swimming' => $positionSwimmingSA,
+                'Nutrition' => $positionNutritionSA,
+            ],
+            'SecondMidterm' => [
+                'Arabiclanguage' => $positionArabiclanguageSM,
+                'Basicmathematics' => $positionBasicmathematicSM,
+                'Bibleknowledge' => $positionBibleknowledgeSM,
+                'Bookkeeping' => $positionBookkeepingSM,
+                'Biology' => $positionBiologySM,
+                'Civics' => $positionCivicsSM,
+                'Chemistry' => $positionChemistrySM,
+                'Computerstudy' => $positionComputerstudySM,
+                'Creativearts' => $positionCreativeartSM,
+                'Commerce' => $positionCommerceSM,
+                'Englishliterature' => $positionEnglishliteratureSM,
+                'French' => $positionFrenchSM,
+                'Geography' => $positionGeographySM,
+                'History' => $positionHistorySM,
+                'Islamicknowledge' => $positionIslamicknowledgeSM,
+                'Kiswahili' => $positionKiswahiliSM,
+                'Lifeskill' => $positionLifeskillSM,
+                'Physics' => $positionPhysicsSM,
+                'Swimming' => $positionSwimmingSM,
+                'Nutrition' => $positionNutritionSM,
+            ],
+            'Annual' => [
+                'Arabiclanguage' => $positionArabiclanguageAL,
+                'Basicmathematics' => $positionBasicmathematicAL,
+                'Bibleknowledge' => $positionBibleknowledgeAL,
+                'Bookkeeping' => $positionBookkeepingAL,
+                'Biology' => $positionBiologyAL,
+                'Civics' => $positionCivicsAL,
+                'Chemistry' => $positionChemistryAL,
+                'Computerstudy' => $positionComputerstudyAL,
+                'Creativearts' => $positionCreativeartAL,
+                'Commerce' => $positionCommerceAL,
+                'Englishliterature' => $positionEnglishliteratureAL,
+                'French' => $positionFrenchAL,
+                'Geography' => $positionGeographyAL,
+                'History' => $positionHistoryAL,
+                'Islamicknowledge' => $positionIslamicknowledgeAL,
+                'Kiswahili' => $positionKiswahiliAL,
+                'Lifeskill' => $positionLifeskillAL,
+                'Physics' => $positionPhysicsAL,
+                'Swimming' => $positionSwimmingAL,
+                'Nutrition' => $positionNutritionAL,
+            ],
+        ];
+        
+    }
+
+
+    public function FormTwoFM()
+    {
+        $userId = Auth::id();
+        $data = formii_first_midterm::where('id', $userId)->first(); 
+
+        if (!$data) {
+            $errorMessage = "No data found for the authenticated user.";
+            return view('FormtwoFM', compact('errorMessage'));
+        }
+
+
+       $positionArabiclanguageFM = $this->calculatePositionFormII($userId);
+        $positionBasicmathematicFM = $this->calculatePositionFormII($userId);
+        $positionBibleknowledgeFM = $this->calculatePositionFormII($userId);
+        $positionBookkeepingFM = $this->calculatePositionFormII($userId);
+        $positionBiologyFM = $this->calculatePositionFormII($userId);
+        $positionCivicsFM = $this->calculatePositionFormII($userId);
+        $positionChemistryFM = $this->calculatePositionFormII($userId);
+        $positionComputerstudyFM = $this->calculatePositionFormII($userId);
+        $positionCreativeartFM = $this->calculatePositionFormII($userId);
+        $positionCommerceFM = $this->calculatePositionFormII($userId);                        
+        $positionEnglishliteratureFM = $this->calculatePositionFormII($userId);
+        $positionFrenchFM = $this->calculatePositionFormII($userId);
+        $positionGeographyFM = $this->calculatePositionFormII($userId);
+        $positionHistoryFM = $this->calculatePositionFormII($userId);
+        $positionIslamicknowledgeFM = $this->calculatePositionFormII($userId);
+        $positionKiswahiliFM = $this->calculatePositionFormII($userId);
+        $positionLifeskillFM = $this->calculatePositionFormII($userId);
+        $positionPhysicsFM = $this->calculatePositionFormII($userId);
+        $positionSwimmingFM = $this->calculatePositionFormII($userId);
+        $positionNutritionFM = $this->calculatePositionFormII($userId);    
+        
+        $ArabiclanguageFM = $data->Arabiclanguage;
+        $BasicmathematicsFM = $data->Basicmathematics;
+        $BibleknowledgeFM = $data->Bibleknowledge;
+        $BookkeepingFM= $data->Bookkeeping;
+        $BiologyFM = $data->Biology; 
+        $CivicsFM = $data->Civics;
+        $ChemistryFM = $data->Chemistry;
+        $ComputerstudyFM = $data->Computerstudy;
+        $CreativeartsFM= $data->Creativearts;
+        $CommerceFM = $data->Commerce; 
+        $EnglishliteratureFM = $data->Englishliterature;
+        $FrenchFM = $data->French;
+        $GeographyFM = $data->Geography;
+        $HistoryFM= $data->History;
+        $IslamicknowledgeFM = $data->Islamicknowledge; 
+        $KiswahiliFM = $data->Kiswahili;
+        $LifeskillFM = $data->Lifeskill;
+        $PhysicsFM = $data->Physics;
+        $SwimmingFM = $data->Swimming;
+        $NutritionFM = $data->Nutrition;
+
+        $TotalSubject = 8;
+        $TotalSubjectMarks = $ArabiclanguageFM + $BasicmathematicsFM +$BibleknowledgeFM +$BookkeepingFM +$BiologyFM + 
+        $CivicsFM +$ChemistryFM +$ComputerstudyFM +$CreativeartsFM +$CommerceFM +$EnglishliteratureFM +$FrenchFM+$GeographyFM
+        +$HistoryFM+ $IslamicknowledgeFM+$KiswahiliFM+$LifeskillFM+$PhysicsFM+$SwimmingFM +$NutritionFM;
+
+        $AverageFM = $TotalSubjectMarks/$TotalSubject;
+        
+
+        
+    
+        // Calculating grades
+       $grades = [
+            'Arabiclanguage' => $this->SecondarycalculateGrade($ArabiclanguageFM),
+            'Basicmathematics' => $this->SecondarycalculateGrade($BasicmathematicsFM),
+            'Bibleknowledge' => $this->SecondarycalculateGrade($BibleknowledgeFM),
+            'Bookkeeping' => $this->SecondarycalculateGrade($BookkeepingFM),
+            'Biology' => $this->SecondarycalculateGrade($BiologyFM),
+            'Civics' => $this->SecondarycalculateGrade($CivicsFM),
+            'Chemistry' => $this->SecondarycalculateGrade($ChemistryFM),
+            'Computerstudy' => $this->SecondarycalculateGrade($ComputerstudyFM),
+            'Creativearts' => $this->SecondarycalculateGrade($CreativeartsFM),
+            'Commerce' => $this->SecondarycalculateGrade($CommerceFM),
+            'Englishliterature' => $this->SecondarycalculateGrade($EnglishliteratureFM),
+            'French' => $this->SecondarycalculateGrade($FrenchFM),
+            'Geography' => $this->SecondarycalculateGrade($GeographyFM),
+            'History' => $this->SecondarycalculateGrade($HistoryFM),
+            'Islamicknowledge' => $this->SecondarycalculateGrade($IslamicknowledgeFM),
+            'Kiswahili' => $this->SecondarycalculateGrade($KiswahiliFM),
+            'Lifeskill' => $this->SecondarycalculateGrade($LifeskillFM),
+            'Physics' => $this->SecondarycalculateGrade($PhysicsFM),
+            'Islamicknowledge' => $this->SecondarycalculateGrade($IslamicknowledgeFM),
+            'Swimming' => $this->SecondarycalculateGrade($SwimmingFM),
+            'Nutrition' => $this->SecondarycalculateGrade($NutritionFM)
+        ];
+    
+       $FormISA = formii_semi_annual::where('id', $userId)->first();
+
+       if (!$data) {
+        $errorMessage = "No data found for the authenticated user.";
+        return view('FormtwoFM', compact('errorMessage'));
+    }
+
+       $positionArabiclanguageSA = $this->calculatePositionFormII($userId);
+        $positionBasicmathematicSA= $this->calculatePositionFormII($userId);
+        $positionBibleknowledgeSA = $this->calculatePositionFormII($userId);
+        $positionBookkeepingSA = $this->calculatePositionFormII($userId);
+        $positionBiologySA = $this->calculatePositionFormII($userId);
+        $positionCivicsSA = $this->calculatePositionFormII($userId);
+        $positionChemistrySA = $this->calculatePositionFormII($userId);
+        $positionComputerstudySA = $this->calculatePositionFormII($userId);
+        $positionCreativeartsSA = $this->calculatePositionFormII($userId);
+        $positionCommerceSA= $this->calculatePositionFormII($userId);
+        $positionEnglishliteratureSA = $this->calculatePositionFormII($userId);
+        $positionFrenchSA = $this->calculatePositionFormII($userId);
+        $positionGeographySA = $this->calculatePositionFormII($userId);
+        $positionHistorySA= $this->calculatePositionFormII($userId);
+        $positionIslamicknowledgeSA = $this->calculatePositionFormII($userId);
+        $positionKiswahiliSA = $this->calculatePositionFormII($userId);
+        $positionLifeskillSA= $this->calculatePositionFormII($userId);
+        $positionPhysicsSA = $this->calculatePositionFormII($userId);
+        $positionSwimmingSA = $this->calculatePositionFormII($userId);
+        $positionNutritionSA = $this->calculatePositionFormII($userId);
+
+        $ArabiclanguageSA = $FormISA->Arabiclanguage;
+        $BasicmathematicsSA = $FormISA->Basicmathematics;
+        $BibleknowledgeSA = $FormISA->Bibleknowledge;
+        $BookkeepingSA= $FormISA->Bookkeeping;
+        $BiologySA = $FormISA->Biology; 
+        $CivicsSA = $FormISA->Civics;
+        $ChemistrySA = $FormISA->Chemistry;
+        $ComputerstudySA = $FormISA->Computerstudy;
+        $CreativeartsSA= $FormISA->Creativearts;
+        $CommerceSA = $FormISA->Commerce; 
+        $EnglishliteratureSA = $FormISA->Englishliterature;
+        $FrenchSA = $FormISA->French;
+        $GeographySA = $FormISA->Geography;
+        $HistorySA= $FormISA->History;
+        $IslamicknowledgeSA = $FormISA->Islamicknowledge; 
+        $KiswahiliSA = $FormISA->Kiswahili;
+        $LifeskillSA = $FormISA->Lifeskill;
+        $PhysicsSA = $FormISA->Physics;
+        $SwimmingSA = $FormISA->Swimming;
+        $NutritionSA = $FormISA->Nutrition;
+
+        $TotalSubject = 8;
+        $TotalSubjectMarks = $ArabiclanguageSA + $BasicmathematicsSA +$BibleknowledgeSA +$BookkeepingSA+$BiologySA + 
+        $CivicsSA +$ChemistrySA +$ComputerstudySA+$CreativeartsSA+$CommerceSA+$EnglishliteratureSA+$FrenchSA+$GeographySA+$HistorySA+
+        $IslamicknowledgeSA+$KiswahiliSA+$LifeskillSA+$PhysicsSA+$SwimmingSA +$NutritionSA;
+
+        $AverageSA = $TotalSubjectMarks/$TotalSubject;
+    
+        // Calculating grades
+        $FormIgradesSA = [
+            'Arabiclanguage' => $this->SecondarycalculateGrade($ArabiclanguageSA),
+            'Basicmathematics' => $this->SecondarycalculateGrade($BasicmathematicsSA),
+            'Bibleknowledge' => $this->SecondarycalculateGrade($BibleknowledgeSA),
+            'Bookkeeping' => $this->SecondarycalculateGrade($BookkeepingSA),
+            'Biology' => $this->SecondarycalculateGrade($BiologySA),
+            'Civics' => $this->SecondarycalculateGrade($CivicsSA),
+            'Chemistry' => $this->SecondarycalculateGrade($ChemistrySA),
+            'Computerstudy' => $this->SecondarycalculateGrade($ComputerstudySA),
+            'Creativearts' => $this->SecondarycalculateGrade($CreativeartsSA),
+            'Commerce' => $this->SecondarycalculateGrade($CommerceSA),
+            'Englishliterature' => $this->SecondarycalculateGrade($EnglishliteratureSA),
+            'French' => $this->SecondarycalculateGrade($FrenchSA),
+            'Geography' => $this->SecondarycalculateGrade($GeographySA),
+            'History' => $this->SecondarycalculateGrade($HistorySA),
+            'Islamicknowledge' => $this->SecondarycalculateGrade($IslamicknowledgeSA),
+            'Kiswahili' => $this->SecondarycalculateGrade($KiswahiliSA),
+            'Lifeskill' => $this->SecondarycalculateGrade($LifeskillSA),
+            'Physics' => $this->SecondarycalculateGrade($PhysicsSA),
+            'Islamicknowledge' => $this->SecondarycalculateGrade($IslamicknowledgeSA),
+            'Swimming' => $this->SecondarycalculateGrade($SwimmingSA),
+            'Nutrition' => $this->SecondarycalculateGrade($NutritionSA)
+        ];
+        
+        // Pass all data to the view as a single array
+        return view('FormtwoFM', [
+            'data' => $data,
+            'FormISA' => $FormISA,
+            'grades' => $grades,           
+    'FormIgradesSA' => $FormIgradesSA,
+
+    'positionArabiclanguageFM' => $positionArabiclanguageFM,
+    'positionBasicmathematicFM' => $positionBasicmathematicFM, 
+    'positionBibleknowledgeFM' => $positionBibleknowledgeFM, 
+    'positionBookkeepingFM' =>$positionBookkeepingFM,
+    'positionBiologyFM' => $positionBiologyFM,
+    'positionCivicsFM' => $positionCivicsFM,
+    'positionChemistryFM' => $positionChemistryFM,
+    'positionComputerstudyFM' => $positionComputerstudyFM, 
+    'positionCreativeartFM' => $positionCreativeartFM,
+    'positionCommerceFM' => $positionCommerceFM,
+    'positionEnglishliteratureFM' => $positionEnglishliteratureFM, 
+    'positionFrenchFM' => $positionFrenchFM, 
+    'positionGeographyFM' => $positionGeographyFM, 
+    'positionHistoryFM' => $positionHistoryFM, 
+    'positionIslamicknowledgeFM' => $positionIslamicknowledgeFM,
+    'positionKiswahiliFM' => $positionKiswahiliFM, 
+    'positionLifeskillFM' => $positionLifeskillFM,
+    'positionPhysicsFM' => $positionPhysicsFM,
+    'positionSwimmingFM' =>$positionSwimmingFM, 
+    'positionNutritionFM' => $positionNutritionFM,
+    '$AverageFM'  => $AverageFM,
+
+    'positionArabiclanguageSA' => $positionArabiclanguageSA,
+    'positionBasicmathematicSA' => $positionBasicmathematicSA, 
+    'positionBibleknowledgeSA' => $positionBibleknowledgeSA, 
+    'positionBookkeepingSA' =>$positionBookkeepingSA,
+    'positionBiologySA' => $positionBiologySA,
+    'positionCivicsSA' => $positionCivicsSA,
+    'positionChemistrySA' => $positionChemistrySA,
+    'positionComputerstudySA' => $positionComputerstudySA, 
+    'positionCreativeartsSA' => $positionCreativeartsSA,
+    'positionCommerceSA' => $positionCommerceSA,
+    'positionEnglishliteratureSA' => $positionEnglishliteratureSA, 
+    'positionFrenchSA' => $positionFrenchSA, 
+    'positionGeographySA' => $positionGeographySA, 
+    'positionHistorySA' => $positionHistorySA, 
+    'positionIslamicknowledgeSA' => $positionIslamicknowledgeSA,
+    'positionKiswahiliSA' => $positionKiswahiliSA, 
+    'positionLifeskillSA' => $positionLifeskillSA,
+    'positionPhysicsSA' => $positionPhysicsSA,
+    'positionSwimmingSA' =>$positionSwimmingSA, 
+    'positionNutritionSA' => $positionNutritionSA,
+    'AverageSA' => $AverageSA,
+
+ ],compact('AverageFM','AverageSA'));
+      
+    }
+
+    public function FormTwoSM()
+    {
+        $userId = Auth::id();
+        $data = formii_second_midterm::where('id', $userId)->first(); 
+
+         if (!$data) {
+            $errorMessage = "No data found for the authenticated user.";
+            return view('FormtwoSM', compact('errorMessage'));
+        }
+
+       $positionArabiclanguageSM = $this->calculatePositionFormII($userId);
+        $positionBasicmathematicSM = $this->calculatePositionFormII($userId);
+        $positionBibleknowledgeSM = $this->calculatePositionFormII($userId);
+        $positionBookkeepingSM = $this->calculatePositionFormII($userId);
+        $positionBiologySM = $this->calculatePositionFormII($userId);
+        $positionCivicsSM = $this->calculatePositionFormII($userId);
+        $positionChemistrySM = $this->calculatePositionFormII($userId);
+        $positionComputerstudySM = $this->calculatePositionFormII($userId);
+        $positionCreativeartSM = $this->calculatePositionFormII($userId);
+        $positionCommerceSM = $this->calculatePositionFormII($userId);                        
+        $positionEnglishliteratureSM = $this->calculatePositionFormII($userId);
+        $positionFrenchSM = $this->calculatePositionFormII($userId);
+        $positionGeographySM = $this->calculatePositionFormII($userId);
+        $positionHistorySM = $this->calculatePositionFormII($userId);
+        $positionIslamicknowledgeSM = $this->calculatePositionFormII($userId);
+        $positionKiswahiliSM = $this->calculatePositionFormII($userId);
+        $positionLifeskillSM = $this->calculatePositionFormII($userId);
+        $positionPhysicsSM = $this->calculatePositionFormII($userId);
+        $positionSwimmingSM = $this->calculatePositionFormII($userId);
+        $positionNutritionSM = $this->calculatePositionFormII($userId);    
+        
+        $ArabiclanguageSM = $data->Arabiclanguage;
+        $BasicmathematicsSM = $data->Basicmathematics;
+        $BibleknowledgeSM = $data->Bibleknowledge;
+        $BookkeepingSM= $data->Bookkeeping;
+        $BiologySM = $data->Biology; 
+        $CivicsSM = $data->Civics;
+        $ChemistrySM = $data->Chemistry;
+        $ComputerstudySM = $data->Computerstudy;
+        $CreativeartsSM= $data->Creativearts;
+        $CommerceSM = $data->Commerce; 
+        $EnglishliteratureSM = $data->Englishliterature;
+        $FrenchSM = $data->French;
+        $GeographySM = $data->Geography;
+        $HistorySM= $data->History;
+        $IslamicknowledgeSM = $data->Islamicknowledge; 
+        $KiswahiliSM = $data->Kiswahili;
+        $LifeskillSM = $data->Lifeskill;
+        $PhysicsSM = $data->Physics;
+        $SwimmingSM = $data->Swimming;
+        $NutritionSM = $data->Nutrition;
+
+        $TotalSubject = 8;
+        $TotalSubjectMarks = $ArabiclanguageSM + $BasicmathematicsSM +$BibleknowledgeSM +$BookkeepingSM+$BiologySM + 
+        $CivicsSM +$ChemistrySM+$ComputerstudySM+$CreativeartsSM+$CommerceSM+$EnglishliteratureSM+$FrenchSM+$GeographySM+$HistorySM+
+        $IslamicknowledgeSM+$KiswahiliSM+$LifeskillSM+$PhysicsSM+$SwimmingSM +$NutritionSM;
+
+        $AverageSM = $TotalSubjectMarks/$TotalSubject;
+        
+
+        
+    
+        // Calculating grades
+       $grades = [
+            'Arabiclanguage' => $this->SecondarycalculateGrade($ArabiclanguageSM),
+            'Basicmathematics' => $this->SecondarycalculateGrade($BasicmathematicsSM),
+            'Bibleknowledge' => $this->SecondarycalculateGrade($BibleknowledgeSM),
+            'Bookkeeping' => $this->SecondarycalculateGrade($BookkeepingSM),
+            'Biology' => $this->SecondarycalculateGrade($BiologySM),
+            'Civics' => $this->SecondarycalculateGrade($CivicsSM),
+            'Chemistry' => $this->SecondarycalculateGrade($ChemistrySM),
+            'Computerstudy' => $this->SecondarycalculateGrade($ComputerstudySM),
+            'Creativearts' => $this->SecondarycalculateGrade($CreativeartsSM),
+            'Commerce' => $this->SecondarycalculateGrade($CommerceSM),
+            'Englishliterature' => $this->SecondarycalculateGrade($EnglishliteratureSM),
+            'French' => $this->SecondarycalculateGrade($FrenchSM),
+            'Geography' => $this->SecondarycalculateGrade($GeographySM),
+            'History' => $this->SecondarycalculateGrade($HistorySM),
+            'Islamicknowledge' => $this->SecondarycalculateGrade($IslamicknowledgeSM),
+            'Kiswahili' => $this->SecondarycalculateGrade($KiswahiliSM),
+            'Lifeskill' => $this->SecondarycalculateGrade($LifeskillSM),
+            'Physics' => $this->SecondarycalculateGrade($PhysicsSM),
+            'Islamicknowledge' => $this->SecondarycalculateGrade($IslamicknowledgeSM),
+            'Swimming' => $this->SecondarycalculateGrade($SwimmingSM),
+            'Nutrition' => $this->SecondarycalculateGrade($NutritionSM)
+        ];
+    
+       $FormIAL = formii_annual::where('id', $userId)->first();
+
+       if (!$data) {
+        $errorMessage = "No data found for the authenticated user.";
+        return view('FormtwoSM', compact('errorMessage'));
+      }
+
+       $positionArabiclanguageAL = $this->calculatePositionFormII($userId);
+        $positionBasicmathematicAL= $this->calculatePositionFormII($userId);
+        $positionBibleknowledgeAL = $this->calculatePositionFormII($userId);
+        $positionBookkeepingAL = $this->calculatePositionFormII($userId);
+        $positionBiologyAL = $this->calculatePositionFormII($userId);
+        $positionCivicsAL = $this->calculatePositionFormII($userId);
+        $positionChemistryAL = $this->calculatePositionFormII($userId);
+        $positionComputerstudyAL = $this->calculatePositionFormII($userId);
+        $positionCreativeartsAL = $this->calculatePositionFormII($userId);
+        $positionCommerceAL= $this->calculatePositionFormII($userId);
+        $positionEnglishliteratureAL = $this->calculatePositionFormII($userId);
+        $positionFrenchAL = $this->calculatePositionFormII($userId);
+        $positionGeographyAL = $this->calculatePositionFormII($userId);
+        $positionHistoryAL= $this->calculatePositionFormII($userId);
+        $positionIslamicknowledgeAL = $this->calculatePositionFormII($userId);
+        $positionKiswahiliAL = $this->calculatePositionFormII($userId);
+        $positionLifeskillAL= $this->calculatePositionFormII($userId);
+        $positionPhysicsAL = $this->calculatePositionFormII($userId);
+        $positionSwimmingAL = $this->calculatePositionFormII($userId);
+        $positionNutritionAL = $this->calculatePositionFormII($userId);
+
+        $ArabiclanguageAL = $FormIAL->Arabiclanguage;
+        $BasicmathematicsAL = $FormIAL->Basicmathematics;
+        $BibleknowledgeAL = $FormIAL->Bibleknowledge;
+        $BookkeepingAL= $FormIAL->Bookkeeping;
+        $BiologyAL = $FormIAL->Biology; 
+        $CivicsAL = $FormIAL->Civics;
+        $ChemistryAL= $FormIAL->Chemistry;
+        $ComputerstudyAL = $FormIAL->Computerstudy;
+        $CreativeartsAL= $FormIAL->Creativearts;
+        $CommerceAL = $FormIAL->Commerce; 
+        $EnglishliteratureAL = $FormIAL->English;
+        $FrenchAL = $FormIAL->French;
+        $GeographyAL = $FormIAL->Geography;
+        $HistoryAL= $FormIAL->History;
+        $IslamicknowledgeAL = $FormIAL->Islamicknowledge; 
+        $KiswahiliAL = $FormIAL->Kiswahili;
+        $LifeskillAL = $FormIAL->Lifeskill;
+        $PhysicsAL = $FormIAL->Physics;
+        $SwimmingAL = $FormIAL->Swimming;
+        $NutritionAL= $FormIAL->Nutrition;
+
+        $TotalSubject = 8;
+        $TotalSubjectMarks = $ArabiclanguageAL + $BasicmathematicsAL +$BibleknowledgeAL +$BookkeepingAL+$BiologyAL + 
+        $CivicsAL +$ChemistryAL +$ComputerstudyAL +$CreativeartsAL +$CommerceAL + $EnglishliteratureAL +$FrenchAL +$GeographyAL +$HistoryAL +
+        $IslamicknowledgeAL +$KiswahiliAL +$LifeskillAL +$PhysicsAL +$SwimmingAL +$NutritionAL;
+
+        $AverageAL = $TotalSubjectMarks/$TotalSubject;
+    
+        // Calculating grades
+        $FormIgradesAL = [
+            'Arabiclanguage' => $this->SecondarycalculateGrade($ArabiclanguageAL),
+            'Basicmathematics' => $this->SecondarycalculateGrade($BasicmathematicsAL),
+            'Bibleknowledge' => $this->SecondarycalculateGrade($BibleknowledgeAL),
+            'Bookkeeping' => $this->SecondarycalculateGrade($BookkeepingAL),
+            'Biology' => $this->SecondarycalculateGrade($BiologyAL),
+            'Civics' => $this->SecondarycalculateGrade($CivicsAL),
+            'Chemistry' => $this->SecondarycalculateGrade($ChemistryAL),
+            'Computerstudy' => $this->SecondarycalculateGrade($ComputerstudyAL),
+            'Creativearts' => $this->SecondarycalculateGrade($CreativeartsAL),
+            'Commerce' => $this->SecondarycalculateGrade($CommerceAL),
+            'Englishliterature' => $this->SecondarycalculateGrade($EnglishliteratureAL),
+            'French' => $this->SecondarycalculateGrade($FrenchAL),
+            'Geography' => $this->SecondarycalculateGrade($GeographyAL),
+            'History' => $this->SecondarycalculateGrade($HistoryAL),
+            'Islamicknowledge' => $this->SecondarycalculateGrade($IslamicknowledgeAL),
+            'Kiswahili' => $this->SecondarycalculateGrade($KiswahiliAL),
+            'Lifeskill' => $this->SecondarycalculateGrade($LifeskillAL),
+            'Physics' => $this->SecondarycalculateGrade($PhysicsAL),
+            'Islamicknowledge' => $this->SecondarycalculateGrade($IslamicknowledgeAL),
+            'Swimming' => $this->SecondarycalculateGrade($SwimmingAL),
+            'Nutrition' => $this->SecondarycalculateGrade($NutritionAL)
+        ];
+        
+        // Pass all data to the view as a single array
+        return view('FormOneSM', [
+            'data' => $data,
+            'grades' => $grades,
+            'FormIAL' => $FormIAL,                     
+    'FormIgradesAL' => $FormIgradesAL,
+    'positionArabiclanguageSM' => $positionArabiclanguageSM,
+    'positionBasicmathematicSM' => $positionBasicmathematicSM, 
+    'positionBibleknowledgeSM' => $positionBibleknowledgeSM, 
+    'positionBookkeepingSM' =>$positionBookkeepingSM,
+    'positionBiologySM' => $positionBiologySM,
+    'positionCivicsSM' => $positionCivicsSM,
+    'positionChemistrySM' => $positionChemistrySM,
+    'positionComputerstudySM' => $positionComputerstudySM, 
+    'positionCreativeartSM' => $positionCreativeartSM,
+    'positionCommerceSM' => $positionCommerceSM,
+    'positionEnglishliteratureSM' => $positionEnglishliteratureSM, 
+    'positionFrenchSM' => $positionFrenchSM, 
+    'positionGeographySM' => $positionGeographySM, 
+    'positionHistorySM' => $positionHistorySM, 
+    'positionIslamicknowledgeSM' => $positionIslamicknowledgeSM,
+    'positionKiswahiliSM' => $positionKiswahiliSM, 
+    'positionLifeskillSM' => $positionLifeskillSM,
+    'positionPhysicsSM' => $positionPhysicsSM,
+    'positionSwimmingSM' =>$positionSwimmingSM, 
+    'positionNutritionSM' => $positionNutritionSM,
+    '$AverageSM'  => $AverageSM,
+
+    'positionArabiclanguageAL' => $positionArabiclanguageAL,
+    'positionBasicmathematicAL' => $positionBasicmathematicAL, 
+    'positionBibleknowledgeAL' => $positionBibleknowledgeAL, 
+    'positionBookkeepingAL' =>$positionBookkeepingAL,
+    'positionBiologyAL' => $positionBiologyAL,
+    'positionCivicsAL' => $positionCivicsAL,
+    'positionChemistryAL' => $positionChemistryAL,
+    'positionComputerstudyAL' => $positionComputerstudyAL, 
+    'positionCreativeartsAL' => $positionCreativeartsAL,
+    'positionCommerceAL' => $positionCommerceAL,
+    'positionEnglishliteratureAL' => $positionEnglishliteratureAL, 
+    'positionFrenchAL' => $positionFrenchAL, 
+    'positionGeographyAL' => $positionGeographyAL, 
+    'positionHistoryAL' => $positionHistoryAL, 
+    'positionIslamicknowledgeAL' => $positionIslamicknowledgeAL,
+    'positionKiswahiliAL' => $positionKiswahiliAL, 
+    'positionLifeskillAL' => $positionLifeskillAL,
+    'positionPhysicsAL' => $positionPhysicsAL,
+    'positionSwimmingAL' =>$positionSwimmingAL, 
+    'positionNutritionAL' => $positionNutritionAL,
+    'AverageAL' => $AverageAL,
+
+ ],compact('AverageSM','AverageAL'));
+      
+    }
+
+
+    public function calculatePositionFormIII ($id) {
+        // Fetch all scores from the database
+        $ArabiclanguageFM = formiii_first_midterm::pluck('Arabiclanguage', 'id')->toArray();
+        $BasicmathematicsallScoresFM = formiii_first_midterm::pluck('Basicmathematics', 'id')->toArray();
+        $BibleknowledgeallScoresFM = formiii_first_midterm::pluck('Bibleknowledge', 'id')->toArray();
+        $BookkeepingallScoresFM = formiii_first_midterm::pluck('Bookkeeping', 'id')->toArray();
+        $BiologyallScoresFM = formiii_first_midterm::pluck('Biology', 'id')->toArray();
+        $CivicsScoresFM = formiii_first_midterm::pluck('Civics', 'id')->toArray();
+        $ChemistryallScoresFM =formiii_first_midterm::pluck('Chemistry', 'id')->toArray();
+        $ComputerstudyScoresFM = formiii_first_midterm::pluck('Computerstudy', 'id')->toArray();
+        $CreativeartsallScoresFM = formiii_first_midterm::pluck('Creativearts', 'id')->toArray();
+        $CommerceallScoresFM = formiii_first_midterm::pluck('Commerce', 'id')->toArray();
+        $EnglishallScoresFM = formiii_first_midterm::pluck('Bibleknowledge', 'id')->toArray();
+        $EnglishliteratureallScoresFM = formiii_first_midterm::pluck('Englishliterature', 'id')->toArray();
+        $FrenchallScoresFM = formiii_first_midterm::pluck('French', 'id')->toArray();
+        $GeographyScoresFM = formiii_first_midterm::pluck('Geography', 'id')->toArray();
+        $HistoryallScoresFM =formiii_first_midterm::pluck('History', 'id')->toArray();
+        $IslamicknowledgeScoresFM = formiii_first_midterm::pluck('Islamicknowledge', 'id')->toArray();
+        $KiswahiliallScoresFM = formiii_first_midterm::pluck('Kiswahili', 'id')->toArray();
+        $LifeskillScoresFM = formiii_first_midterm::pluck('Lifeskill', 'id')->toArray();
+        $PhysicsallScoresFM =formiii_first_midterm::pluck('Physics', 'id')->toArray();
+        $SwimmingScoresFM = formiii_first_midterm::pluck('Swimming', 'id')->toArray();
+        $NutritionScoresFM = formiii_first_midterm::pluck('Nutrition', 'id')->toArray();
+
+        $ArabiclanguageallScoresSA = formiii_semi_annual::pluck('Arabiclanguage', 'id')->toArray();
+        $BasicmathematicsallScoresSA = formiii_semi_annual::pluck('Basicmathematics', 'id')->toArray();
+        $BibleknowledgeallScoresSA = formiii_semi_annual::pluck('Bibleknowledge', 'id')->toArray();
+        $BookkeepingallScoresSA= formiii_semi_annual::pluck('Bookkeeping', 'id')->toArray();
+        $BiologyallScoresSA = formiii_semi_annual::pluck('Biology', 'id')->toArray();
+        $CivicsScoresSA = formiii_semi_annual::pluck('Civics', 'id')->toArray();
+        $ChemistryallScoresSA =formiii_semi_annual::pluck('Chemistry', 'id')->toArray();
+        $ComputerstudyScoresSA = formiii_semi_annual::pluck('Computerstudy', 'id')->toArray();
+        $CreativeartsallScoresSA = formiii_semi_annual::pluck('Creativearts', 'id')->toArray();
+        $CommerceallScoresSA = formiii_semi_annual::pluck('Commerce', 'id')->toArray();
+        $EnglishallScoresSA = formiii_semi_annual::pluck('Bibleknowledge', 'id')->toArray();
+        $EnglishliteratureallScoresSA = formiii_semi_annual::pluck('Englishliterature', 'id')->toArray();
+        $FrenchallScoresSA = formiii_semi_annual::pluck('French', 'id')->toArray();
+        $GeographyScoresSA =formiii_semi_annual::pluck('Geography', 'id')->toArray();
+        $HistoryallScoresSA =formiii_semi_annual::pluck('History', 'id')->toArray();
+        $IslamicknowledgeScoresSA= formiii_semi_annual::pluck('Islamicknowledge', 'id')->toArray();
+        $KiswahiliallScoresSA = formiii_semi_annual::pluck('Kiswahili', 'id')->toArray();
+        $LifeskillScoresSA = formiii_semi_annual::pluck('Lifeskill', 'id')->toArray();
+        $PhysicsallScoresSA =formiii_semi_annual::pluck('Physics', 'id')->toArray();
+        $SwimmingScoresSA = formiii_semi_annual::pluck('Swimming', 'id')->toArray();
+        $NutritionScoresSA = formiii_semi_annual::pluck('Nutrition', 'id')->toArray();
+
+
+        $ArabiclanguageallScoresSM = formiii_second_midterm::pluck('Arabiclanguage', 'id')->toArray();
+        $BasicmathematicsallScoresSM = formiii_second_midterm::pluck('Basicmathematics', 'id')->toArray();
+        $BibleknowledgeallScoresSM = formiii_second_midterm::pluck('Bibleknowledge', 'id')->toArray();
+        $BookkeepingallScoresSM = formiii_second_midterm::pluck('Bookkeeping', 'id')->toArray();
+        $BiologyallScoresSM = formiii_second_midterm::pluck('Biology', 'id')->toArray();
+        $CivicsScoresSM = formiii_second_midterm::pluck('Civics', 'id')->toArray();
+        $ChemistryallScoresSM =formiii_second_midterm::pluck('Chemistry', 'id')->toArray();
+        $ComputerstudyScoresSM = formiii_second_midterm::pluck('Computerstudy', 'id')->toArray();
+        $CreativeartsallScoresSM = formiii_second_midterm::pluck('Creativearts', 'id')->toArray();
+        $CommerceallScoresSM = formiii_second_midterm::pluck('Commerce', 'id')->toArray();
+        $EnglishallScoresSM= formiii_second_midterm::pluck('Bibleknowledge', 'id')->toArray();
+        $EnglishliteratureallScoresSM = formiii_second_midterm::pluck('Englishliterature', 'id')->toArray();
+        $FrenchallScoresSM = formiii_second_midterm::pluck('French', 'id')->toArray();
+        $GeographyScoresSM =formiii_second_midterm::pluck('Geography', 'id')->toArray();
+        $HistoryallScoresSM =formiii_second_midterm::pluck('History', 'id')->toArray();
+        $IslamicknowledgeScoresSM = formiii_second_midterm::pluck('Islamicknowledge', 'id')->toArray();
+        $KiswahiliallScoresSM = formiii_second_midterm::pluck('Kiswahili', 'id')->toArray();
+        $LifeskillScoresSM = formiii_second_midterm::pluck('Lifeskill', 'id')->toArray();
+        $PhysicsallScoresSM=formiii_second_midterm::pluck('Physics', 'id')->toArray();
+        $SwimmingScoresSM = formiii_second_midterm::pluck('Swimming', 'id')->toArray();
+        $NutritionScoresSM = formiii_second_midterm::pluck('Nutrition', 'id')->toArray();
+
+
+        $ArabiclanguageallScoresAL = formiii_annual::pluck('Arabiclanguage', 'id')->toArray();
+        $BasicmathematicsallScoresAL = formiii_annual::pluck('Basicmathematics', 'id')->toArray();
+        $BibleknowledgeallScoresAL = formiii_annual::pluck('Bibleknowledge', 'id')->toArray();
+        $BookkeepingallScoresAL = formiii_annual::pluck('Bookkeeping', 'id')->toArray();
+        $BiologyallScoresAL = formiii_annual::pluck('Biology', 'id')->toArray();
+        $CivicsScoresAL =formiii_annual::pluck('Civics', 'id')->toArray();
+        $ChemistryallScoresAL =formiii_annual::pluck('Chemistry', 'id')->toArray();
+        $ComputerstudyScoresAL= formiii_annual::pluck('Computerstudy', 'id')->toArray();
+        $CreativeartsallScoresAL = formiii_annual::pluck('Creativearts', 'id')->toArray();
+        $CommerceallScoresAL = formiii_annual::pluck('Commerce', 'id')->toArray();
+        $EnglishallScoresAL = formiii_annual::pluck('Bibleknowledge', 'id')->toArray();
+        $EnglishliteratureallScoresAL = formiii_annual::pluck('Englishliterature', 'id')->toArray();
+        $FrenchallScoresAL = formiii_annual::pluck('French', 'id')->toArray();
+        $GeographyScoresAL = formiii_annual::pluck('Geography', 'id')->toArray();
+        $HistoryallScoresAL =formiii_annual::pluck('History', 'id')->toArray();
+        $IslamicknowledgeScoresAL = formiii_annual::pluck('Islamicknowledge', 'id')->toArray();
+        $KiswahiliallScoresAL = formiii_annual::pluck('Kiswahili', 'id')->toArray();
+        $LifeskillScoresAL = formiii_annual::pluck('Lifeskill', 'id')->toArray();
+        $PhysicsallScoresAL =formiii_annual::pluck('Physics', 'id')->toArray();
+        $SwimmingScoresAL = formiii_annual::pluck('Swimming', 'id')->toArray();
+        $NutritionScoresAL = formiii_annual::pluck('Nutrition', 'id')->toArray();
+
+        // Sort the scores in descending order
+        arsort($ArabiclanguageFM );
+        arsort($BasicmathematicsallScoresFM);
+        arsort($BibleknowledgeallScoresFM);
+        arsort($BookkeepingallScoresFM);
+        arsort($BiologyallScoresFM);
+        arsort($CivicsScoresFM);
+        arsort($ChemistryallScoresFM);
+        arsort($ComputerstudyScoresFM);
+        arsort($CreativeartsallScoresFM);
+        arsort($CommerceallScoresFM);
+        arsort($EnglishallScoresFM);
+        arsort($FrenchallScoresFM);
+        arsort($GeographyScoresFM);
+        arsort($HistoryallScoresFM);
+        arsort($IslamicknowledgeScoresFM);
+        arsort($KiswahiliallScoresFM);
+        arsort($LifeskillScoresFM);
+        arsort($PhysicsallScoresFM);
+        arsort($SwimmingScoresFM);
+        arsort($NutritionScoresFM);
+
+        arsort($ArabiclanguageallScoresSM );
+        arsort($BasicmathematicsallScoresSM);
+        arsort($BibleknowledgeallScoresSM);
+        arsort($BookkeepingallScoresSM);
+        arsort($BiologyallScoresSM);
+        arsort($CivicsScoresSM);
+        arsort($ChemistryallScoresSM);
+        arsort($ComputerstudyScoresSM);
+        arsort($CreativeartsallScoresSM);
+        arsort($CommerceallScoresSM);
+        arsort($EnglishallScoresSM);
+        arsort($FrenchallScoresSM);
+        arsort($GeographyScoresSM);
+        arsort($HistoryallScoresSM);
+        arsort($IslamicknowledgeScoresSM);
+        arsort($KiswahiliallScoresSM);
+        arsort($LifeskillScoresSM);
+        arsort($PhysicsallScoresSM);
+        arsort($SwimmingScoresSM);
+        arsort($NutritionScoresSM);
+
+        arsort($ArabiclanguageallScoresSA );
+        arsort($BasicmathematicsallScoresSA);
+        arsort($BibleknowledgeallScoresSA);
+        arsort($BookkeepingallScoresSA);
+        arsort($BiologyallScoresSA);
+        arsort($CivicsScoresSA);
+        arsort($ChemistryallScoresSA);
+        arsort($ComputerstudyScoresSA);
+        arsort($CreativeartsallScoresSA);
+        arsort($CommerceallScoresSA);
+        arsort($EnglishallScoresSA);
+        arsort($FrenchallScoresSA);
+        arsort($GeographyScoresSA);
+        arsort($HistoryallScoresSA);
+        arsort($IslamicknowledgeScoresSA);
+        arsort($KiswahiliallScoresSA);
+        arsort($LifeskillScoresSA);
+        arsort($PhysicsallScoresSA);
+        arsort($SwimmingScoresSA);
+        arsort($NutritionScoresSA);
+
+        arsort($ArabiclanguageallScoresAL );
+        arsort($BasicmathematicsallScoresAL);
+        arsort($BibleknowledgeallScoresAL);
+        arsort($BookkeepingallScoresAL);
+        arsort($BiologyallScoresAL);
+        arsort($CivicsScoresAL);
+        arsort($ChemistryallScoresAL);
+        arsort($ComputerstudyScoresAL);
+        arsort($CreativeartsallScoresAL);
+        arsort($CommerceallScoresAL);
+        arsort($EnglishallScoresAL);
+        arsort($FrenchallScoresAL);
+        arsort($GeographyScoresAL);
+        arsort($HistoryallScoresAL);
+        arsort($IslamicknowledgeScoresAL);
+        arsort($KiswahiliallScoresAL);
+        arsort($LifeskillScoresAL);
+        arsort($PhysicsallScoresAL);
+        arsort($SwimmingScoresAL);
+        arsort($NutritionScoresAL);
+
+
+
+    
+        // Find the position of the user
+        $positionArabiclanguageFM = array_search($id, array_keys($ArabiclanguageFM )) + 1;
+        $positionBasicmathematicFM = array_search($id, array_keys($BasicmathematicsallScoresFM)) + 1;
+        $positionBibleknowledgeFM = array_search($id, array_keys($BibleknowledgeallScoresFM)) + 1;
+        $positionBookkeepingFM  = array_search($id, array_keys($BookkeepingallScoresFM)) + 1;
+        $positionBiologyFM = array_search($id, array_keys($BiologyallScoresFM)) + 1;
+        $positionCivicsFM = array_search($id, array_keys($CivicsScoresFM)) + 1;
+        $positionChemistryFM = array_search($id, array_keys($ChemistryallScoresFM)) + 1;
+        $positionComputerstudyFM = array_search($id, array_keys($ComputerstudyScoresFM)) + 1;
+        $positionCreativeartFM = array_search($id, array_keys($CreativeartsallScoresFM )) + 1;
+        $positionCommerceFM = array_search($id, array_keys($CommerceallScoresFM)) + 1;
+        $positionEnglishliteratureFM = array_search($id, array_keys($EnglishallScoresFM)) + 1;
+        $positionFrenchFM = array_search($id, array_keys($FrenchallScoresFM)) + 1;
+        $positionGeographyFM = array_search($id, array_keys($GeographyScoresFM)) + 1;
+        $positionHistoryFM = array_search($id, array_keys($HistoryallScoresFM)) + 1;
+        $positionIslamicknowledgeFM = array_search($id, array_keys($IslamicknowledgeScoresFM)) + 1;
+        $positionKiswahiliFM = array_search($id, array_keys($KiswahiliallScoresFM)) + 1;
+        $positionLifeskillFM = array_search($id, array_keys($LifeskillScoresFM)) + 1;
+        $positionPhysicsFM = array_search($id, array_keys($PhysicsallScoresFM)) + 1;
+        $positionSwimmingFM = array_search($id, array_keys($SwimmingScoresFM)) + 1;
+        $positionNutritionFM = array_search($id, array_keys($NutritionScoresFM)) + 1;
+
+       
+
+        $positionArabiclanguageSA = array_search($id, array_keys($ArabiclanguageallScoresSA )) + 1;
+        $positionBasicmathematicSA = array_search($id, array_keys($BasicmathematicsallScoresSA)) + 1;
+        $positionBibleknowledgeSA = array_search($id, array_keys($BibleknowledgeallScoresSA)) + 1;
+        $positionBookkeepingSA  = array_search($id, array_keys($BookkeepingallScoresSA)) + 1;
+        $positionBiologySA = array_search($id, array_keys($BiologyallScoresSA)) + 1;
+        $positionCivicsSA = array_search($id, array_keys($CivicsScoresSA)) + 1;
+        $positionChemistrySA = array_search($id, array_keys($ChemistryallScoresSA)) + 1;
+        $positionComputerstudySA = array_search($id, array_keys($ComputerstudyScoresSA)) + 1;
+        $positionCreativeartsSA = array_search($id, array_keys($CreativeartsallScoresSA)) + 1;
+        $positionCommerceSA = array_search($id, array_keys($CommerceallScoresSA)) + 1;
+        $positionEnglishliteratureSA = array_search($id, array_keys($EnglishallScoresSA)) + 1;
+        $positionFrenchSA = array_search($id, array_keys($FrenchallScoresSA)) + 1;
+        $positionGeographySA = array_search($id, array_keys($GeographyScoresSA)) + 1;
+        $positionHistorySA = array_search($id, array_keys($HistoryallScoresSA)) + 1;
+        $positionIslamicknowledgeSA = array_search($id, array_keys($IslamicknowledgeScoresSA)) + 1;
+        $positionKiswahiliSA = array_search($id, array_keys($KiswahiliallScoresSA)) + 1;
+        $positionLifeskillSA = array_search($id, array_keys($LifeskillScoresSA)) + 1;
+        $positionPhysicsSA = array_search($id, array_keys($PhysicsallScoresSA)) + 1;
+        $positionSwimmingSA = array_search($id, array_keys($SwimmingScoresSA)) + 1;
+        $positionNutritionSA = array_search($id, array_keys($NutritionScoresSA)) + 1;
+
+
+
+        $positionArabiclanguageSM = array_search($id, array_keys($ArabiclanguageallScoresSM )) + 1;
+        $positionBasicmathematicSM = array_search($id, array_keys($BasicmathematicsallScoresSM)) + 1;
+        $positionBibleknowledgeSM = array_search($id, array_keys($BibleknowledgeallScoresSM)) + 1;
+        $positionBookkeepingSM  = array_search($id, array_keys($BookkeepingallScoresSM)) + 1;
+        $positionBiologySM = array_search($id, array_keys($BiologyallScoresSM)) + 1;
+        $positionCivicsSM = array_search($id, array_keys($CivicsScoresSM)) + 1;
+        $positionChemistrySM = array_search($id, array_keys($ChemistryallScoresSM)) + 1;
+        $positionComputerstudySM = array_search($id, array_keys($ComputerstudyScoresSM)) + 1;
+        $positionCreativeartSM = array_search($id, array_keys($CreativeartsallScoresSM)) + 1;
+        $positionCommerceSM = array_search($id, array_keys($CommerceallScoresSM)) + 1;
+        $positionEnglishliteratureSM = array_search($id, array_keys($EnglishallScoresSM)) + 1;
+        $positionFrenchSM = array_search($id, array_keys($FrenchallScoresSM)) + 1;
+        $positionGeographySM = array_search($id, array_keys($GeographyScoresSM)) + 1;
+        $positionHistorySM = array_search($id, array_keys($HistoryallScoresSM)) + 1;
+        $positionIslamicknowledgeSM = array_search($id, array_keys($IslamicknowledgeScoresSM)) + 1;
+        $positionKiswahiliSM = array_search($id, array_keys($KiswahiliallScoresSM)) + 1;
+        $positionLifeskillSM = array_search($id, array_keys($LifeskillScoresSM)) + 1;
+        $positionPhysicsSM = array_search($id, array_keys($PhysicsallScoresSM)) + 1;
+        $positionSwimmingSM= array_search($id, array_keys($SwimmingScoresSM)) + 1;
+        $positionNutritionSM = array_search($id, array_keys($NutritionScoresSM)) + 1;
+
+ 
+
+   
+        $positionArabiclanguageAL = array_search($id, array_keys($ArabiclanguageallScoresAL )) + 1;
+        $positionBasicmathematicAL = array_search($id, array_keys($BasicmathematicsallScoresAL)) + 1;
+        $positionBibleknowledgeAL = array_search($id, array_keys($BibleknowledgeallScoresAL)) + 1;
+        $positionBookkeepingAL  = array_search($id, array_keys($BookkeepingallScoresAL)) + 1;
+        $positionBiologyAL = array_search($id, array_keys($BiologyallScoresAL)) + 1;
+        $positionCivicsAL = array_search($id, array_keys($CivicsScoresAL)) + 1;
+        $positionChemistryAL = array_search($id, array_keys($ChemistryallScoresAL)) + 1;
+        $positionComputerstudyAL = array_search($id, array_keys($ComputerstudyScoresAL)) + 1;
+        $positionCreativeartAL = array_search($id, array_keys($CreativeartsallScoresAL)) + 1;
+        $positionCommerceAL = array_search($id, array_keys($CommerceallScoresAL)) + 1;
+        $positionEnglishliteratureAL = array_search($id, array_keys($EnglishallScoresAL)) + 1;
+        $positionFrenchAL = array_search($id, array_keys($FrenchallScoresAL)) + 1;
+        $positionGeographyAL= array_search($id, array_keys($GeographyScoresAL)) + 1;
+        $positionHistoryAL = array_search($id, array_keys($HistoryallScoresAL)) + 1;
+        $positionIslamicknowledgeAL = array_search($id, array_keys($IslamicknowledgeScoresAL)) + 1;
+        $positionKiswahiliAL = array_search($id, array_keys($KiswahiliallScoresAL)) + 1;
+        $positionLifeskillAL = array_search($id, array_keys($LifeskillScoresAL)) + 1;
+        $positionPhysicsAL = array_search($id, array_keys($PhysicsallScoresAL)) + 1;
+        $positionSwimmingAL = array_search($id, array_keys($SwimmingScoresAL)) + 1;
+        $positionNutritionAL = array_search($id, array_keys($NutritionScoresAL)) + 1;
+
+        return [
+            'FirstMidterm' => [
+                'Arabiclanguage' => $positionArabiclanguageFM,
+                'Basicmathematics' => $positionBasicmathematicFM,
+                'Bibleknowledge' => $positionBibleknowledgeFM,
+                'Bookkeeping' => $positionBookkeepingFM,
+                'Biology' => $positionBiologyFM,
+                'Civics' => $positionCivicsFM,
+                'Chemistry' => $positionChemistryFM,
+                'Computerstudy' => $positionComputerstudyFM,
+                'Creativearts' => $positionCreativeartFM,
+                'Commerce' => $positionCommerceFM,
+                'Englishliterature' => $positionEnglishliteratureFM,
+                'French' => $positionFrenchFM,
+                'Geography' => $positionGeographyFM,
+                'History' => $positionHistoryFM,
+                'Islamicknowledge' => $positionIslamicknowledgeFM,
+                'Kiswahili' => $positionKiswahiliFM,
+                'Lifeskill' => $positionLifeskillFM,
+                'Physics' => $positionPhysicsFM,
+                'Swimming' => $positionSwimmingFM,
+                'Nutrition' => $positionNutritionFM,
+
+            ],
+            'SemiAnnual' => [
+                'Arabiclanguage' => $positionArabiclanguageSA,
+                'Basicmathematics' => $positionBasicmathematicSA,
+                'Bibleknowledge' => $positionBibleknowledgeSA,
+                'Bookkeeping' => $positionBookkeepingSA,
+                'Biology' => $positionBiologySA,
+                'Civics' => $positionCivicsSA,
+                'Chemistry' => $positionChemistrySA,
+                'Computerstudy' => $positionComputerstudySA,
+                'Creativearts' => $positionCreativeartsSA,
+                'Commerce' => $positionCommerceSA,
+                'Englishliterature' => $positionEnglishliteratureSA,
+                'French' => $positionFrenchSA,
+                'Geography' => $positionGeographySA,
+                'History' => $positionHistorySA,
+                'Islamicknowledge' => $positionIslamicknowledgeSA,
+                'Kiswahili' => $positionKiswahiliSA,
+                'Lifeskill' => $positionLifeskillSA,
+                'Physics' => $positionPhysicsSA,
+                'Swimming' => $positionSwimmingSA,
+                'Nutrition' => $positionNutritionSA,
+            ],
+            'SecondMidterm' => [
+                'Arabiclanguage' => $positionArabiclanguageSM,
+                'Basicmathematics' => $positionBasicmathematicSM,
+                'Bibleknowledge' => $positionBibleknowledgeSM,
+                'Bookkeeping' => $positionBookkeepingSM,
+                'Biology' => $positionBiologySM,
+                'Civics' => $positionCivicsSM,
+                'Chemistry' => $positionChemistrySM,
+                'Computerstudy' => $positionComputerstudySM,
+                'Creativearts' => $positionCreativeartSM,
+                'Commerce' => $positionCommerceSM,
+                'Englishliterature' => $positionEnglishliteratureSM,
+                'French' => $positionFrenchSM,
+                'Geography' => $positionGeographySM,
+                'History' => $positionHistorySM,
+                'Islamicknowledge' => $positionIslamicknowledgeSM,
+                'Kiswahili' => $positionKiswahiliSM,
+                'Lifeskill' => $positionLifeskillSM,
+                'Physics' => $positionPhysicsSM,
+                'Swimming' => $positionSwimmingSM,
+                'Nutrition' => $positionNutritionSM,
+            ],
+            'Annual' => [
+                'Arabiclanguage' => $positionArabiclanguageAL,
+                'Basicmathematics' => $positionBasicmathematicAL,
+                'Bibleknowledge' => $positionBibleknowledgeAL,
+                'Bookkeeping' => $positionBookkeepingAL,
+                'Biology' => $positionBiologyAL,
+                'Civics' => $positionCivicsAL,
+                'Chemistry' => $positionChemistryAL,
+                'Computerstudy' => $positionComputerstudyAL,
+                'Creativearts' => $positionCreativeartAL,
+                'Commerce' => $positionCommerceAL,
+                'Englishliterature' => $positionEnglishliteratureAL,
+                'French' => $positionFrenchAL,
+                'Geography' => $positionGeographyAL,
+                'History' => $positionHistoryAL,
+                'Islamicknowledge' => $positionIslamicknowledgeAL,
+                'Kiswahili' => $positionKiswahiliAL,
+                'Lifeskill' => $positionLifeskillAL,
+                'Physics' => $positionPhysicsAL,
+                'Swimming' => $positionSwimmingAL,
+                'Nutrition' => $positionNutritionAL,
+            ],
+        ];
+        
+    }
+
+    public function FormThreeFM()
+    {
+        $userId = Auth::id();
+        $data = formiii_first_midterm::where('id', $userId)->first(); 
+
+        if (!$data) {
+            $errorMessage = "No data found for the authenticated user.";
+            return view('FormthreeFM', compact('errorMessage'));
+        }
+
+
+       $positionArabiclanguageFM = $this->calculatePositionFormIII($userId);
+        $positionBasicmathematicFM = $this->calculatePositionFormIII($userId);
+        $positionBibleknowledgeFM = $this->calculatePositionFormIII($userId);
+        $positionBookkeepingFM = $this->calculatePositionFormIII($userId);
+        $positionBiologyFM = $this->calculatePositionFormIII($userId);
+        $positionCivicsFM = $this->calculatePositionFormIII($userId);
+        $positionChemistryFM = $this->calculatePositionFormIII($userId);
+        $positionComputerstudyFM = $this->calculatePositionFormIII($userId);
+        $positionCreativeartFM = $this->calculatePositionFormIII($userId);
+        $positionCommerceFM = $this->calculatePositionFormIII($userId);                        
+        $positionEnglishliteratureFM = $this->calculatePositionFormIII($userId);
+        $positionFrenchFM = $this->calculatePositionFormIII($userId);
+        $positionGeographyFM = $this->calculatePositionFormIII($userId);
+        $positionHistoryFM = $this->calculatePositionFormIII($userId);
+        $positionIslamicknowledgeFM = $this->calculatePositionFormIII($userId);
+        $positionKiswahiliFM = $this->calculatePositionFormIII($userId);
+        $positionLifeskillFM = $this->calculatePositionFormIII($userId);
+        $positionPhysicsFM = $this->calculatePositionFormIII($userId);
+        $positionSwimmingFM = $this->calculatePositionFormIII($userId);
+        $positionNutritionFM = $this->calculatePositionFormIII($userId);    
+        
+        $ArabiclanguageFM = $data->Arabiclanguage;
+        $BasicmathematicsFM = $data->Basicmathematics;
+        $BibleknowledgeFM = $data->Bibleknowledge;
+        $BookkeepingFM= $data->Bookkeeping;
+        $BiologyFM = $data->Biology; 
+        $CivicsFM = $data->Civics;
+        $ChemistryFM = $data->Chemistry;
+        $ComputerstudyFM = $data->Computerstudy;
+        $CreativeartsFM= $data->Creativearts;
+        $CommerceFM = $data->Commerce; 
+        $EnglishliteratureFM = $data->Englishliterature;
+        $FrenchFM = $data->French;
+        $GeographyFM = $data->Geography;
+        $HistoryFM= $data->History;
+        $IslamicknowledgeFM = $data->Islamicknowledge; 
+        $KiswahiliFM = $data->Kiswahili;
+        $LifeskillFM = $data->Lifeskill;
+        $PhysicsFM = $data->Physics;
+        $SwimmingFM = $data->Swimming;
+        $NutritionFM = $data->Nutrition;
+
+        $TotalSubject = 8;
+        $TotalSubjectMarks = $ArabiclanguageFM + $BasicmathematicsFM +$BibleknowledgeFM +$BookkeepingFM +$BiologyFM + 
+        $CivicsFM +$ChemistryFM +$ComputerstudyFM +$CreativeartsFM +$CommerceFM +$EnglishliteratureFM +$FrenchFM+$GeographyFM
+        +$HistoryFM+ $IslamicknowledgeFM+$KiswahiliFM+$LifeskillFM+$PhysicsFM+$SwimmingFM +$NutritionFM;
+
+        $AverageFM = $TotalSubjectMarks/$TotalSubject;
+        
+
+        
+    
+        // Calculating grades
+       $grades = [
+            'Arabiclanguage' => $this->SecondarycalculateGrade($ArabiclanguageFM),
+            'Basicmathematics' => $this->SecondarycalculateGrade($BasicmathematicsFM),
+            'Bibleknowledge' => $this->SecondarycalculateGrade($BibleknowledgeFM),
+            'Bookkeeping' => $this->SecondarycalculateGrade($BookkeepingFM),
+            'Biology' => $this->SecondarycalculateGrade($BiologyFM),
+            'Civics' => $this->SecondarycalculateGrade($CivicsFM),
+            'Chemistry' => $this->SecondarycalculateGrade($ChemistryFM),
+            'Computerstudy' => $this->SecondarycalculateGrade($ComputerstudyFM),
+            'Creativearts' => $this->SecondarycalculateGrade($CreativeartsFM),
+            'Commerce' => $this->SecondarycalculateGrade($CommerceFM),
+            'Englishliterature' => $this->SecondarycalculateGrade($EnglishliteratureFM),
+            'French' => $this->SecondarycalculateGrade($FrenchFM),
+            'Geography' => $this->SecondarycalculateGrade($GeographyFM),
+            'History' => $this->SecondarycalculateGrade($HistoryFM),
+            'Islamicknowledge' => $this->SecondarycalculateGrade($IslamicknowledgeFM),
+            'Kiswahili' => $this->SecondarycalculateGrade($KiswahiliFM),
+            'Lifeskill' => $this->SecondarycalculateGrade($LifeskillFM),
+            'Physics' => $this->SecondarycalculateGrade($PhysicsFM),
+            'Islamicknowledge' => $this->SecondarycalculateGrade($IslamicknowledgeFM),
+            'Swimming' => $this->SecondarycalculateGrade($SwimmingFM),
+            'Nutrition' => $this->SecondarycalculateGrade($NutritionFM)
+        ];
+    
+       $FormISA = formiii_semi_annual::where('id', $userId)->first();
+
+       if (!$data) {
+        $errorMessage = "No data found for the authenticated user.";
+        return view('FormthreeFM', compact('errorMessage'));
+    }
+
+       $positionArabiclanguageSA = $this->calculatePositionFormIII($userId);
+        $positionBasicmathematicSA= $this->calculatePositionFormIII($userId);
+        $positionBibleknowledgeSA = $this->calculatePositionFormIII($userId);
+        $positionBookkeepingSA = $this->calculatePositionFormIII($userId);
+        $positionBiologySA = $this->calculatePositionFormIII($userId);
+        $positionCivicsSA = $this->calculatePositionFormIII($userId);
+        $positionChemistrySA = $this->calculatePositionFormII($userId);
+        $positionComputerstudySA = $this->calculatePositionFormIII($userId);
+        $positionCreativeartsSA = $this->calculatePositionFormIII($userId);
+        $positionCommerceSA= $this->calculatePositionFormIII($userId);
+        $positionEnglishliteratureSA = $this->calculatePositionFormIII($userId);
+        $positionFrenchSA = $this->calculatePositionFormIII($userId);
+        $positionGeographySA = $this->calculatePositionFormIII($userId);
+        $positionHistorySA= $this->calculatePositionFormIII($userId);
+        $positionIslamicknowledgeSA = $this->calculatePositionFormIII($userId);
+        $positionKiswahiliSA = $this->calculatePositionFormIII($userId);
+        $positionLifeskillSA= $this->calculatePositionFormIII($userId);
+        $positionPhysicsSA = $this->calculatePositionFormIII($userId);
+        $positionSwimmingSA = $this->calculatePositionFormIII($userId);
+        $positionNutritionSA = $this->calculatePositionFormIII($userId);
+
+        $ArabiclanguageSA = $FormISA->Arabiclanguage;
+        $BasicmathematicsSA = $FormISA->Basicmathematics;
+        $BibleknowledgeSA = $FormISA->Bibleknowledge;
+        $BookkeepingSA= $FormISA->Bookkeeping;
+        $BiologySA = $FormISA->Biology; 
+        $CivicsSA = $FormISA->Civics;
+        $ChemistrySA = $FormISA->Chemistry;
+        $ComputerstudySA = $FormISA->Computerstudy;
+        $CreativeartsSA= $FormISA->Creativearts;
+        $CommerceSA = $FormISA->Commerce; 
+        $EnglishliteratureSA = $FormISA->Englishliterature;
+        $FrenchSA = $FormISA->French;
+        $GeographySA = $FormISA->Geography;
+        $HistorySA= $FormISA->History;
+        $IslamicknowledgeSA = $FormISA->Islamicknowledge; 
+        $KiswahiliSA = $FormISA->Kiswahili;
+        $LifeskillSA = $FormISA->Lifeskill;
+        $PhysicsSA = $FormISA->Physics;
+        $SwimmingSA = $FormISA->Swimming;
+        $NutritionSA = $FormISA->Nutrition;
+
+        $TotalSubject = 8;
+        $TotalSubjectMarks = $ArabiclanguageSA + $BasicmathematicsSA +$BibleknowledgeSA +$BookkeepingSA+$BiologySA + 
+        $CivicsSA +$ChemistrySA +$ComputerstudySA+$CreativeartsSA+$CommerceSA+$EnglishliteratureSA+$FrenchSA+$GeographySA+$HistorySA+
+        $IslamicknowledgeSA+$KiswahiliSA+$LifeskillSA+$PhysicsSA+$SwimmingSA +$NutritionSA;
+
+        $AverageSA = $TotalSubjectMarks/$TotalSubject;
+    
+        // Calculating grades
+        $FormIgradesSA = [
+            'Arabiclanguage' => $this->SecondarycalculateGrade($ArabiclanguageSA),
+            'Basicmathematics' => $this->SecondarycalculateGrade($BasicmathematicsSA),
+            'Bibleknowledge' => $this->SecondarycalculateGrade($BibleknowledgeSA),
+            'Bookkeeping' => $this->SecondarycalculateGrade($BookkeepingSA),
+            'Biology' => $this->SecondarycalculateGrade($BiologySA),
+            'Civics' => $this->SecondarycalculateGrade($CivicsSA),
+            'Chemistry' => $this->SecondarycalculateGrade($ChemistrySA),
+            'Computerstudy' => $this->SecondarycalculateGrade($ComputerstudySA),
+            'Creativearts' => $this->SecondarycalculateGrade($CreativeartsSA),
+            'Commerce' => $this->SecondarycalculateGrade($CommerceSA),
+            'Englishliterature' => $this->SecondarycalculateGrade($EnglishliteratureSA),
+            'French' => $this->SecondarycalculateGrade($FrenchSA),
+            'Geography' => $this->SecondarycalculateGrade($GeographySA),
+            'History' => $this->SecondarycalculateGrade($HistorySA),
+            'Islamicknowledge' => $this->SecondarycalculateGrade($IslamicknowledgeSA),
+            'Kiswahili' => $this->SecondarycalculateGrade($KiswahiliSA),
+            'Lifeskill' => $this->SecondarycalculateGrade($LifeskillSA),
+            'Physics' => $this->SecondarycalculateGrade($PhysicsSA),
+            'Islamicknowledge' => $this->SecondarycalculateGrade($IslamicknowledgeSA),
+            'Swimming' => $this->SecondarycalculateGrade($SwimmingSA),
+            'Nutrition' => $this->SecondarycalculateGrade($NutritionSA)
+        ];
+        
+        // Pass all data to the view as a single array
+        return view('FormthreeFM', [
+            'data' => $data,
+            'FormISA' => $FormISA,
+            'grades' => $grades,           
+    'FormIgradesSA' => $FormIgradesSA,
+
+    'positionArabiclanguageFM' => $positionArabiclanguageFM,
+    'positionBasicmathematicFM' => $positionBasicmathematicFM, 
+    'positionBibleknowledgeFM' => $positionBibleknowledgeFM, 
+    'positionBookkeepingFM' =>$positionBookkeepingFM,
+    'positionBiologyFM' => $positionBiologyFM,
+    'positionCivicsFM' => $positionCivicsFM,
+    'positionChemistryFM' => $positionChemistryFM,
+    'positionComputerstudyFM' => $positionComputerstudyFM, 
+    'positionCreativeartFM' => $positionCreativeartFM,
+    'positionCommerceFM' => $positionCommerceFM,
+    'positionEnglishliteratureFM' => $positionEnglishliteratureFM, 
+    'positionFrenchFM' => $positionFrenchFM, 
+    'positionGeographyFM' => $positionGeographyFM, 
+    'positionHistoryFM' => $positionHistoryFM, 
+    'positionIslamicknowledgeFM' => $positionIslamicknowledgeFM,
+    'positionKiswahiliFM' => $positionKiswahiliFM, 
+    'positionLifeskillFM' => $positionLifeskillFM,
+    'positionPhysicsFM' => $positionPhysicsFM,
+    'positionSwimmingFM' =>$positionSwimmingFM, 
+    'positionNutritionFM' => $positionNutritionFM,
+    '$AverageFM'  => $AverageFM,
+
+    'positionArabiclanguageSA' => $positionArabiclanguageSA,
+    'positionBasicmathematicSA' => $positionBasicmathematicSA, 
+    'positionBibleknowledgeSA' => $positionBibleknowledgeSA, 
+    'positionBookkeepingSA' =>$positionBookkeepingSA,
+    'positionBiologySA' => $positionBiologySA,
+    'positionCivicsSA' => $positionCivicsSA,
+    'positionChemistrySA' => $positionChemistrySA,
+    'positionComputerstudySA' => $positionComputerstudySA, 
+    'positionCreativeartsSA' => $positionCreativeartsSA,
+    'positionCommerceSA' => $positionCommerceSA,
+    'positionEnglishliteratureSA' => $positionEnglishliteratureSA, 
+    'positionFrenchSA' => $positionFrenchSA, 
+    'positionGeographySA' => $positionGeographySA, 
+    'positionHistorySA' => $positionHistorySA, 
+    'positionIslamicknowledgeSA' => $positionIslamicknowledgeSA,
+    'positionKiswahiliSA' => $positionKiswahiliSA, 
+    'positionLifeskillSA' => $positionLifeskillSA,
+    'positionPhysicsSA' => $positionPhysicsSA,
+    'positionSwimmingSA' =>$positionSwimmingSA, 
+    'positionNutritionSA' => $positionNutritionSA,
+    'AverageSA' => $AverageSA,
+
+ ],compact('AverageFM','AverageSA'));
+      
+    }
+
+
+    public function FormThreeSM()
+    {
+        $userId = Auth::id();
+        $data = formiii_second_midterm::where('id', $userId)->first(); 
+
+         if (!$data) {
+            $errorMessage = "No data found for the authenticated user.";
+            return view('FormthreeSM', compact('errorMessage'));
+        }
+
+       $positionArabiclanguageSM = $this->calculatePositionFormIII($userId);
+        $positionBasicmathematicSM = $this->calculatePositionFormIII($userId);
+        $positionBibleknowledgeSM = $this->calculatePositionFormIII($userId);
+        $positionBookkeepingSM = $this->calculatePositionFormIII($userId);
+        $positionBiologySM = $this->calculatePositionFormIII($userId);
+        $positionCivicsSM = $this->calculatePositionFormIII($userId);
+        $positionChemistrySM = $this->calculatePositionFormIII($userId);
+        $positionComputerstudySM = $this->calculatePositionFormIII($userId);
+        $positionCreativeartSM = $this->calculatePositionFormIII($userId);
+        $positionCommerceSM = $this->calculatePositionFormIII($userId);                        
+        $positionEnglishliteratureSM = $this->calculatePositionFormIII($userId);
+        $positionFrenchSM = $this->calculatePositionFormIII($userId);
+        $positionGeographySM = $this->calculatePositionFormIII($userId);
+        $positionHistorySM = $this->calculatePositionFormIII($userId);
+        $positionIslamicknowledgeSM = $this->calculatePositionFormIII($userId);
+        $positionKiswahiliSM = $this->calculatePositionFormIII($userId);
+        $positionLifeskillSM = $this->calculatePositionFormIII($userId);
+        $positionPhysicsSM = $this->calculatePositionFormIII($userId);
+        $positionSwimmingSM = $this->calculatePositionFormIII($userId);
+        $positionNutritionSM = $this->calculatePositionFormIII($userId);    
+        
+        $ArabiclanguageSM = $data->Arabiclanguage;
+        $BasicmathematicsSM = $data->Basicmathematics;
+        $BibleknowledgeSM = $data->Bibleknowledge;
+        $BookkeepingSM= $data->Bookkeeping;
+        $BiologySM = $data->Biology; 
+        $CivicsSM = $data->Civics;
+        $ChemistrySM = $data->Chemistry;
+        $ComputerstudySM = $data->Computerstudy;
+        $CreativeartsSM= $data->Creativearts;
+        $CommerceSM = $data->Commerce; 
+        $EnglishliteratureSM = $data->Englishliterature;
+        $FrenchSM = $data->French;
+        $GeographySM = $data->Geography;
+        $HistorySM= $data->History;
+        $IslamicknowledgeSM = $data->Islamicknowledge; 
+        $KiswahiliSM = $data->Kiswahili;
+        $LifeskillSM = $data->Lifeskill;
+        $PhysicsSM = $data->Physics;
+        $SwimmingSM = $data->Swimming;
+        $NutritionSM = $data->Nutrition;
+
+        $TotalSubject = 8;
+        $TotalSubjectMarks = $ArabiclanguageSM + $BasicmathematicsSM +$BibleknowledgeSM +$BookkeepingSM+$BiologySM + 
+        $CivicsSM +$ChemistrySM+$ComputerstudySM+$CreativeartsSM+$CommerceSM+$EnglishliteratureSM+$FrenchSM+$GeographySM+$HistorySM+
+        $IslamicknowledgeSM+$KiswahiliSM+$LifeskillSM+$PhysicsSM+$SwimmingSM +$NutritionSM;
+
+        $AverageSM = $TotalSubjectMarks/$TotalSubject;
+        
+
+        
+    
+        // Calculating grades
+       $grades = [
+            'Arabiclanguage' => $this->SecondarycalculateGrade($ArabiclanguageSM),
+            'Basicmathematics' => $this->SecondarycalculateGrade($BasicmathematicsSM),
+            'Bibleknowledge' => $this->SecondarycalculateGrade($BibleknowledgeSM),
+            'Bookkeeping' => $this->SecondarycalculateGrade($BookkeepingSM),
+            'Biology' => $this->SecondarycalculateGrade($BiologySM),
+            'Civics' => $this->SecondarycalculateGrade($CivicsSM),
+            'Chemistry' => $this->SecondarycalculateGrade($ChemistrySM),
+            'Computerstudy' => $this->SecondarycalculateGrade($ComputerstudySM),
+            'Creativearts' => $this->SecondarycalculateGrade($CreativeartsSM),
+            'Commerce' => $this->SecondarycalculateGrade($CommerceSM),
+            'Englishliterature' => $this->SecondarycalculateGrade($EnglishliteratureSM),
+            'French' => $this->SecondarycalculateGrade($FrenchSM),
+            'Geography' => $this->SecondarycalculateGrade($GeographySM),
+            'History' => $this->SecondarycalculateGrade($HistorySM),
+            'Islamicknowledge' => $this->SecondarycalculateGrade($IslamicknowledgeSM),
+            'Kiswahili' => $this->SecondarycalculateGrade($KiswahiliSM),
+            'Lifeskill' => $this->SecondarycalculateGrade($LifeskillSM),
+            'Physics' => $this->SecondarycalculateGrade($PhysicsSM),
+            'Islamicknowledge' => $this->SecondarycalculateGrade($IslamicknowledgeSM),
+            'Swimming' => $this->SecondarycalculateGrade($SwimmingSM),
+            'Nutrition' => $this->SecondarycalculateGrade($NutritionSM)
+        ];
+    
+       $FormIAL = formiii_annual::where('id', $userId)->first();
+
+       if (!$data) {
+        $errorMessage = "No data found for the authenticated user.";
+        return view('FormthreeSM', compact('errorMessage'));
+      }
+
+       $positionArabiclanguageAL = $this->calculatePositionFormIII($userId);
+        $positionBasicmathematicAL= $this->calculatePositionFormIII($userId);
+        $positionBibleknowledgeAL = $this->calculatePositionFormIII($userId);
+        $positionBookkeepingAL = $this->calculatePositionFormIII($userId);
+        $positionBiologyAL = $this->calculatePositionFormIII($userId);
+        $positionCivicsAL = $this->calculatePositionFormIII($userId);
+        $positionChemistryAL = $this->calculatePositionFormIII($userId);
+        $positionComputerstudyAL = $this->calculatePositionFormIII($userId);
+        $positionCreativeartsAL = $this->calculatePositionFormIII($userId);
+        $positionCommerceAL= $this->calculatePositionFormIII($userId);
+        $positionEnglishliteratureAL = $this->calculatePositionFormIII($userId);
+        $positionFrenchAL = $this->calculatePositionFormIII($userId);
+        $positionGeographyAL = $this->calculatePositionFormIII($userId);
+        $positionHistoryAL= $this->calculatePositionFormIII($userId);
+        $positionIslamicknowledgeAL = $this->calculatePositionFormIII($userId);
+        $positionKiswahiliAL = $this->calculatePositionFormIII($userId);
+        $positionLifeskillAL= $this->calculatePositionFormIII($userId);
+        $positionPhysicsAL = $this->calculatePositionFormIII($userId);
+        $positionSwimmingAL = $this->calculatePositionFormIII($userId);
+        $positionNutritionAL = $this->calculatePositionFormIII($userId);
+
+        $ArabiclanguageAL = $FormIAL->Arabiclanguage;
+        $BasicmathematicsAL = $FormIAL->Basicmathematics;
+        $BibleknowledgeAL = $FormIAL->Bibleknowledge;
+        $BookkeepingAL= $FormIAL->Bookkeeping;
+        $BiologyAL = $FormIAL->Biology; 
+        $CivicsAL = $FormIAL->Civics;
+        $ChemistryAL= $FormIAL->Chemistry;
+        $ComputerstudyAL = $FormIAL->Computerstudy;
+        $CreativeartsAL= $FormIAL->Creativearts;
+        $CommerceAL = $FormIAL->Commerce; 
+        $EnglishliteratureAL = $FormIAL->English;
+        $FrenchAL = $FormIAL->French;
+        $GeographyAL = $FormIAL->Geography;
+        $HistoryAL= $FormIAL->History;
+        $IslamicknowledgeAL = $FormIAL->Islamicknowledge; 
+        $KiswahiliAL = $FormIAL->Kiswahili;
+        $LifeskillAL = $FormIAL->Lifeskill;
+        $PhysicsAL = $FormIAL->Physics;
+        $SwimmingAL = $FormIAL->Swimming;
+        $NutritionAL= $FormIAL->Nutrition;
+
+        $TotalSubject = 8;
+        $TotalSubjectMarks = $ArabiclanguageAL + $BasicmathematicsAL +$BibleknowledgeAL +$BookkeepingAL+$BiologyAL + 
+        $CivicsAL +$ChemistryAL +$ComputerstudyAL +$CreativeartsAL +$CommerceAL + $EnglishliteratureAL +$FrenchAL +$GeographyAL +$HistoryAL +
+        $IslamicknowledgeAL +$KiswahiliAL +$LifeskillAL +$PhysicsAL +$SwimmingAL +$NutritionAL;
+
+        $AverageAL = $TotalSubjectMarks/$TotalSubject;
+    
+        // Calculating grades
+        $FormIgradesAL = [
+            'Arabiclanguage' => $this->SecondarycalculateGrade($ArabiclanguageAL),
+            'Basicmathematics' => $this->SecondarycalculateGrade($BasicmathematicsAL),
+            'Bibleknowledge' => $this->SecondarycalculateGrade($BibleknowledgeAL),
+            'Bookkeeping' => $this->SecondarycalculateGrade($BookkeepingAL),
+            'Biology' => $this->SecondarycalculateGrade($BiologyAL),
+            'Civics' => $this->SecondarycalculateGrade($CivicsAL),
+            'Chemistry' => $this->SecondarycalculateGrade($ChemistryAL),
+            'Computerstudy' => $this->SecondarycalculateGrade($ComputerstudyAL),
+            'Creativearts' => $this->SecondarycalculateGrade($CreativeartsAL),
+            'Commerce' => $this->SecondarycalculateGrade($CommerceAL),
+            'Englishliterature' => $this->SecondarycalculateGrade($EnglishliteratureAL),
+            'French' => $this->SecondarycalculateGrade($FrenchAL),
+            'Geography' => $this->SecondarycalculateGrade($GeographyAL),
+            'History' => $this->SecondarycalculateGrade($HistoryAL),
+            'Islamicknowledge' => $this->SecondarycalculateGrade($IslamicknowledgeAL),
+            'Kiswahili' => $this->SecondarycalculateGrade($KiswahiliAL),
+            'Lifeskill' => $this->SecondarycalculateGrade($LifeskillAL),
+            'Physics' => $this->SecondarycalculateGrade($PhysicsAL),
+            'Islamicknowledge' => $this->SecondarycalculateGrade($IslamicknowledgeAL),
+            'Swimming' => $this->SecondarycalculateGrade($SwimmingAL),
+            'Nutrition' => $this->SecondarycalculateGrade($NutritionAL)
+        ];
+        
+        // Pass all data to the view as a single array
+        return view('FormthreeSM', [
+            'data' => $data,
+            'grades' => $grades,
+            'FormIAL' => $FormIAL,                     
+    'FormIgradesAL' => $FormIgradesAL,
+    'positionArabiclanguageSM' => $positionArabiclanguageSM,
+    'positionBasicmathematicSM' => $positionBasicmathematicSM, 
+    'positionBibleknowledgeSM' => $positionBibleknowledgeSM, 
+    'positionBookkeepingSM' =>$positionBookkeepingSM,
+    'positionBiologySM' => $positionBiologySM,
+    'positionCivicsSM' => $positionCivicsSM,
+    'positionChemistrySM' => $positionChemistrySM,
+    'positionComputerstudySM' => $positionComputerstudySM, 
+    'positionCreativeartSM' => $positionCreativeartSM,
+    'positionCommerceSM' => $positionCommerceSM,
+    'positionEnglishliteratureSM' => $positionEnglishliteratureSM, 
+    'positionFrenchSM' => $positionFrenchSM, 
+    'positionGeographySM' => $positionGeographySM, 
+    'positionHistorySM' => $positionHistorySM, 
+    'positionIslamicknowledgeSM' => $positionIslamicknowledgeSM,
+    'positionKiswahiliSM' => $positionKiswahiliSM, 
+    'positionLifeskillSM' => $positionLifeskillSM,
+    'positionPhysicsSM' => $positionPhysicsSM,
+    'positionSwimmingSM' =>$positionSwimmingSM, 
+    'positionNutritionSM' => $positionNutritionSM,
+    '$AverageSM'  => $AverageSM,
+
+    'positionArabiclanguageAL' => $positionArabiclanguageAL,
+    'positionBasicmathematicAL' => $positionBasicmathematicAL, 
+    'positionBibleknowledgeAL' => $positionBibleknowledgeAL, 
+    'positionBookkeepingAL' =>$positionBookkeepingAL,
+    'positionBiologyAL' => $positionBiologyAL,
+    'positionCivicsAL' => $positionCivicsAL,
+    'positionChemistryAL' => $positionChemistryAL,
+    'positionComputerstudyAL' => $positionComputerstudyAL, 
+    'positionCreativeartsAL' => $positionCreativeartsAL,
+    'positionCommerceAL' => $positionCommerceAL,
+    'positionEnglishliteratureAL' => $positionEnglishliteratureAL, 
+    'positionFrenchAL' => $positionFrenchAL, 
+    'positionGeographyAL' => $positionGeographyAL, 
+    'positionHistoryAL' => $positionHistoryAL, 
+    'positionIslamicknowledgeAL' => $positionIslamicknowledgeAL,
+    'positionKiswahiliAL' => $positionKiswahiliAL, 
+    'positionLifeskillAL' => $positionLifeskillAL,
+    'positionPhysicsAL' => $positionPhysicsAL,
+    'positionSwimmingAL' =>$positionSwimmingAL, 
+    'positionNutritionAL' => $positionNutritionAL,
+    'AverageAL' => $AverageAL,
+
+ ],compact('AverageSM','AverageAL'));
+      
+    }
+
+
+    public function calculatePositionFormIV ($id) {
+        // Fetch all scores from the database
+        $ArabiclanguageFM = formiv_first_midterm::pluck('Arabiclanguage', 'id')->toArray();
+        $BasicmathematicsallScoresFM = formiv_first_midterm::pluck('Basicmathematics', 'id')->toArray();
+        $BibleknowledgeallScoresFM = formiv_first_midterm::pluck('Bibleknowledge', 'id')->toArray();
+        $BookkeepingallScoresFM = formiv_first_midterm::pluck('Bookkeeping', 'id')->toArray();
+        $BiologyallScoresFM = formiv_first_midterm::pluck('Biology', 'id')->toArray();
+        $CivicsScoresFM = formiv_first_midterm::pluck('Civics', 'id')->toArray();
+        $ChemistryallScoresFM =formiv_first_midterm::pluck('Chemistry', 'id')->toArray();
+        $ComputerstudyScoresFM = formiv_first_midterm::pluck('Computerstudy', 'id')->toArray();
+        $CreativeartsallScoresFM = formiv_first_midterm::pluck('Creativearts', 'id')->toArray();
+        $CommerceallScoresFM = formiv_first_midterm::pluck('Commerce', 'id')->toArray();
+        $EnglishallScoresFM = formiv_first_midterm::pluck('Bibleknowledge', 'id')->toArray();
+        $EnglishliteratureallScoresFM = formiv_first_midterm::pluck('Englishliterature', 'id')->toArray();
+        $FrenchallScoresFM = formiv_first_midterm::pluck('French', 'id')->toArray();
+        $GeographyScoresFM = formiv_first_midterm::pluck('Geography', 'id')->toArray();
+        $HistoryallScoresFM =formiv_first_midterm::pluck('History', 'id')->toArray();
+        $IslamicknowledgeScoresFM = formiv_first_midterm::pluck('Islamicknowledge', 'id')->toArray();
+        $KiswahiliallScoresFM = formiv_first_midterm::pluck('Kiswahili', 'id')->toArray();
+        $LifeskillScoresFM = formiv_first_midterm::pluck('Lifeskill', 'id')->toArray();
+        $PhysicsallScoresFM =formiv_first_midterm::pluck('Physics', 'id')->toArray();
+        $SwimmingScoresFM = formiv_first_midterm::pluck('Swimming', 'id')->toArray();
+        $NutritionScoresFM = formiv_first_midterm::pluck('Nutrition', 'id')->toArray();
+
+        $ArabiclanguageallScoresSA = formiv_semi_annual::pluck('Arabiclanguage', 'id')->toArray();
+        $BasicmathematicsallScoresSA = formiv_semi_annual::pluck('Basicmathematics', 'id')->toArray();
+        $BibleknowledgeallScoresSA = formiv_semi_annual::pluck('Bibleknowledge', 'id')->toArray();
+        $BookkeepingallScoresSA= formiv_semi_annual::pluck('Bookkeeping', 'id')->toArray();
+        $BiologyallScoresSA = formiv_semi_annual::pluck('Biology', 'id')->toArray();
+        $CivicsScoresSA = formiv_semi_annual::pluck('Civics', 'id')->toArray();
+        $ChemistryallScoresSA =formiv_semi_annual::pluck('Chemistry', 'id')->toArray();
+        $ComputerstudyScoresSA = formiv_semi_annual::pluck('Computerstudy', 'id')->toArray();
+        $CreativeartsallScoresSA = formiv_semi_annual::pluck('Creativearts', 'id')->toArray();
+        $CommerceallScoresSA = formiv_semi_annual::pluck('Commerce', 'id')->toArray();
+        $EnglishallScoresSA = formiv_semi_annual::pluck('Bibleknowledge', 'id')->toArray();
+        $EnglishliteratureallScoresSA = formiv_semi_annual::pluck('Englishliterature', 'id')->toArray();
+        $FrenchallScoresSA = formiv_semi_annual::pluck('French', 'id')->toArray();
+        $GeographyScoresSA =formiv_semi_annual::pluck('Geography', 'id')->toArray();
+        $HistoryallScoresSA =formiv_semi_annual::pluck('History', 'id')->toArray();
+        $IslamicknowledgeScoresSA= formiv_semi_annual::pluck('Islamicknowledge', 'id')->toArray();
+        $KiswahiliallScoresSA = formiv_semi_annual::pluck('Kiswahili', 'id')->toArray();
+        $LifeskillScoresSA = formiv_semi_annual::pluck('Lifeskill', 'id')->toArray();
+        $PhysicsallScoresSA =formiv_semi_annual::pluck('Physics', 'id')->toArray();
+        $SwimmingScoresSA = formiv_semi_annual::pluck('Swimming', 'id')->toArray();
+        $NutritionScoresSA = formiv_semi_annual::pluck('Nutrition', 'id')->toArray();
+
+
+        $ArabiclanguageallScoresSM = formiv_second_midterm::pluck('Arabiclanguage', 'id')->toArray();
+        $BasicmathematicsallScoresSM = formiv_second_midterm::pluck('Basicmathematics', 'id')->toArray();
+        $BibleknowledgeallScoresSM = formiv_second_midterm::pluck('Bibleknowledge', 'id')->toArray();
+        $BookkeepingallScoresSM = formiv_second_midterm::pluck('Bookkeeping', 'id')->toArray();
+        $BiologyallScoresSM = formiv_second_midterm::pluck('Biology', 'id')->toArray();
+        $CivicsScoresSM = formiv_second_midterm::pluck('Civics', 'id')->toArray();
+        $ChemistryallScoresSM =formiv_second_midterm::pluck('Chemistry', 'id')->toArray();
+        $ComputerstudyScoresSM = formiv_second_midterm::pluck('Computerstudy', 'id')->toArray();
+        $CreativeartsallScoresSM = formiv_second_midterm::pluck('Creativearts', 'id')->toArray();
+        $CommerceallScoresSM = formiv_second_midterm::pluck('Commerce', 'id')->toArray();
+        $EnglishallScoresSM= formiv_second_midterm::pluck('Bibleknowledge', 'id')->toArray();
+        $EnglishliteratureallScoresSM = formiv_second_midterm::pluck('Englishliterature', 'id')->toArray();
+        $FrenchallScoresSM = formiv_second_midterm::pluck('French', 'id')->toArray();
+        $GeographyScoresSM =formiv_second_midterm::pluck('Geography', 'id')->toArray();
+        $HistoryallScoresSM =formiv_second_midterm::pluck('History', 'id')->toArray();
+        $IslamicknowledgeScoresSM = formiv_second_midterm::pluck('Islamicknowledge', 'id')->toArray();
+        $KiswahiliallScoresSM = formiv_second_midterm::pluck('Kiswahili', 'id')->toArray();
+        $LifeskillScoresSM = formiv_second_midterm::pluck('Lifeskill', 'id')->toArray();
+        $PhysicsallScoresSM=formiv_second_midterm::pluck('Physics', 'id')->toArray();
+        $SwimmingScoresSM = formiv_second_midterm::pluck('Swimming', 'id')->toArray();
+        $NutritionScoresSM = formiv_second_midterm::pluck('Nutrition', 'id')->toArray();
+
+
+        $ArabiclanguageallScoresAL = formiv_annual::pluck('Arabiclanguage', 'id')->toArray();
+        $BasicmathematicsallScoresAL = formiv_annual::pluck('Basicmathematics', 'id')->toArray();
+        $BibleknowledgeallScoresAL = formiv_annual::pluck('Bibleknowledge', 'id')->toArray();
+        $BookkeepingallScoresAL = formiv_annual::pluck('Bookkeeping', 'id')->toArray();
+        $BiologyallScoresAL = formiv_annual::pluck('Biology', 'id')->toArray();
+        $CivicsScoresAL =formiv_annual::pluck('Civics', 'id')->toArray();
+        $ChemistryallScoresAL =formiv_annual::pluck('Chemistry', 'id')->toArray();
+        $ComputerstudyScoresAL= formiv_annual::pluck('Computerstudy', 'id')->toArray();
+        $CreativeartsallScoresAL = formiv_annual::pluck('Creativearts', 'id')->toArray();
+        $CommerceallScoresAL = formiv_annual::pluck('Commerce', 'id')->toArray();
+        $EnglishallScoresAL = formiv_annual::pluck('Bibleknowledge', 'id')->toArray();
+        $EnglishliteratureallScoresAL = formiv_annual::pluck('Englishliterature', 'id')->toArray();
+        $FrenchallScoresAL = formiv_annual::pluck('French', 'id')->toArray();
+        $GeographyScoresAL = formiv_annual::pluck('Geography', 'id')->toArray();
+        $HistoryallScoresAL =formiv_annual::pluck('History', 'id')->toArray();
+        $IslamicknowledgeScoresAL = formiv_annual::pluck('Islamicknowledge', 'id')->toArray();
+        $KiswahiliallScoresAL = formiv_annual::pluck('Kiswahili', 'id')->toArray();
+        $LifeskillScoresAL = formiv_annual::pluck('Lifeskill', 'id')->toArray();
+        $PhysicsallScoresAL =formiv_annual::pluck('Physics', 'id')->toArray();
+        $SwimmingScoresAL = formiv_annual::pluck('Swimming', 'id')->toArray();
+        $NutritionScoresAL = formiv_annual::pluck('Nutrition', 'id')->toArray();
+
+        // Sort the scores in descending order
+        arsort($ArabiclanguageFM );
+        arsort($BasicmathematicsallScoresFM);
+        arsort($BibleknowledgeallScoresFM);
+        arsort($BookkeepingallScoresFM);
+        arsort($BiologyallScoresFM);
+        arsort($CivicsScoresFM);
+        arsort($ChemistryallScoresFM);
+        arsort($ComputerstudyScoresFM);
+        arsort($CreativeartsallScoresFM);
+        arsort($CommerceallScoresFM);
+        arsort($EnglishallScoresFM);
+        arsort($FrenchallScoresFM);
+        arsort($GeographyScoresFM);
+        arsort($HistoryallScoresFM);
+        arsort($IslamicknowledgeScoresFM);
+        arsort($KiswahiliallScoresFM);
+        arsort($LifeskillScoresFM);
+        arsort($PhysicsallScoresFM);
+        arsort($SwimmingScoresFM);
+        arsort($NutritionScoresFM);
+
+        arsort($ArabiclanguageallScoresSM );
+        arsort($BasicmathematicsallScoresSM);
+        arsort($BibleknowledgeallScoresSM);
+        arsort($BookkeepingallScoresSM);
+        arsort($BiologyallScoresSM);
+        arsort($CivicsScoresSM);
+        arsort($ChemistryallScoresSM);
+        arsort($ComputerstudyScoresSM);
+        arsort($CreativeartsallScoresSM);
+        arsort($CommerceallScoresSM);
+        arsort($EnglishallScoresSM);
+        arsort($FrenchallScoresSM);
+        arsort($GeographyScoresSM);
+        arsort($HistoryallScoresSM);
+        arsort($IslamicknowledgeScoresSM);
+        arsort($KiswahiliallScoresSM);
+        arsort($LifeskillScoresSM);
+        arsort($PhysicsallScoresSM);
+        arsort($SwimmingScoresSM);
+        arsort($NutritionScoresSM);
+
+        arsort($ArabiclanguageallScoresSA );
+        arsort($BasicmathematicsallScoresSA);
+        arsort($BibleknowledgeallScoresSA);
+        arsort($BookkeepingallScoresSA);
+        arsort($BiologyallScoresSA);
+        arsort($CivicsScoresSA);
+        arsort($ChemistryallScoresSA);
+        arsort($ComputerstudyScoresSA);
+        arsort($CreativeartsallScoresSA);
+        arsort($CommerceallScoresSA);
+        arsort($EnglishallScoresSA);
+        arsort($FrenchallScoresSA);
+        arsort($GeographyScoresSA);
+        arsort($HistoryallScoresSA);
+        arsort($IslamicknowledgeScoresSA);
+        arsort($KiswahiliallScoresSA);
+        arsort($LifeskillScoresSA);
+        arsort($PhysicsallScoresSA);
+        arsort($SwimmingScoresSA);
+        arsort($NutritionScoresSA);
+
+        arsort($ArabiclanguageallScoresAL );
+        arsort($BasicmathematicsallScoresAL);
+        arsort($BibleknowledgeallScoresAL);
+        arsort($BookkeepingallScoresAL);
+        arsort($BiologyallScoresAL);
+        arsort($CivicsScoresAL);
+        arsort($ChemistryallScoresAL);
+        arsort($ComputerstudyScoresAL);
+        arsort($CreativeartsallScoresAL);
+        arsort($CommerceallScoresAL);
+        arsort($EnglishallScoresAL);
+        arsort($FrenchallScoresAL);
+        arsort($GeographyScoresAL);
+        arsort($HistoryallScoresAL);
+        arsort($IslamicknowledgeScoresAL);
+        arsort($KiswahiliallScoresAL);
+        arsort($LifeskillScoresAL);
+        arsort($PhysicsallScoresAL);
+        arsort($SwimmingScoresAL);
+        arsort($NutritionScoresAL);
+
+
+
+    
+        // Find the position of the user
+        $positionArabiclanguageFM = array_search($id, array_keys($ArabiclanguageFM )) + 1;
+        $positionBasicmathematicFM = array_search($id, array_keys($BasicmathematicsallScoresFM)) + 1;
+        $positionBibleknowledgeFM = array_search($id, array_keys($BibleknowledgeallScoresFM)) + 1;
+        $positionBookkeepingFM  = array_search($id, array_keys($BookkeepingallScoresFM)) + 1;
+        $positionBiologyFM = array_search($id, array_keys($BiologyallScoresFM)) + 1;
+        $positionCivicsFM = array_search($id, array_keys($CivicsScoresFM)) + 1;
+        $positionChemistryFM = array_search($id, array_keys($ChemistryallScoresFM)) + 1;
+        $positionComputerstudyFM = array_search($id, array_keys($ComputerstudyScoresFM)) + 1;
+        $positionCreativeartFM = array_search($id, array_keys($CreativeartsallScoresFM )) + 1;
+        $positionCommerceFM = array_search($id, array_keys($CommerceallScoresFM)) + 1;
+        $positionEnglishliteratureFM = array_search($id, array_keys($EnglishallScoresFM)) + 1;
+        $positionFrenchFM = array_search($id, array_keys($FrenchallScoresFM)) + 1;
+        $positionGeographyFM = array_search($id, array_keys($GeographyScoresFM)) + 1;
+        $positionHistoryFM = array_search($id, array_keys($HistoryallScoresFM)) + 1;
+        $positionIslamicknowledgeFM = array_search($id, array_keys($IslamicknowledgeScoresFM)) + 1;
+        $positionKiswahiliFM = array_search($id, array_keys($KiswahiliallScoresFM)) + 1;
+        $positionLifeskillFM = array_search($id, array_keys($LifeskillScoresFM)) + 1;
+        $positionPhysicsFM = array_search($id, array_keys($PhysicsallScoresFM)) + 1;
+        $positionSwimmingFM = array_search($id, array_keys($SwimmingScoresFM)) + 1;
+        $positionNutritionFM = array_search($id, array_keys($NutritionScoresFM)) + 1;
+
+       
+
+        $positionArabiclanguageSA = array_search($id, array_keys($ArabiclanguageallScoresSA )) + 1;
+        $positionBasicmathematicSA = array_search($id, array_keys($BasicmathematicsallScoresSA)) + 1;
+        $positionBibleknowledgeSA = array_search($id, array_keys($BibleknowledgeallScoresSA)) + 1;
+        $positionBookkeepingSA  = array_search($id, array_keys($BookkeepingallScoresSA)) + 1;
+        $positionBiologySA = array_search($id, array_keys($BiologyallScoresSA)) + 1;
+        $positionCivicsSA = array_search($id, array_keys($CivicsScoresSA)) + 1;
+        $positionChemistrySA = array_search($id, array_keys($ChemistryallScoresSA)) + 1;
+        $positionComputerstudySA = array_search($id, array_keys($ComputerstudyScoresSA)) + 1;
+        $positionCreativeartsSA = array_search($id, array_keys($CreativeartsallScoresSA)) + 1;
+        $positionCommerceSA = array_search($id, array_keys($CommerceallScoresSA)) + 1;
+        $positionEnglishliteratureSA = array_search($id, array_keys($EnglishallScoresSA)) + 1;
+        $positionFrenchSA = array_search($id, array_keys($FrenchallScoresSA)) + 1;
+        $positionGeographySA = array_search($id, array_keys($GeographyScoresSA)) + 1;
+        $positionHistorySA = array_search($id, array_keys($HistoryallScoresSA)) + 1;
+        $positionIslamicknowledgeSA = array_search($id, array_keys($IslamicknowledgeScoresSA)) + 1;
+        $positionKiswahiliSA = array_search($id, array_keys($KiswahiliallScoresSA)) + 1;
+        $positionLifeskillSA = array_search($id, array_keys($LifeskillScoresSA)) + 1;
+        $positionPhysicsSA = array_search($id, array_keys($PhysicsallScoresSA)) + 1;
+        $positionSwimmingSA = array_search($id, array_keys($SwimmingScoresSA)) + 1;
+        $positionNutritionSA = array_search($id, array_keys($NutritionScoresSA)) + 1;
+
+
+
+        $positionArabiclanguageSM = array_search($id, array_keys($ArabiclanguageallScoresSM )) + 1;
+        $positionBasicmathematicSM = array_search($id, array_keys($BasicmathematicsallScoresSM)) + 1;
+        $positionBibleknowledgeSM = array_search($id, array_keys($BibleknowledgeallScoresSM)) + 1;
+        $positionBookkeepingSM  = array_search($id, array_keys($BookkeepingallScoresSM)) + 1;
+        $positionBiologySM = array_search($id, array_keys($BiologyallScoresSM)) + 1;
+        $positionCivicsSM = array_search($id, array_keys($CivicsScoresSM)) + 1;
+        $positionChemistrySM = array_search($id, array_keys($ChemistryallScoresSM)) + 1;
+        $positionComputerstudySM = array_search($id, array_keys($ComputerstudyScoresSM)) + 1;
+        $positionCreativeartSM = array_search($id, array_keys($CreativeartsallScoresSM)) + 1;
+        $positionCommerceSM = array_search($id, array_keys($CommerceallScoresSM)) + 1;
+        $positionEnglishliteratureSM = array_search($id, array_keys($EnglishallScoresSM)) + 1;
+        $positionFrenchSM = array_search($id, array_keys($FrenchallScoresSM)) + 1;
+        $positionGeographySM = array_search($id, array_keys($GeographyScoresSM)) + 1;
+        $positionHistorySM = array_search($id, array_keys($HistoryallScoresSM)) + 1;
+        $positionIslamicknowledgeSM = array_search($id, array_keys($IslamicknowledgeScoresSM)) + 1;
+        $positionKiswahiliSM = array_search($id, array_keys($KiswahiliallScoresSM)) + 1;
+        $positionLifeskillSM = array_search($id, array_keys($LifeskillScoresSM)) + 1;
+        $positionPhysicsSM = array_search($id, array_keys($PhysicsallScoresSM)) + 1;
+        $positionSwimmingSM= array_search($id, array_keys($SwimmingScoresSM)) + 1;
+        $positionNutritionSM = array_search($id, array_keys($NutritionScoresSM)) + 1;
+
+ 
+
+   
+        $positionArabiclanguageAL = array_search($id, array_keys($ArabiclanguageallScoresAL )) + 1;
+        $positionBasicmathematicAL = array_search($id, array_keys($BasicmathematicsallScoresAL)) + 1;
+        $positionBibleknowledgeAL = array_search($id, array_keys($BibleknowledgeallScoresAL)) + 1;
+        $positionBookkeepingAL  = array_search($id, array_keys($BookkeepingallScoresAL)) + 1;
+        $positionBiologyAL = array_search($id, array_keys($BiologyallScoresAL)) + 1;
+        $positionCivicsAL = array_search($id, array_keys($CivicsScoresAL)) + 1;
+        $positionChemistryAL = array_search($id, array_keys($ChemistryallScoresAL)) + 1;
+        $positionComputerstudyAL = array_search($id, array_keys($ComputerstudyScoresAL)) + 1;
+        $positionCreativeartAL = array_search($id, array_keys($CreativeartsallScoresAL)) + 1;
+        $positionCommerceAL = array_search($id, array_keys($CommerceallScoresAL)) + 1;
+        $positionEnglishliteratureAL = array_search($id, array_keys($EnglishallScoresAL)) + 1;
+        $positionFrenchAL = array_search($id, array_keys($FrenchallScoresAL)) + 1;
+        $positionGeographyAL= array_search($id, array_keys($GeographyScoresAL)) + 1;
+        $positionHistoryAL = array_search($id, array_keys($HistoryallScoresAL)) + 1;
+        $positionIslamicknowledgeAL = array_search($id, array_keys($IslamicknowledgeScoresAL)) + 1;
+        $positionKiswahiliAL = array_search($id, array_keys($KiswahiliallScoresAL)) + 1;
+        $positionLifeskillAL = array_search($id, array_keys($LifeskillScoresAL)) + 1;
+        $positionPhysicsAL = array_search($id, array_keys($PhysicsallScoresAL)) + 1;
+        $positionSwimmingAL = array_search($id, array_keys($SwimmingScoresAL)) + 1;
+        $positionNutritionAL = array_search($id, array_keys($NutritionScoresAL)) + 1;
+
+        return [
+            'FirstMidterm' => [
+                'Arabiclanguage' => $positionArabiclanguageFM,
+                'Basicmathematics' => $positionBasicmathematicFM,
+                'Bibleknowledge' => $positionBibleknowledgeFM,
+                'Bookkeeping' => $positionBookkeepingFM,
+                'Biology' => $positionBiologyFM,
+                'Civics' => $positionCivicsFM,
+                'Chemistry' => $positionChemistryFM,
+                'Computerstudy' => $positionComputerstudyFM,
+                'Creativearts' => $positionCreativeartFM,
+                'Commerce' => $positionCommerceFM,
+                'Englishliterature' => $positionEnglishliteratureFM,
+                'French' => $positionFrenchFM,
+                'Geography' => $positionGeographyFM,
+                'History' => $positionHistoryFM,
+                'Islamicknowledge' => $positionIslamicknowledgeFM,
+                'Kiswahili' => $positionKiswahiliFM,
+                'Lifeskill' => $positionLifeskillFM,
+                'Physics' => $positionPhysicsFM,
+                'Swimming' => $positionSwimmingFM,
+                'Nutrition' => $positionNutritionFM,
+
+            ],
+            'SemiAnnual' => [
+                'Arabiclanguage' => $positionArabiclanguageSA,
+                'Basicmathematics' => $positionBasicmathematicSA,
+                'Bibleknowledge' => $positionBibleknowledgeSA,
+                'Bookkeeping' => $positionBookkeepingSA,
+                'Biology' => $positionBiologySA,
+                'Civics' => $positionCivicsSA,
+                'Chemistry' => $positionChemistrySA,
+                'Computerstudy' => $positionComputerstudySA,
+                'Creativearts' => $positionCreativeartsSA,
+                'Commerce' => $positionCommerceSA,
+                'Englishliterature' => $positionEnglishliteratureSA,
+                'French' => $positionFrenchSA,
+                'Geography' => $positionGeographySA,
+                'History' => $positionHistorySA,
+                'Islamicknowledge' => $positionIslamicknowledgeSA,
+                'Kiswahili' => $positionKiswahiliSA,
+                'Lifeskill' => $positionLifeskillSA,
+                'Physics' => $positionPhysicsSA,
+                'Swimming' => $positionSwimmingSA,
+                'Nutrition' => $positionNutritionSA,
+            ],
+            'SecondMidterm' => [
+                'Arabiclanguage' => $positionArabiclanguageSM,
+                'Basicmathematics' => $positionBasicmathematicSM,
+                'Bibleknowledge' => $positionBibleknowledgeSM,
+                'Bookkeeping' => $positionBookkeepingSM,
+                'Biology' => $positionBiologySM,
+                'Civics' => $positionCivicsSM,
+                'Chemistry' => $positionChemistrySM,
+                'Computerstudy' => $positionComputerstudySM,
+                'Creativearts' => $positionCreativeartSM,
+                'Commerce' => $positionCommerceSM,
+                'Englishliterature' => $positionEnglishliteratureSM,
+                'French' => $positionFrenchSM,
+                'Geography' => $positionGeographySM,
+                'History' => $positionHistorySM,
+                'Islamicknowledge' => $positionIslamicknowledgeSM,
+                'Kiswahili' => $positionKiswahiliSM,
+                'Lifeskill' => $positionLifeskillSM,
+                'Physics' => $positionPhysicsSM,
+                'Swimming' => $positionSwimmingSM,
+                'Nutrition' => $positionNutritionSM,
+            ],
+            'Annual' => [
+                'Arabiclanguage' => $positionArabiclanguageAL,
+                'Basicmathematics' => $positionBasicmathematicAL,
+                'Bibleknowledge' => $positionBibleknowledgeAL,
+                'Bookkeeping' => $positionBookkeepingAL,
+                'Biology' => $positionBiologyAL,
+                'Civics' => $positionCivicsAL,
+                'Chemistry' => $positionChemistryAL,
+                'Computerstudy' => $positionComputerstudyAL,
+                'Creativearts' => $positionCreativeartAL,
+                'Commerce' => $positionCommerceAL,
+                'Englishliterature' => $positionEnglishliteratureAL,
+                'French' => $positionFrenchAL,
+                'Geography' => $positionGeographyAL,
+                'History' => $positionHistoryAL,
+                'Islamicknowledge' => $positionIslamicknowledgeAL,
+                'Kiswahili' => $positionKiswahiliAL,
+                'Lifeskill' => $positionLifeskillAL,
+                'Physics' => $positionPhysicsAL,
+                'Swimming' => $positionSwimmingAL,
+                'Nutrition' => $positionNutritionAL,
+            ],
+        ];
+        
+    }
+
+    public function FormfourFM()
+    {
+        $userId = Auth::id();
+        $data = formiv_first_midterm::where('id', $userId)->first(); 
+
+        if (!$data) {
+            $errorMessage = "No data found for the authenticated user.";
+            return view('FormfourFM', compact('errorMessage'));
+        }
+
+
+       $positionArabiclanguageFM = $this->calculatePositionFormIII($userId);
+        $positionBasicmathematicFM = $this->calculatePositionFormIII($userId);
+        $positionBibleknowledgeFM = $this->calculatePositionFormIII($userId);
+        $positionBookkeepingFM = $this->calculatePositionFormIII($userId);
+        $positionBiologyFM = $this->calculatePositionFormIII($userId);
+        $positionCivicsFM = $this->calculatePositionFormIII($userId);
+        $positionChemistryFM = $this->calculatePositionFormIII($userId);
+        $positionComputerstudyFM = $this->calculatePositionFormIII($userId);
+        $positionCreativeartFM = $this->calculatePositionFormIII($userId);
+        $positionCommerceFM = $this->calculatePositionFormIII($userId);                        
+        $positionEnglishliteratureFM = $this->calculatePositionFormIII($userId);
+        $positionFrenchFM = $this->calculatePositionFormIII($userId);
+        $positionGeographyFM = $this->calculatePositionFormIII($userId);
+        $positionHistoryFM = $this->calculatePositionFormIII($userId);
+        $positionIslamicknowledgeFM = $this->calculatePositionFormIII($userId);
+        $positionKiswahiliFM = $this->calculatePositionFormIII($userId);
+        $positionLifeskillFM = $this->calculatePositionFormIII($userId);
+        $positionPhysicsFM = $this->calculatePositionFormIII($userId);
+        $positionSwimmingFM = $this->calculatePositionFormIII($userId);
+        $positionNutritionFM = $this->calculatePositionFormIII($userId);    
+        
+        $ArabiclanguageFM = $data->Arabiclanguage;
+        $BasicmathematicsFM = $data->Basicmathematics;
+        $BibleknowledgeFM = $data->Bibleknowledge;
+        $BookkeepingFM= $data->Bookkeeping;
+        $BiologyFM = $data->Biology; 
+        $CivicsFM = $data->Civics;
+        $ChemistryFM = $data->Chemistry;
+        $ComputerstudyFM = $data->Computerstudy;
+        $CreativeartsFM= $data->Creativearts;
+        $CommerceFM = $data->Commerce; 
+        $EnglishliteratureFM = $data->Englishliterature;
+        $FrenchFM = $data->French;
+        $GeographyFM = $data->Geography;
+        $HistoryFM= $data->History;
+        $IslamicknowledgeFM = $data->Islamicknowledge; 
+        $KiswahiliFM = $data->Kiswahili;
+        $LifeskillFM = $data->Lifeskill;
+        $PhysicsFM = $data->Physics;
+        $SwimmingFM = $data->Swimming;
+        $NutritionFM = $data->Nutrition;
+
+        $TotalSubject = 8;
+        $TotalSubjectMarks = $ArabiclanguageFM + $BasicmathematicsFM +$BibleknowledgeFM +$BookkeepingFM +$BiologyFM + 
+        $CivicsFM +$ChemistryFM +$ComputerstudyFM +$CreativeartsFM +$CommerceFM +$EnglishliteratureFM +$FrenchFM+$GeographyFM
+        +$HistoryFM+ $IslamicknowledgeFM+$KiswahiliFM+$LifeskillFM+$PhysicsFM+$SwimmingFM +$NutritionFM;
+
+        $AverageFM = $TotalSubjectMarks/$TotalSubject;
+        
+
+        
+    
+        // Calculating grades
+       $grades = [
+            'Arabiclanguage' => $this->SecondarycalculateGrade($ArabiclanguageFM),
+            'Basicmathematics' => $this->SecondarycalculateGrade($BasicmathematicsFM),
+            'Bibleknowledge' => $this->SecondarycalculateGrade($BibleknowledgeFM),
+            'Bookkeeping' => $this->SecondarycalculateGrade($BookkeepingFM),
+            'Biology' => $this->SecondarycalculateGrade($BiologyFM),
+            'Civics' => $this->SecondarycalculateGrade($CivicsFM),
+            'Chemistry' => $this->SecondarycalculateGrade($ChemistryFM),
+            'Computerstudy' => $this->SecondarycalculateGrade($ComputerstudyFM),
+            'Creativearts' => $this->SecondarycalculateGrade($CreativeartsFM),
+            'Commerce' => $this->SecondarycalculateGrade($CommerceFM),
+            'Englishliterature' => $this->SecondarycalculateGrade($EnglishliteratureFM),
+            'French' => $this->SecondarycalculateGrade($FrenchFM),
+            'Geography' => $this->SecondarycalculateGrade($GeographyFM),
+            'History' => $this->SecondarycalculateGrade($HistoryFM),
+            'Islamicknowledge' => $this->SecondarycalculateGrade($IslamicknowledgeFM),
+            'Kiswahili' => $this->SecondarycalculateGrade($KiswahiliFM),
+            'Lifeskill' => $this->SecondarycalculateGrade($LifeskillFM),
+            'Physics' => $this->SecondarycalculateGrade($PhysicsFM),
+            'Islamicknowledge' => $this->SecondarycalculateGrade($IslamicknowledgeFM),
+            'Swimming' => $this->SecondarycalculateGrade($SwimmingFM),
+            'Nutrition' => $this->SecondarycalculateGrade($NutritionFM)
+        ];
+    
+       $FormISA = formiv_semi_annual::where('id', $userId)->first();
+
+       if (!$data) {
+        $errorMessage = "No data found for the authenticated user.";
+        return view('FormfourFM', compact('errorMessage'));
+    }
+
+       $positionArabiclanguageSA = $this->calculatePositionFormIII($userId);
+        $positionBasicmathematicSA= $this->calculatePositionFormIII($userId);
+        $positionBibleknowledgeSA = $this->calculatePositionFormIII($userId);
+        $positionBookkeepingSA = $this->calculatePositionFormIII($userId);
+        $positionBiologySA = $this->calculatePositionFormIII($userId);
+        $positionCivicsSA = $this->calculatePositionFormIII($userId);
+        $positionChemistrySA = $this->calculatePositionFormII($userId);
+        $positionComputerstudySA = $this->calculatePositionFormIII($userId);
+        $positionCreativeartsSA = $this->calculatePositionFormIII($userId);
+        $positionCommerceSA= $this->calculatePositionFormIII($userId);
+        $positionEnglishliteratureSA = $this->calculatePositionFormIII($userId);
+        $positionFrenchSA = $this->calculatePositionFormIII($userId);
+        $positionGeographySA = $this->calculatePositionFormIII($userId);
+        $positionHistorySA= $this->calculatePositionFormIII($userId);
+        $positionIslamicknowledgeSA = $this->calculatePositionFormIII($userId);
+        $positionKiswahiliSA = $this->calculatePositionFormIII($userId);
+        $positionLifeskillSA= $this->calculatePositionFormIII($userId);
+        $positionPhysicsSA = $this->calculatePositionFormIII($userId);
+        $positionSwimmingSA = $this->calculatePositionFormIII($userId);
+        $positionNutritionSA = $this->calculatePositionFormIII($userId);
+
+        $ArabiclanguageSA = $FormISA->Arabiclanguage;
+        $BasicmathematicsSA = $FormISA->Basicmathematics;
+        $BibleknowledgeSA = $FormISA->Bibleknowledge;
+        $BookkeepingSA= $FormISA->Bookkeeping;
+        $BiologySA = $FormISA->Biology; 
+        $CivicsSA = $FormISA->Civics;
+        $ChemistrySA = $FormISA->Chemistry;
+        $ComputerstudySA = $FormISA->Computerstudy;
+        $CreativeartsSA= $FormISA->Creativearts;
+        $CommerceSA = $FormISA->Commerce; 
+        $EnglishliteratureSA = $FormISA->Englishliterature;
+        $FrenchSA = $FormISA->French;
+        $GeographySA = $FormISA->Geography;
+        $HistorySA= $FormISA->History;
+        $IslamicknowledgeSA = $FormISA->Islamicknowledge; 
+        $KiswahiliSA = $FormISA->Kiswahili;
+        $LifeskillSA = $FormISA->Lifeskill;
+        $PhysicsSA = $FormISA->Physics;
+        $SwimmingSA = $FormISA->Swimming;
+        $NutritionSA = $FormISA->Nutrition;
+
+        $TotalSubject = 8;
+        $TotalSubjectMarks = $ArabiclanguageSA + $BasicmathematicsSA +$BibleknowledgeSA +$BookkeepingSA+$BiologySA + 
+        $CivicsSA +$ChemistrySA +$ComputerstudySA+$CreativeartsSA+$CommerceSA+$EnglishliteratureSA+$FrenchSA+$GeographySA+$HistorySA+
+        $IslamicknowledgeSA+$KiswahiliSA+$LifeskillSA+$PhysicsSA+$SwimmingSA +$NutritionSA;
+
+        $AverageSA = $TotalSubjectMarks/$TotalSubject;
+    
+        // Calculating grades
+        $FormIgradesSA = [
+            'Arabiclanguage' => $this->SecondarycalculateGrade($ArabiclanguageSA),
+            'Basicmathematics' => $this->SecondarycalculateGrade($BasicmathematicsSA),
+            'Bibleknowledge' => $this->SecondarycalculateGrade($BibleknowledgeSA),
+            'Bookkeeping' => $this->SecondarycalculateGrade($BookkeepingSA),
+            'Biology' => $this->SecondarycalculateGrade($BiologySA),
+            'Civics' => $this->SecondarycalculateGrade($CivicsSA),
+            'Chemistry' => $this->SecondarycalculateGrade($ChemistrySA),
+            'Computerstudy' => $this->SecondarycalculateGrade($ComputerstudySA),
+            'Creativearts' => $this->SecondarycalculateGrade($CreativeartsSA),
+            'Commerce' => $this->SecondarycalculateGrade($CommerceSA),
+            'Englishliterature' => $this->SecondarycalculateGrade($EnglishliteratureSA),
+            'French' => $this->SecondarycalculateGrade($FrenchSA),
+            'Geography' => $this->SecondarycalculateGrade($GeographySA),
+            'History' => $this->SecondarycalculateGrade($HistorySA),
+            'Islamicknowledge' => $this->SecondarycalculateGrade($IslamicknowledgeSA),
+            'Kiswahili' => $this->SecondarycalculateGrade($KiswahiliSA),
+            'Lifeskill' => $this->SecondarycalculateGrade($LifeskillSA),
+            'Physics' => $this->SecondarycalculateGrade($PhysicsSA),
+            'Islamicknowledge' => $this->SecondarycalculateGrade($IslamicknowledgeSA),
+            'Swimming' => $this->SecondarycalculateGrade($SwimmingSA),
+            'Nutrition' => $this->SecondarycalculateGrade($NutritionSA)
+        ];
+        
+        // Pass all data to the view as a single array
+        return view('FormfourFM', [
+            'data' => $data,
+            'FormISA' => $FormISA,
+            'grades' => $grades,           
+    'FormIgradesSA' => $FormIgradesSA,
+
+    'positionArabiclanguageFM' => $positionArabiclanguageFM,
+    'positionBasicmathematicFM' => $positionBasicmathematicFM, 
+    'positionBibleknowledgeFM' => $positionBibleknowledgeFM, 
+    'positionBookkeepingFM' =>$positionBookkeepingFM,
+    'positionBiologyFM' => $positionBiologyFM,
+    'positionCivicsFM' => $positionCivicsFM,
+    'positionChemistryFM' => $positionChemistryFM,
+    'positionComputerstudyFM' => $positionComputerstudyFM, 
+    'positionCreativeartFM' => $positionCreativeartFM,
+    'positionCommerceFM' => $positionCommerceFM,
+    'positionEnglishliteratureFM' => $positionEnglishliteratureFM, 
+    'positionFrenchFM' => $positionFrenchFM, 
+    'positionGeographyFM' => $positionGeographyFM, 
+    'positionHistoryFM' => $positionHistoryFM, 
+    'positionIslamicknowledgeFM' => $positionIslamicknowledgeFM,
+    'positionKiswahiliFM' => $positionKiswahiliFM, 
+    'positionLifeskillFM' => $positionLifeskillFM,
+    'positionPhysicsFM' => $positionPhysicsFM,
+    'positionSwimmingFM' =>$positionSwimmingFM, 
+    'positionNutritionFM' => $positionNutritionFM,
+    '$AverageFM'  => $AverageFM,
+
+    'positionArabiclanguageSA' => $positionArabiclanguageSA,
+    'positionBasicmathematicSA' => $positionBasicmathematicSA, 
+    'positionBibleknowledgeSA' => $positionBibleknowledgeSA, 
+    'positionBookkeepingSA' =>$positionBookkeepingSA,
+    'positionBiologySA' => $positionBiologySA,
+    'positionCivicsSA' => $positionCivicsSA,
+    'positionChemistrySA' => $positionChemistrySA,
+    'positionComputerstudySA' => $positionComputerstudySA, 
+    'positionCreativeartsSA' => $positionCreativeartsSA,
+    'positionCommerceSA' => $positionCommerceSA,
+    'positionEnglishliteratureSA' => $positionEnglishliteratureSA, 
+    'positionFrenchSA' => $positionFrenchSA, 
+    'positionGeographySA' => $positionGeographySA, 
+    'positionHistorySA' => $positionHistorySA, 
+    'positionIslamicknowledgeSA' => $positionIslamicknowledgeSA,
+    'positionKiswahiliSA' => $positionKiswahiliSA, 
+    'positionLifeskillSA' => $positionLifeskillSA,
+    'positionPhysicsSA' => $positionPhysicsSA,
+    'positionSwimmingSA' =>$positionSwimmingSA, 
+    'positionNutritionSA' => $positionNutritionSA,
+    'AverageSA' => $AverageSA,
+
+ ],compact('AverageFM','AverageSA'));
+      
+    }
+
+
+    public function FormFourSM()
+    {
+        $userId = Auth::id();
+        $data = formiv_second_midterm::where('id', $userId)->first(); 
+
+         if (!$data) {
+            $errorMessage = "No data found for the authenticated user.";
+            return view('FormfourSM', compact('errorMessage'));
+        }
+
+       $positionArabiclanguageSM = $this->calculatePositionFormIV($userId);
+        $positionBasicmathematicSM = $this->calculatePositionFormIV($userId);
+        $positionBibleknowledgeSM = $this->calculatePositionFormIV($userId);
+        $positionBookkeepingSM = $this->calculatePositionFormIV($userId);
+        $positionBiologySM = $this->calculatePositionFormIV($userId);
+        $positionCivicsSM = $this->calculatePositionFormIV($userId);
+        $positionChemistrySM = $this->calculatePositionFormIV($userId);
+        $positionComputerstudySM = $this->calculatePositionFormIV($userId);
+        $positionCreativeartSM = $this->calculatePositionFormIV($userId);
+        $positionCommerceSM = $this->calculatePositionFormIV($userId);                        
+        $positionEnglishliteratureSM = $this->calculatePositionFormIV($userId);
+        $positionFrenchSM = $this->calculatePositionFormIV($userId);
+        $positionGeographySM = $this->calculatePositionFormIV($userId);
+        $positionHistorySM = $this->calculatePositionFormIV($userId);
+        $positionIslamicknowledgeSM = $this->calculatePositionFormIV($userId);
+        $positionKiswahiliSM = $this->calculatePositionFormIV($userId);
+        $positionLifeskillSM = $this->calculatePositionFormIV($userId);
+        $positionPhysicsSM = $this->calculatePositionFormIV($userId);
+        $positionSwimmingSM = $this->calculatePositionFormIV($userId);
+        $positionNutritionSM = $this->calculatePositionFormIV($userId);    
+        
+        $ArabiclanguageSM = $data->Arabiclanguage;
+        $BasicmathematicsSM = $data->Basicmathematics;
+        $BibleknowledgeSM = $data->Bibleknowledge;
+        $BookkeepingSM= $data->Bookkeeping;
+        $BiologySM = $data->Biology; 
+        $CivicsSM = $data->Civics;
+        $ChemistrySM = $data->Chemistry;
+        $ComputerstudySM = $data->Computerstudy;
+        $CreativeartsSM= $data->Creativearts;
+        $CommerceSM = $data->Commerce; 
+        $EnglishliteratureSM = $data->Englishliterature;
+        $FrenchSM = $data->French;
+        $GeographySM = $data->Geography;
+        $HistorySM= $data->History;
+        $IslamicknowledgeSM = $data->Islamicknowledge; 
+        $KiswahiliSM = $data->Kiswahili;
+        $LifeskillSM = $data->Lifeskill;
+        $PhysicsSM = $data->Physics;
+        $SwimmingSM = $data->Swimming;
+        $NutritionSM = $data->Nutrition;
+
+        $TotalSubject = 8;
+        $TotalSubjectMarks = $ArabiclanguageSM + $BasicmathematicsSM +$BibleknowledgeSM +$BookkeepingSM+$BiologySM + 
+        $CivicsSM +$ChemistrySM+$ComputerstudySM+$CreativeartsSM+$CommerceSM+$EnglishliteratureSM+$FrenchSM+$GeographySM+$HistorySM+
+        $IslamicknowledgeSM+$KiswahiliSM+$LifeskillSM+$PhysicsSM+$SwimmingSM +$NutritionSM;
+
+        $AverageSM = $TotalSubjectMarks/$TotalSubject;
+        
+
+        
+    
+        // Calculating grades
+       $grades = [
+            'Arabiclanguage' => $this->SecondarycalculateGrade($ArabiclanguageSM),
+            'Basicmathematics' => $this->SecondarycalculateGrade($BasicmathematicsSM),
+            'Bibleknowledge' => $this->SecondarycalculateGrade($BibleknowledgeSM),
+            'Bookkeeping' => $this->SecondarycalculateGrade($BookkeepingSM),
+            'Biology' => $this->SecondarycalculateGrade($BiologySM),
+            'Civics' => $this->SecondarycalculateGrade($CivicsSM),
+            'Chemistry' => $this->SecondarycalculateGrade($ChemistrySM),
+            'Computerstudy' => $this->SecondarycalculateGrade($ComputerstudySM),
+            'Creativearts' => $this->SecondarycalculateGrade($CreativeartsSM),
+            'Commerce' => $this->SecondarycalculateGrade($CommerceSM),
+            'Englishliterature' => $this->SecondarycalculateGrade($EnglishliteratureSM),
+            'French' => $this->SecondarycalculateGrade($FrenchSM),
+            'Geography' => $this->SecondarycalculateGrade($GeographySM),
+            'History' => $this->SecondarycalculateGrade($HistorySM),
+            'Islamicknowledge' => $this->SecondarycalculateGrade($IslamicknowledgeSM),
+            'Kiswahili' => $this->SecondarycalculateGrade($KiswahiliSM),
+            'Lifeskill' => $this->SecondarycalculateGrade($LifeskillSM),
+            'Physics' => $this->SecondarycalculateGrade($PhysicsSM),
+            'Islamicknowledge' => $this->SecondarycalculateGrade($IslamicknowledgeSM),
+            'Swimming' => $this->SecondarycalculateGrade($SwimmingSM),
+            'Nutrition' => $this->SecondarycalculateGrade($NutritionSM)
+        ];
+    
+       $FormIAL = formiv_annual::where('id', $userId)->first();
+
+       if (!$data) {
+        $errorMessage = "No data found for the authenticated user.";
+        return view('FormfourSM', compact('errorMessage'));
+      }
+
+       $positionArabiclanguageAL = $this->calculatePositionFormIV($userId);
+        $positionBasicmathematicAL= $this->calculatePositionFormIV($userId);
+        $positionBibleknowledgeAL = $this->calculatePositionFormIV($userId);
+        $positionBookkeepingAL = $this->calculatePositionFormIV($userId);
+        $positionBiologyAL = $this->calculatePositionFormIV($userId);
+        $positionCivicsAL = $this->calculatePositionFormIV($userId);
+        $positionChemistryAL = $this->calculatePositionFormIV($userId);
+        $positionComputerstudyAL = $this->calculatePositionFormIV($userId);
+        $positionCreativeartsAL = $this->calculatePositionFormIV($userId);
+        $positionCommerceAL= $this->calculatePositionFormIV($userId);
+        $positionEnglishliteratureAL = $this->calculatePositionFormIV($userId);
+        $positionFrenchAL = $this->calculatePositionFormIV($userId);
+        $positionGeographyAL = $this->calculatePositionFormIV($userId);
+        $positionHistoryAL= $this->calculatePositionFormIV($userId);
+        $positionIslamicknowledgeAL = $this->calculatePositionFormIV($userId);
+        $positionKiswahiliAL = $this->calculatePositionFormIV($userId);
+        $positionLifeskillAL= $this->calculatePositionFormIV($userId);
+        $positionPhysicsAL = $this->calculatePositionFormIV($userId);
+        $positionSwimmingAL = $this->calculatePositionFormIV($userId);
+        $positionNutritionAL = $this->calculatePositionFormIV($userId);
+
+        $ArabiclanguageAL = $FormIAL->Arabiclanguage;
+        $BasicmathematicsAL = $FormIAL->Basicmathematics;
+        $BibleknowledgeAL = $FormIAL->Bibleknowledge;
+        $BookkeepingAL= $FormIAL->Bookkeeping;
+        $BiologyAL = $FormIAL->Biology; 
+        $CivicsAL = $FormIAL->Civics;
+        $ChemistryAL= $FormIAL->Chemistry;
+        $ComputerstudyAL = $FormIAL->Computerstudy;
+        $CreativeartsAL= $FormIAL->Creativearts;
+        $CommerceAL = $FormIAL->Commerce; 
+        $EnglishliteratureAL = $FormIAL->English;
+        $FrenchAL = $FormIAL->French;
+        $GeographyAL = $FormIAL->Geography;
+        $HistoryAL= $FormIAL->History;
+        $IslamicknowledgeAL = $FormIAL->Islamicknowledge; 
+        $KiswahiliAL = $FormIAL->Kiswahili;
+        $LifeskillAL = $FormIAL->Lifeskill;
+        $PhysicsAL = $FormIAL->Physics;
+        $SwimmingAL = $FormIAL->Swimming;
+        $NutritionAL= $FormIAL->Nutrition;
+
+        $TotalSubject = 8;
+        $TotalSubjectMarks = $ArabiclanguageAL + $BasicmathematicsAL +$BibleknowledgeAL +$BookkeepingAL+$BiologyAL + 
+        $CivicsAL +$ChemistryAL +$ComputerstudyAL +$CreativeartsAL +$CommerceAL + $EnglishliteratureAL +$FrenchAL +$GeographyAL +$HistoryAL +
+        $IslamicknowledgeAL +$KiswahiliAL +$LifeskillAL +$PhysicsAL +$SwimmingAL +$NutritionAL;
+
+        $AverageAL = $TotalSubjectMarks/$TotalSubject;
+    
+        // Calculating grades
+        $FormIgradesAL = [
+            'Arabiclanguage' => $this->SecondarycalculateGrade($ArabiclanguageAL),
+            'Basicmathematics' => $this->SecondarycalculateGrade($BasicmathematicsAL),
+            'Bibleknowledge' => $this->SecondarycalculateGrade($BibleknowledgeAL),
+            'Bookkeeping' => $this->SecondarycalculateGrade($BookkeepingAL),
+            'Biology' => $this->SecondarycalculateGrade($BiologyAL),
+            'Civics' => $this->SecondarycalculateGrade($CivicsAL),
+            'Chemistry' => $this->SecondarycalculateGrade($ChemistryAL),
+            'Computerstudy' => $this->SecondarycalculateGrade($ComputerstudyAL),
+            'Creativearts' => $this->SecondarycalculateGrade($CreativeartsAL),
+            'Commerce' => $this->SecondarycalculateGrade($CommerceAL),
+            'Englishliterature' => $this->SecondarycalculateGrade($EnglishliteratureAL),
+            'French' => $this->SecondarycalculateGrade($FrenchAL),
+            'Geography' => $this->SecondarycalculateGrade($GeographyAL),
+            'History' => $this->SecondarycalculateGrade($HistoryAL),
+            'Islamicknowledge' => $this->SecondarycalculateGrade($IslamicknowledgeAL),
+            'Kiswahili' => $this->SecondarycalculateGrade($KiswahiliAL),
+            'Lifeskill' => $this->SecondarycalculateGrade($LifeskillAL),
+            'Physics' => $this->SecondarycalculateGrade($PhysicsAL),
+            'Islamicknowledge' => $this->SecondarycalculateGrade($IslamicknowledgeAL),
+            'Swimming' => $this->SecondarycalculateGrade($SwimmingAL),
+            'Nutrition' => $this->SecondarycalculateGrade($NutritionAL)
+        ];
+        
+        // Pass all data to the view as a single array
+        return view('FormfourSM', [
+            'data' => $data,
+            'grades' => $grades,
+            'FormIAL' => $FormIAL,                     
+    'FormIgradesAL' => $FormIgradesAL,
+    'positionArabiclanguageSM' => $positionArabiclanguageSM,
+    'positionBasicmathematicSM' => $positionBasicmathematicSM, 
+    'positionBibleknowledgeSM' => $positionBibleknowledgeSM, 
+    'positionBookkeepingSM' =>$positionBookkeepingSM,
+    'positionBiologySM' => $positionBiologySM,
+    'positionCivicsSM' => $positionCivicsSM,
+    'positionChemistrySM' => $positionChemistrySM,
+    'positionComputerstudySM' => $positionComputerstudySM, 
+    'positionCreativeartSM' => $positionCreativeartSM,
+    'positionCommerceSM' => $positionCommerceSM,
+    'positionEnglishliteratureSM' => $positionEnglishliteratureSM, 
+    'positionFrenchSM' => $positionFrenchSM, 
+    'positionGeographySM' => $positionGeographySM, 
+    'positionHistorySM' => $positionHistorySM, 
+    'positionIslamicknowledgeSM' => $positionIslamicknowledgeSM,
+    'positionKiswahiliSM' => $positionKiswahiliSM, 
+    'positionLifeskillSM' => $positionLifeskillSM,
+    'positionPhysicsSM' => $positionPhysicsSM,
+    'positionSwimmingSM' =>$positionSwimmingSM, 
+    'positionNutritionSM' => $positionNutritionSM,
+    '$AverageSM'  => $AverageSM,
+
+    'positionArabiclanguageAL' => $positionArabiclanguageAL,
+    'positionBasicmathematicAL' => $positionBasicmathematicAL, 
+    'positionBibleknowledgeAL' => $positionBibleknowledgeAL, 
+    'positionBookkeepingAL' =>$positionBookkeepingAL,
+    'positionBiologyAL' => $positionBiologyAL,
+    'positionCivicsAL' => $positionCivicsAL,
+    'positionChemistryAL' => $positionChemistryAL,
+    'positionComputerstudyAL' => $positionComputerstudyAL, 
+    'positionCreativeartsAL' => $positionCreativeartsAL,
+    'positionCommerceAL' => $positionCommerceAL,
+    'positionEnglishliteratureAL' => $positionEnglishliteratureAL, 
+    'positionFrenchAL' => $positionFrenchAL, 
+    'positionGeographyAL' => $positionGeographyAL, 
+    'positionHistoryAL' => $positionHistoryAL, 
+    'positionIslamicknowledgeAL' => $positionIslamicknowledgeAL,
+    'positionKiswahiliAL' => $positionKiswahiliAL, 
+    'positionLifeskillAL' => $positionLifeskillAL,
+    'positionPhysicsAL' => $positionPhysicsAL,
+    'positionSwimmingAL' =>$positionSwimmingAL, 
+    'positionNutritionAL' => $positionNutritionAL,
+    'AverageAL' => $AverageAL,
+
+ ],compact('AverageSM','AverageAL'));
+      
+    }
+
 
 
     

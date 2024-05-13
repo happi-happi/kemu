@@ -139,6 +139,24 @@ Route::middleware('auth')->group(function () {
     Route::get('standardsevenFM', [ProfileController::class, 'standardsevenFM'])->name('standardsevenFM');
     Route::get('standardsevenSM', [ProfileController::class, 'standardsevenSM'])->name('standardsevenSM');
 
+   //F1.FormOne 
+   Route::get('FormOneFM', [ProfileController::class, 'FormOneFM'])->name('FormOneFM');
+   Route::get('FormOneSM', [ProfileController::class, 'FormOneSM'])->name('FormOneSM');
+
+ //F2.FormTwo 
+   Route::get('FormTwoFM', [ProfileController::class, 'FormTwoFM'])->name('FormTwoFM');
+   Route::get('FormTwoSM', [ProfileController::class, 'FormTwoSM'])->name('FormTwoSM');
+
+//F3.FormThree
+   Route::get('FormThreeFM', [ProfileController::class, 'FormThreeFM'])->name('FormThreeFM');
+   Route::get('FormThreeSM', [ProfileController::class, 'FormThreeSM'])->name('FormThreeSM');
+
+
+  //F4.FormFour
+Route::get('FormFourFM', [ProfileController::class, 'FormFourFM'])->name('FormFourFM');
+Route::get('FormFourSM', [ProfileController::class, 'FormFourSM'])->name('FormFourSM');
+
+
    //PaymentRecords
       //1. Student
    Route::get('StudentPaymentRecords', [ProfileController::class, 'StudentPaymentRecords'])->name('StudentPaymentRecords');
