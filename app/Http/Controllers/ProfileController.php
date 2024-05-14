@@ -2667,7 +2667,7 @@ public function calculatePositionSTDV($id) {
     
        $FormISA = formi_semi_annual::where('id', $userId)->first();
 
-       if (!$data) {
+       if (!$FormISA) {
         $errorMessage = "No data found for the authenticated user.";
         return view('FormoneFM', compact('errorMessage'));
     }
@@ -2891,7 +2891,7 @@ public function calculatePositionSTDV($id) {
     
        $FormIAL = formi_annual::where('id', $userId)->first();
 
-       if (!$data) {
+       if (!$FormIAL) {
         $errorMessage = "No data found for the authenticated user.";
         return view('FormOneSM', compact('errorMessage'));
       }
@@ -3482,7 +3482,7 @@ public function calculatePositionSTDV($id) {
     
        $FormISA = formii_semi_annual::where('id', $userId)->first();
 
-       if (!$data) {
+       if (!$FormISA) {
         $errorMessage = "No data found for the authenticated user.";
         return view('FormtwoFM', compact('errorMessage'));
     }
@@ -3705,7 +3705,7 @@ public function calculatePositionSTDV($id) {
     
        $FormIAL = formii_annual::where('id', $userId)->first();
 
-       if (!$data) {
+       if (!$FormIAL) {
         $errorMessage = "No data found for the authenticated user.";
         return view('FormtwoSM', compact('errorMessage'));
       }
@@ -4295,7 +4295,7 @@ public function calculatePositionSTDV($id) {
     
        $FormISA = formiii_semi_annual::where('id', $userId)->first();
 
-       if (!$data) {
+       if (!$FormISA) {
         $errorMessage = "No data found for the authenticated user.";
         return view('FormthreeFM', compact('errorMessage'));
     }
@@ -4519,7 +4519,7 @@ public function calculatePositionSTDV($id) {
     
        $FormIAL = formiii_annual::where('id', $userId)->first();
 
-       if (!$data) {
+       if (!$FormIAL) {
         $errorMessage = "No data found for the authenticated user.";
         return view('FormthreeSM', compact('errorMessage'));
       }
@@ -5109,7 +5109,7 @@ public function calculatePositionSTDV($id) {
     
        $FormISA = formiv_semi_annual::where('id', $userId)->first();
 
-       if (!$data) {
+       if (!$FormISA) {
         $errorMessage = "No data found for the authenticated user.";
         return view('FormfourFM', compact('errorMessage'));
     }
@@ -5333,7 +5333,7 @@ public function calculatePositionSTDV($id) {
     
        $FormIAL = formiv_annual::where('id', $userId)->first();
 
-       if (!$data) {
+       if (!$FormIAL) {
         $errorMessage = "No data found for the authenticated user.";
         return view('FormfourSM', compact('errorMessage'));
       }
