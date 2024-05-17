@@ -28,18 +28,26 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
     
         $request->session()->regenerate();
+
+         
+        $user = $request->user();
+
+        if (!$user->is_active) {
+            Auth::logout();
+            return redirect()->route('login')->withErrors(['Your account is deactivated.']);
+        }
+
     
-        if ($request->user()->Role === 'Teacher' || $request->user()->Role === 'HeadTeacher'
-        || $request->user()->Role === 'SecondHeadTeacher'|| $request->user()->Role === 'DiscplineMaster') {
-            return redirect()->intended(RouteServiceProvider::TEACHER);
-        } elseif ($request->user()->Role === 'Admin') {
-            return redirect()->intended(RouteServiceProvider::ADMIN);
-        } elseif ($request->user()->Role === 'Burser') {
-            return redirect()->intended(RouteServiceProvider::BURSER);
-        }
-        else {
-            return redirect()->intended(RouteServiceProvider::STUDENT);
-        }
+        if ($user->Role === 'Teacher' || $user->Role === 'HeadTeacher' ||
+        $user->Role === 'SecondHeadTeacher' || $user->Role === 'DiscplineMaster') {
+        return redirect()->intended(RouteServiceProvider::TEACHER);
+    } elseif ($user->Role === 'Admin') {
+        return redirect()->intended(RouteServiceProvider::ADMIN);
+    } elseif ($user->Role === 'Burser') {
+        return redirect()->intended(RouteServiceProvider::BURSER);
+    } else {
+        return redirect()->intended(RouteServiceProvider::STUDENT);
+    }
     }
 
     /**

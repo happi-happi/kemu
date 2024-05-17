@@ -71,11 +71,12 @@
             <x-input-error :messages="$errors->get('secondphonenumber')" class="mt-2" />
         </div>
 
-        <div class="mt-4">
-            <x-input-label for="nameofschool" :value="__('nameofschool')" />
-            <x-text-input id="nameofschool" class="block mt-1 w-full" type="nameofschool" name="nameofschool" :value="old('nameofschool')" required autocomplete="nameofschool" />
-            <x-input-error :messages="$errors->get('nameofschool')" class="mt-2" />
-        </div>
+        <select class="form-select" aria-label="Default select example">
+         <option selected>Select School</option>
+         @foreach($SchoolName as $school)
+        <option value="{{ $school->id }}">{{ $school->SchoolName}}</option>
+       @endforeach
+      </select>
 
         <!-- Password -->
         <div class="mt-4">

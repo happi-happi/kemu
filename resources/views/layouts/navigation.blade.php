@@ -43,11 +43,15 @@
                         </x-dropdown-link>  
                         @endif
 
+                       
+
                         @if(Auth::user()->Role === 'Admin' ) 
                         <x-dropdown-link :href="route('register')">
                             {{ __('Home') }}
                         </x-dropdown-link>
                         @endif
+            
+
                         <x-dropdown-link :href="route('profile.edit')">
                             {{ __('Profile') }}
                         </x-dropdown-link>
@@ -132,6 +136,12 @@
                         @if(Auth::user()->Role === 'Admin')   
                         <x-dropdown-link :href="route('EditSchoolInformationPage')">
                             {{ __('Edit ShoolInformation Page') }}
+                        </x-dropdown-link>  
+                        @endif
+
+                        @if(Auth::user()->Role === 'Admin')   
+                        <x-dropdown-link :href="route('Deactivateview')">
+                            {{ __('Activate and Deactivate') }}
                         </x-dropdown-link>  
                         @endif
 

@@ -113,7 +113,8 @@ class ProfileController extends Controller
 
     Public function teacher()
     {
-        return view('Teacher');
+        $SchoolName = schoolinformation::all(); 
+        return view('Teacher', compact('SchoolName'));
     }
 
     Public function importexcel()
@@ -156,7 +157,49 @@ class ProfileController extends Controller
    Public function standardformfourimport(){
 
     return view('formfour');
+
    }
+
+  
+ public function Deactivateview(){
+    $SchoolName = schoolinformation::all(); 
+    $UserName = user::all(); 
+
+    return view('DeactivateAccount', compact('SchoolName','UserName'));
+}
+
+public function deactivateUsersByRole(Request $request) {
+    $schoolId = $request->input('SchoolName');
+    
+    // Find the school by its ID
+    $school = schoolinformation::find($schoolId);
+
+    if (!$school) {
+        return redirect()->back()->with('error', 'School not found.');
+    }
+
+    // Deactivate all users associated with this school
+    $users = user::where('nameofschool', $school->SchoolName)->update(['is_active' => false]);
+
+    return redirect()->back()->with('success', 'All users associated with the school ' . $school->SchoolName . ' have been deactivated successfully.');
+}
+
+
+public function activateUsersByRole(Request $request) {
+    $schoolId = $request->input('SchoolName');
+    
+    // Find the school by its ID
+    $school = schoolinformation::find($schoolId);
+
+    if (!$school) {
+        return redirect()->back()->with('error', 'School not found.');
+    }
+
+    // Deactivate all users associated with this school
+    $users = user::where('nameofschool', $school->SchoolName)->update(['is_active' => true]);
+
+    return redirect()->back()->with('success', 'All users associated with the school ' . $school->SchoolName . ' have been deactivated successfully.');
+}
 
     public function import(Request $request){
          
@@ -6627,6 +6670,26 @@ return redirect()->back()->with('message','student registration succesful');
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
+
+     /**
+     * Deactivate user.
+     */
+
+
+     public function deactivate($roleName)
+{
+    // Find the role by its name
+    $role = schoolinformation::findByName($roleName);
+
+    if (!$role) {
+        return redirect()->back()->with('error', 'Role not found.');
+    }
+
+    // Deactivate all users with this role
+    $users = User::role($roleName)->update(['is_active' => false]);
+
+    return view('DeactivateAccount')->with('success', 'All users with the role ' . $roleName . ' have been deactivated successfully.')->compact('role');
+}
 
     /**
      * Delete the user's account.
