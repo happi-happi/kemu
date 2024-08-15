@@ -73,15 +73,21 @@
                         </x-dropdown-link>  
                         @endif
 
-                        @if(Auth::user()->Role === 'Teacher'|| Auth::user()->Role ==='Burser'|| Auth::user()->Role ==='DiscplineMaster')   
+                        @if(Auth::user()->Role === 'Teacher'|| Auth::user()->Role ==='Burser'|| Auth::user()->Role ==='HeadTeacher'|| Auth::user()->Role ==='DiscplineMaster'|| Auth::user()->Role ==='Admin')   
                         <x-dropdown-link :href="route('GetyourMessage')">
-                            {{ __('Your Message') }}
+                            {{ __('Mail') }}
                         </x-dropdown-link>  
                         @endif
 
-                        @if(Auth::user()->Role === 'Teacher'|| Auth::user()->Role ==='Burser'|| Auth::user()->Role ==='DiscplineMaster')   
+                        @if(Auth::user()->Role === 'Teacher'|| Auth::user()->Role ==='Burser'|| Auth::user()->Role ==='HeadTeacher'|| Auth::user()->Role ==='DiscplineMaster'|| Auth::user()->Role ==='Admin')   
                         <x-dropdown-link :href="route('SendyourMessagePage')">
-                            {{ __('Send your  Message ') }}
+                            {{ __('Send your Mail ') }}
+                        </x-dropdown-link>  
+                        @endif
+
+                        @if(Auth::user()->Role === 'Teacher'|| Auth::user()->Role ==='HeadTeacher'|| Auth::user()->Role ==='DiscplineMaster'|| Auth::user()->Role ==='Admin')   
+                        <x-dropdown-link :href="route('AttendancePage')">
+                            {{ __('Attendance') }}
                         </x-dropdown-link>  
                         @endif
 
@@ -99,7 +105,7 @@
 
                         @if(Auth::user()->Role === 'Admin')   
                         <x-dropdown-link :href="route('searchuser')">
-                            {{ __('User List ') }}
+                            {{ __('User Setting') }}
                         </x-dropdown-link>  
                         @endif
 

@@ -319,6 +319,11 @@ Route::get('FormFourSM', [ProfileController::class, 'FormFourSM'])->name('FormFo
 
      Route::get('view/{file_path}', [ProfileController::class, 'view'])->name('view');
      Route::get('download/{file_path}', [ProfileController::class, 'downloadFile'])->name('download');
+
+     //Attendance
+     Route::get('AttendancePage', [ProfileController::class, 'AttendancePage'])->name('AttendancePage');
+     Route::post('Attendance', [ProfileController::class, 'Attendance'])->name('Attendance');
+
 });
 
 require __DIR__.'/auth.php';

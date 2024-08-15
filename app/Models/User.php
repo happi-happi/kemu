@@ -124,5 +124,11 @@ class User extends Authenticatable
 
       return $this->hasmany(message::class, 'id');
     }
+
+  
+    public function attendance()
+    {
+        return $this->hasMany(attendance::class, 'school_id'); 
+    }
   
 }

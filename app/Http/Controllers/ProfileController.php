@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use App\Models\user;
+use App\Models\attendance;
 use App\Models\standad_one;
 use App\Models\standard_four;
 use App\Models\standard_four_first_midterm;
@@ -159,7 +160,6 @@ class ProfileController extends Controller
     return view('formfour');
 
    }
-
   
  public function Deactivateview(){
     $SchoolName = schoolinformation::all(); 
@@ -6567,7 +6567,43 @@ return redirect()->back()->with('message','student registration succesful');
      public function SchoolInformationPage(){
         return view ('SchoolInformation');
      }
-    
+
+     public function Attendance(Request $request)
+     {
+         // Validate the incoming request data
+         $validatedData = $request->validate([
+             'teacher_id.*' => 'required|integer',
+             'user_id.*' => 'required|integer',
+             'status.*' => 'array',
+             'status.*.*' => 'string',
+             'nameofschool.*' => 'required|string'
+         ]);
+     
+         $teacher_ids = $validatedData['teacher_id'];
+         $user_ids = $validatedData['user_id'];
+         $status = $validatedData['status'];
+         $nameofschools = $validatedData['nameofschool'];
+     
+         // Ensure that each user_id corresponds to a unique teacher_id, nameofschool, and status
+         foreach ($user_ids as $index => $user_id) {
+             $data = new attendance();
+             $data->teacher_id = $teacher_ids[$index];
+             $data->user_id = $user_id;
+             $data->nameofschool = $nameofschools[$index];
+     
+             // Save each status as a separate record
+             if (isset($status[$user_id])) {
+                 foreach ($status[$user_id] as $status_value) {
+                     $data->status = $status_value;
+                     $data->save();
+                 }
+             }
+         }
+     
+         // Redirect back with a success message
+         return redirect()->back()->with('success', 'Attendance submitted successfully');
+     }
+     
 
      Public function SchoolInformation(Request $request){
         $data = new schoolinformation();
@@ -6597,7 +6633,13 @@ return redirect()->back()->with('message','student registration succesful');
         $userId = Auth::id();
         $data = message::where('id', $userId)->get();
         return view('yourMessagePage',compact('data'));
-     }
+
+
+
+
+
+
+    }
 
 
      public function ReceiveMessage(){
@@ -6616,6 +6658,25 @@ return redirect()->back()->with('message','student registration succesful');
         return view('ReceiveMessage', compact('Receivemessage'));
     }
 
+    
+
+    public function AttendancePage()
+    {
+        $userId = Auth::id();
+        $user = User::find($userId);
+        $class = $user->class;
+        $nameSchool = $user->nameofschool;
+    
+        // Directly query the User model without using relationships
+        $studentAttendance = User::where('class', $class )
+            ->where('nameofschool', $nameSchool)
+            ->get();
+    
+        return view('Attendance', compact('studentAttendance', 'userId'));
+    }
+
+   
+    
 
      public function downloadFile($file_path) {
         $filePath = public_path('assets/' . $file_path);
@@ -6653,7 +6714,7 @@ return redirect()->back()->with('message','student registration succesful');
      }
 
      
-    
+   
      
     /**
      * Update the user's profile information.
@@ -6671,9 +6732,11 @@ return redirect()->back()->with('message','student registration succesful');
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
+
      /**
      * Deactivate user.
      */
+
 
 
      public function deactivate($roleName)

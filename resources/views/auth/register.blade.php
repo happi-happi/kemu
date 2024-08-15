@@ -27,11 +27,21 @@
         <!-- class-->
         <div>      
  <select class="form-select" name="class"  aria-label="Default select example">
-  <option selected>Class</option>
+  <option selected>Class Teacher</option>
+  <option value="Kindegerten">Kindegerten</option>
+  <option value="Standardone">Standard one</option>
+  <option value="Standardtwo">Standard two</option>
+  <option value="Standardthree">Standard three</option>
   <option value="Standardfour">Standard four</option>
   <option value="Standardfive">Standard five</option>
   <option value="Standardsix">Standard six</option>
   <option value="Standardseven">Standard seven</option>
+  <option value="Formone">Form one</option>
+  <option value="Formtwo">Form two</option>
+  <option value="Formthree">Form three</option>
+  <option value="Formfour">Form four</option>
+  <option value="Formfive">Form five</option>
+  <option value="Formsix">Form six</option>
   <option value="FinanceDepartment">Finance Department</option>
   <option value="TeacherDepartment">TeacherDepartment</option>
 </select>
