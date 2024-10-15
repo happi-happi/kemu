@@ -39,11 +39,17 @@ Route::middleware('auth')->group(function () {
 
    Route::post('register', [RegisteredUserController::class, 'store']); 
 
+   Route::get('viewregisterguardian', [RegisteredUserController::class, 'viewregisterguardian'])->name('viewregisterguardian');
+   Route::post('Guardian', [RegisteredUserController::class, 'Guardian'])->name('Guardian');  
+
+   Route::get('viewregisterstaff', [RegisteredUserController::class, 'viewregisterstaff'])->name('viewregisterstaff');
+   Route::post('registerstaff', [RegisteredUserController::class, 'registerstaff'])->name('registerstaff');
+
    
-    Route::get('verify-email', EmailVerificationPromptController::class)
+   Route::get('verify-email', EmailVerificationPromptController::class)
                 ->name('verification.notice');
 
-    Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
+   Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
                 ->middleware(['signed', 'throttle:6,1'])
                 ->name('verification.verify');
 

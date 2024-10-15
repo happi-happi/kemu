@@ -17,7 +17,7 @@
       <th>Second PhoneNUmber</th> 
       <th>Fees</th>
       <th>Amount Paid</th>
-      <th>Amount not Paid</th>
+      <th>Action</th>
     
      
         </tr>
@@ -32,12 +32,9 @@
 <td><x-text-input id="Lname" class="block mt-1 w-full" type="text" name="Lname"  value="{{ $user->Lname}}" required autofocus autocomplete="Lname" readonly/></td>
 <td><x-text-input id="firstphonenumber" class="block mt-1 w-full" type="text" name="firstphonenumber"  value="{{ $user->firstphonenumber}}" required autofocus autocomplete="firstphonenumber" readonly  /></td>
 <td><x-text-input id="secondphonenumber" class="block mt-1 w-full" type="text" name="secondphonenumber"  value="{{ $user->secondphonenumber}}" required autofocus autocomplete="secondphonenumber" readonly/></td>
-<td>        
-<div><select class="form-select" name="TotalFeeAmount" aria-label="Default select example">
-  <option selected>Select  school your Payment  fees below</option>
-  <option value="{{ env('FIRSTSCHOOLFEES') }}">{{ env('FIRSTSCHOOLFEES') }}</option>
- 
-</select></td>
+<td><x-text-input id="TotalFeeAmount" class="block mt-1 w-full" type="text" name="TotalFeeAmount"  required /></td>  
+
+</td>
 <td><x-text-input id="AmountPaid" class="block mt-1 w-full" type="text" name="AmountPaid"  value="{{ $user->AmountPaid}}" required autofocus autocomplete="AmountPaid" /></td>
 
 
@@ -66,7 +63,7 @@
       <th>Second PhoneNUmber</th> 
       <th>Fees</th>
       <th>Amount Paid</th>
-      <th>Amount not Paid</th>
+      <th>Action</th>
     
      
         </tr>
@@ -81,12 +78,8 @@
 <td><x-text-input id="Lname" class="block mt-1 w-full" type="text" name="Lname"  value="{{ $user->Lname}}" required autofocus autocomplete="Lname" readonly/></td>
 <td><x-text-input id="firstphonenumber" class="block mt-1 w-full" type="text" name="firstphonenumber"  value="{{ $user->firstphonenumber}}" required autofocus autocomplete="firstphonenumber" readonly  /></td>
 <td><x-text-input id="secondphonenumber" class="block mt-1 w-full" type="text" name="secondphonenumber"  value="{{ $user->secondphonenumber}}" required autofocus autocomplete="secondphonenumber" readonly/></td>
-<td>        
-<div><select class="form-select" name="TotalFeeAmount" aria-label="Default select example">
-  <option selected>Select  school your Payment  fees below</option>
-  <option value="{{ env('FIRSTSCHOOLFEES') }}">{{ env('FIRSTSCHOOLFEES') }}</option>
- 
-</select></td>
+    
+<td><x-text-input id="TotalFeeAmount" class="block mt-1 w-full" type="text" name="TotalFeeAmount"  required /></td>  
 <td><x-text-input id="AmountPaid" class="block mt-1 w-full" type="text" name="AmountPaid"  value="{{ $user->AmountPaid}}" required autofocus autocomplete="AmountPaid" /></td>
 
 
@@ -114,7 +107,7 @@
       <th>Second PhoneNUmber</th> 
       <th>Fees</th>
       <th>Amount Paid</th>
-      <th>Amount not Paid</th>
+      <th>Action</th>
     
      
         </tr>
@@ -129,12 +122,7 @@
 <td><x-text-input id="Lname" class="block mt-1 w-full" type="text" name="Lname"  value="{{ $user->Lname}}" required autofocus autocomplete="Lname" readonly/></td>
 <td><x-text-input id="firstphonenumber" class="block mt-1 w-full" type="text" name="firstphonenumber"  value="{{ $user->firstphonenumber}}" required autofocus autocomplete="firstphonenumber" readonly  /></td>
 <td><x-text-input id="secondphonenumber" class="block mt-1 w-full" type="text" name="secondphonenumber"  value="{{ $user->secondphonenumber}}" required autofocus autocomplete="secondphonenumber" readonly/></td>
-<td>        
-<div><select class="form-select" name="TotalFeeAmount" aria-label="Default select example">
-  <option selected>Select  school your Payment  fees below</option>
-  <option value="{{ env('FIRSTSCHOOLFEES') }}">{{ env('FIRSTSCHOOLFEES') }}</option>
- 
-</select></td>
+<td><x-text-input id="TotalFeeAmount" class="block mt-1 w-full" type="text" name="TotalFeeAmount"  required /></td>  
 <td><x-text-input id="AmountPaid" class="block mt-1 w-full" type="text" name="AmountPaid"  value="{{ $user->AmountPaid}}" required autofocus autocomplete="AmountPaid" /></td>
 
 
@@ -162,7 +150,7 @@
       <th>Second PhoneNUmber</th> 
       <th>Fees</th>
       <th>Amount Paid</th>
-      <th>Amount not Paid</th>
+      <th>Action</th>
     
      
         </tr>
@@ -177,12 +165,7 @@
 <td><x-text-input id="Lname" class="block mt-1 w-full" type="text" name="Lname"  value="{{ $user->Lname}}" required autofocus autocomplete="Lname" readonly/></td>
 <td><x-text-input id="firstphonenumber" class="block mt-1 w-full" type="text" name="firstphonenumber"  value="{{ $user->firstphonenumber}}" required autofocus autocomplete="firstphonenumber" readonly  /></td>
 <td><x-text-input id="secondphonenumber" class="block mt-1 w-full" type="text" name="secondphonenumber"  value="{{ $user->secondphonenumber}}" required autofocus autocomplete="secondphonenumber" readonly/></td>
-<td>        
-<div><select class="form-select" name="TotalFeeAmount" aria-label="Default select example">
-  <option selected>Select  school your Payment  fees below</option>
-  <option value="{{ env('FIRSTSCHOOLFEES') }}">{{ env('FIRSTSCHOOLFEES') }}</option>
- 
-</select></td>
+<td><x-text-input id="TotalFeeAmount" class="block mt-1 w-full" type="text" name="TotalFeeAmount"  required /></td>  
 <td><x-text-input id="AmountPaid" class="block mt-1 w-full" type="text" name="AmountPaid"  value="{{ $user->AmountPaid}}" required autofocus autocomplete="AmountPaid" /></td>
 
 <td><button type="submit">Submit</button></td>

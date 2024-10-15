@@ -47,13 +47,26 @@
 
                         @if(Auth::user()->Role === 'Admin' ) 
                         <x-dropdown-link :href="route('register')">
-                            {{ __('Home') }}
+                            {{ __('Register student') }}
+                        </x-dropdown-link>
+                        @endif
+
+                        @if(Auth::user()->Role === 'Admin' ) 
+                        <x-dropdown-link :href="route('viewregisterstaff')">
+                            {{ __('Register Staff') }}
+                        </x-dropdown-link>
+                        @endif
+
+                        @if(Auth::user()->Role === 'Admin' || Auth::user()->Role === 'Teacher')
+                        <x-dropdown-link :href="route('viewregisterguardian')">
+                            {{ __('Register Guardian and Parent') }}
                         </x-dropdown-link>
                         @endif
             
+            
 
                         <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profile') }}
+                            {{ __('Your Profile') }}
                         </x-dropdown-link>
                         @if(Auth::user()->Role === 'Teacher'||  Auth::user()->Role ==='DiscplineMaster')   
                         <x-dropdown-link :href="route('studentList')">
@@ -100,6 +113,12 @@
                         @if(Auth::user()->Role === 'Admin')   
                         <x-dropdown-link :href="route('import-excel')">
                             {{ __('Upload result') }}
+                        </x-dropdown-link>  
+                        @endif
+
+                        @if(Auth::user()->Role === 'Burser')   
+                        <x-dropdown-link :href="route('BurserPage')">
+                            {{ __('Burser Page') }}
                         </x-dropdown-link>  
                         @endif
 

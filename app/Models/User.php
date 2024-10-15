@@ -22,15 +22,17 @@ class User extends Authenticatable
         'Fname',
         'Mname',
         'Lname',
-        'class',
+        'DateofBirth',
+        'PlaceofBirth',
+        'Nationality',
+        'Region',
+        'District',
+        'Currentresidence',
+        'SchoolName',
         'Role',
-        'subject',
+        'PreviousSchool',
         'email',
-        'password',
-        'firstphonenumber',
-        'secondphonenumber',
-        'nameofschool',
-        
+        'password'
     ];
 
     /**
@@ -83,8 +85,6 @@ class User extends Authenticatable
         
     }
 
-
-
      public function standard_five_first_midterm(){
 
         return $this->hasmany(standard_five_first_midterm::class, 'id');
@@ -117,8 +117,13 @@ class User extends Authenticatable
 
     public function student_payment_fee(){
 
-      return $this->hasmany(student_payment_fee::class);
+      return $this->hasmany(student_payment_fee::class, 'id', 'id');
     }
+
+    public function schoolinformation()
+{
+    return $this->belongsTo(schoolinformation::class, 'id', 'id');
+}
 
     public function message(){
 

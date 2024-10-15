@@ -129,6 +129,19 @@ class ProfileController extends Controller
     return view('standardfive');
    }
 
+    
+Public function Guardianregister(){
+
+    return view('register');
+
+ }
+
+Public function Staffregister(){
+
+    return view('register');
+
+ }
+
    Public function standardsiximport(){
 
     return view('standardsix');
@@ -5297,7 +5310,7 @@ public function calculatePositionSTDV($id) {
             return view('FormfourSM', compact('errorMessage'));
         }
 
-       $positionArabiclanguageSM = $this->calculatePositionFormIV($userId);
+        $positionArabiclanguageSM = $this->calculatePositionFormIV($userId);
         $positionBasicmathematicSM = $this->calculatePositionFormIV($userId);
         $positionBibleknowledgeSM = $this->calculatePositionFormIV($userId);
         $positionBookkeepingSM = $this->calculatePositionFormIV($userId);
@@ -5905,17 +5918,21 @@ public function UpdateAdminStudentfiveANresult(Request $request, $id)
    
     //Payment Records 
  
-public function StudentPaymentRecords()
-{
-    $userId = Auth::id();
-
-    $data = student_payment_fee::with('user')->where('id', $userId)->get();
-
-    return view('StudentPaymentRecords', compact('data'));
-}
-
+    public function StudentPaymentRecords()
+    {
+        $user = Auth::user();
+        $school_id= $user->school_id;
+    
+        // Fetch student payment records associated with the authenticated user's school
+        $data = student_payment_fee::where('school_id', $school_id ) 
+        ->with('user') 
+        ->get();
+    
+        return view('StudentPaymentRecords', compact('data'));
+    }
+    
   
-   public function STDVPaymentRecords(){
+   public function STDVPaymentRecords(){    
     $userId = Auth::id();
 
     $data = stdv_payment_fee::with('user')->where('id', $userId)->get();
