@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use App\Models\Staff;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -24,31 +25,53 @@ class AuthenticatedSessionController extends Controller
      * Handle an incoming authentication request.
      */
     public function store(LoginRequest $request): RedirectResponse
-    {
-        $request->authenticate();
-    
-        $request->session()->regenerate();
+{
+    $credentials = $request->only('email', 'password');
 
-         
-        $user = $request->user();
+    // Attempt to authenticate using the 'web' guard
+    if (Auth::guard('web')->attempt($credentials)) {
+        $user = Auth::guard('web')->user();
 
-        if (!$user->is_active) {
-            Auth::logout();
-            return redirect()->route('login')->withErrors(['Your account is deactivated.']);
+        // Redirect based on the role for the 'web' guard
+        switch ($user->Role) {
+            case 'Admin':
+                return redirect()->intended(RouteServiceProvider::ADMIN);
+            case 'HeadTeacher':
+            case 'SecondHeadTeacher':
+            case 'DiscplineMaster':
+            case 'Teacher':
+                return redirect()->intended(RouteServiceProvider::TEACHER);
+            case 'Student':
+                return redirect()->intended(RouteServiceProvider::STUDENT);
+            case 'Burser':
+                return redirect()->intended(RouteServiceProvider::BURSER);
+            default:
+                return redirect()->back()->withErrors(['message' => 'Unauthorized role']);
         }
+    }
 
-    
-        if ($user->Role === 'Teacher' || $user->Role === 'HeadTeacher' ||
-        $user->Role === 'SecondHeadTeacher' || $user->Role === 'DiscplineMaster') {
-        return redirect()->intended(RouteServiceProvider::TEACHER);
-    } elseif ($user->Role === 'Admin') {
-        return redirect()->intended(RouteServiceProvider::ADMIN);
-    } elseif ($user->Role === 'Burser') {
-        return redirect()->intended(RouteServiceProvider::BURSER);
-    } else {
-        return redirect()->intended(RouteServiceProvider::STUDENT);
+    // Attempt to authenticate using the 'staff' guard
+    if (Auth::guard('staff')->attempt($credentials)) {
+        $staff = Auth::guard('staff')->user();
+
+        // Redirect based on the role for the 'staff' guard
+        switch ($staff->staffRole) {
+            case 'Teacher':
+            case 'HeadTeacher':
+            case 'SecondHeadTeacher':
+            case 'DiscplineMaster':
+                return redirect()->intended(RouteServiceProvider::TEACHER);
+            case 'Admin':
+                return redirect()->intended(RouteServiceProvider::ADMIN);
+            default:
+                return redirect()->back()->withErrors(['message' => 'Unauthorized role']);
+        }
     }
-    }
+
+ // If authentication fails, redirect back with an error message
+ return redirect()->back()->withErrors(['message' => 'Authentication failed']);
+}
+
 
     /**
      * Destroy an authenticated session.

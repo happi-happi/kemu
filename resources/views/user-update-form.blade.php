@@ -45,12 +45,24 @@
             <div>      
  <select class="form-select" name="class" type="text" value="{{ $data->class}}" aria-label="Default select example">
   <option selected>Class</option>
-  <option value="Standard four">Standard four</option>
-  <option value="Standard five">Standard five</option>
-  <option value="Standard six">Standard six</option>
-  <option value="Standard seven">Standard seven</option>
+  <option value="Kindegerten">Kindegerten</option>
+  <option value="Standardone">Standard one</option>
+  <option value="Standardtwo">Standard two</option>
+  <option value="Standardthree">Standard three</option>
+  <option value="Standardfour">Standard four</option>
+  <option value="Standardfive">Standard five</option>
+  <option value="Standardsix">Standard six</option>
+  <option value="Standardseven">Standard seven</option>
+  <option value="Formone">Form one</option>
+  <option value="Formtwo">Form two</option>
+  <option value="Formthree">Form three</option>
+  <option value="Formfour">Form four</option>
+  <option value="Formfive">Form five</option>
+  <option value="Formsix">Form six</option>
   <option value="FinanceDepartment">Finance Department</option>
   <option value="TeacherDepartment">TeacherDepartment</option>
+  <option value="HeadTeacher">HeadTeacher</option>
+  <option value="SecondHeadTeacher">SecondHeadTeacher</option>
 </select>
 </div>
 

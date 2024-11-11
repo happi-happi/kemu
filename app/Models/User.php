@@ -22,6 +22,7 @@ class User extends Authenticatable
         'Fname',
         'Mname',
         'Lname',
+        'class',
         'DateofBirth',
         'PlaceofBirth',
         'Nationality',
@@ -135,5 +136,20 @@ class User extends Authenticatable
     {
         return $this->hasMany(attendance::class, 'school_id'); 
     }
+
+    public function results()
+    {
+        return $this->hasMany(results::class);
+    }
   
+       public function subject()
+    {
+        return $this->belongsTo(Subject::class, 'subjects_id', 'id');
+    }
+
+    // Relationship with Schoolinformation model
+    public function school()
+    {
+        return $this->belongsTo(Schoolinformation::class, 'school_id', 'id');
+    }
 }

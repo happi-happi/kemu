@@ -51,15 +51,35 @@
                         </x-dropdown-link>
                         @endif
 
-                        @if(Auth::user()->Role === 'Admin' ) 
+                        @if((Auth::guard('web')->check() && (Auth::user()->Role === 'Admin' )) || 
+                        (Auth::guard('staff')->check() && in_array(Auth::guard('staff')->user()->staffRole, ['Admin']))
+                        )
                         <x-dropdown-link :href="route('viewregisterstaff')">
                             {{ __('Register Staff') }}
                         </x-dropdown-link>
                         @endif
 
-                        @if(Auth::user()->Role === 'Admin' || Auth::user()->Role === 'Teacher')
+                        @if((Auth::guard('web')->check() && (Auth::user()->Role === 'Admin' || Auth::user()->Role === 'Teacher')) || 
+                        (Auth::guard('staff')->check() && in_array(Auth::guard('staff')->user()->staffRole, ['Admin', 'Teacher']))
+                        )
                         <x-dropdown-link :href="route('viewregisterguardian')">
                             {{ __('Register Guardian and Parent') }}
+                        </x-dropdown-link>
+                        @endif
+
+                        @if((Auth::guard('web')->check() && (Auth::user()->Role === 'Admin' )) || 
+                        (Auth::guard('staff')->check() && in_array(Auth::guard('staff')->user()->staffRole, ['Admin']))
+                        )
+                        <x-dropdown-link :href="route('viewregistersubjects')">
+                            {{ __('Register subject') }}
+                        </x-dropdown-link>
+                        @endif
+
+                        @if((Auth::guard('web')->check() && (Auth::user()->Role === 'Admin' )) || 
+                        (Auth::guard('staff')->check() && in_array(Auth::guard('staff')->user()->staffRole, ['Admin']))
+                        )
+                        <x-dropdown-link :href="route('viewRegisterSubjectTeacher')">
+                            {{ __('Register Subject Teacher ') }}
                         </x-dropdown-link>
                         @endif
             
@@ -68,13 +88,30 @@
                         <x-dropdown-link :href="route('profile.edit')">
                             {{ __('Your Profile') }}
                         </x-dropdown-link>
-                        @if(Auth::user()->Role === 'Teacher'||  Auth::user()->Role ==='DiscplineMaster')   
+
+
+                        @if((Auth::guard('web')->check() && (Auth::user()->Role === 'Teacher' || Auth::user()->Role === 'DiscplineMaster')) || 
+                        (Auth::guard('staff')->check() && in_array(Auth::guard('staff')->user()->staffRole, ['DiscplineMaster', 'Teacher']))
+                        ) 
                         <x-dropdown-link :href="route('studentList')">
                             {{ __('StudentList') }}
                         </x-dropdown-link>  
                         @endif
 
-                        @if(Auth::user()->Role === 'Teacher'||  Auth::user()->Role ==='DiscplineMaster')   
+
+                        @if((Auth::guard('web')->check() && (Auth::user()->Role === 'Teacher' || Auth::user()->Role === 'DiscplineMaster'||Auth::user()->Role === 'HeadTeacher')) || 
+                        (Auth::guard('staff')->check() && in_array(Auth::guard('staff')->user()->staffRole, ['DiscplineMaster', 'Teacher','HeadTeacher']))
+                        ) 
+                        <x-dropdown-link :href="route('resultreport')">
+                            {{ __('Student Result Report') }}
+                        </x-dropdown-link>  
+                        @endif
+
+
+
+                        @if((Auth::guard('web')->check() && (Auth::user()->Role === 'Teacher' || Auth::user()->Role === 'DiscplineMaster')) || 
+                        (Auth::guard('staff')->check() && in_array(Auth::guard('staff')->user()->staffRole, ['DiscplineMaster', 'Teacher']))
+                        ) 
                         <x-dropdown-link :href="route('SearchstudentInfo')">
                             {{ __('Search Student') }}
                         </x-dropdown-link>  
@@ -85,90 +122,144 @@
                             {{ __('Upload result') }}
                         </x-dropdown-link>  
                         @endif
+                         
+                        @if((Auth::guard('web')->check() && (Auth::user()->Role === 'Teacher' || Auth::user()->Role === 'DiscplineMaster'||Auth::user()->Role === 'Admin')) || 
+                        (Auth::guard('staff')->check() && in_array(Auth::guard('staff')->user()->staffRole, ['DiscplineMaster', 'Teacher','Admin' ]))
+                        )  
+                        <x-dropdown-link :href="route('createresult')">
+                            {{ __('Test Upload result') }}
+                        </x-dropdown-link>  
+                        @endif
 
-                        @if(Auth::user()->Role === 'Teacher'|| Auth::user()->Role ==='Burser'|| Auth::user()->Role ==='HeadTeacher'|| Auth::user()->Role ==='DiscplineMaster'|| Auth::user()->Role ==='Admin')   
+                        @if((Auth::guard('web')->check() && (Auth::user()->Role === 'Teacher' || Auth::user()->Role === 'DiscplineMaster'||Auth::user()->Role === 'Admin')) || 
+                        (Auth::guard('staff')->check() && in_array(Auth::guard('staff')->user()->staffRole, ['DiscplineMaster', 'Teacher','Admin' ]))
+                        )   
                         <x-dropdown-link :href="route('GetyourMessage')">
                             {{ __('Mail') }}
                         </x-dropdown-link>  
                         @endif
 
-                        @if(Auth::user()->Role === 'Teacher'|| Auth::user()->Role ==='Burser'|| Auth::user()->Role ==='HeadTeacher'|| Auth::user()->Role ==='DiscplineMaster'|| Auth::user()->Role ==='Admin')   
-                        <x-dropdown-link :href="route('SendyourMessagePage')">
-                            {{ __('Send your Mail ') }}
-                        </x-dropdown-link>  
+                        {{-- Check for roles in the 'web' guard --}}
+                        @if(
+                            (Auth::guard('web')->check() && in_array(Auth::user()->Role, ['Teacher', 'Burser', 'HeadTeacher', 'DiscplineMaster', 'Admin'])) || 
+                            (Auth::guard('staff')->check() && in_array(Auth::guard('staff')->user()->staffRole, ['Teacher', 'Burser', 'HeadTeacher', 'DiscplineMaster', 'Admin']))
+                        )
+                            <x-dropdown-link :href="route('SendyourMessagePage')">
+                                {{ __('Send your Mail') }}
+                            </x-dropdown-link>  
                         @endif
 
-                        @if(Auth::user()->Role === 'Teacher'|| Auth::user()->Role ==='HeadTeacher'|| Auth::user()->Role ==='DiscplineMaster'|| Auth::user()->Role ==='Admin')   
-                        <x-dropdown-link :href="route('AttendancePage')">
-                            {{ __('Attendance') }}
-                        </x-dropdown-link>  
+                        @if(
+                            (Auth::guard('web')->check() && in_array(Auth::user()->Role, ['Teacher', 'HeadTeacher', 'DiscplineMaster', 'Admin'])) || 
+                            (Auth::guard('staff')->check() && in_array(Auth::guard('staff')->user()->staffRole, ['Teacher', 'HeadTeacher', 'DiscplineMaster', 'Admin']))
+                        )
+                            <x-dropdown-link :href="route('AttendancePage')">
+                                {{ __('Attendance') }}
+                            </x-dropdown-link>  
                         @endif
 
-                        @if(Auth::user()->Role === 'Student')   
-                        <x-dropdown-link :href="route('StudentPaymentRecords')">
-                            {{ __('Payment records ') }}
-                        </x-dropdown-link>  
+                        @if(
+                            (Auth::guard('web')->check() && Auth::user()->Role === 'Student')
+                        )
+                            <x-dropdown-link :href="route('StudentPaymentRecords')">
+                                {{ __('Payment records') }}
+                            </x-dropdown-link>  
                         @endif
 
-                        @if(Auth::user()->Role === 'Admin')   
-                        <x-dropdown-link :href="route('import-excel')">
-                            {{ __('Upload result') }}
-                        </x-dropdown-link>  
+                        @if(
+                            (Auth::guard('web')->check() && Auth::user()->Role === 'Admin') || 
+                            (Auth::guard('staff')->check() && Auth::guard('staff')->user()->staffRole === 'Admin')
+                        )
+                            <x-dropdown-link :href="route('import-excel')">
+                                {{ __('Upload result') }}
+                            </x-dropdown-link>  
                         @endif
 
-                        @if(Auth::user()->Role === 'Burser')   
-                        <x-dropdown-link :href="route('BurserPage')">
-                            {{ __('Burser Page') }}
-                        </x-dropdown-link>  
+                        @if(
+                            (Auth::guard('web')->check() && Auth::user()->Role === 'Burser') || 
+                            (Auth::guard('staff')->check() && Auth::guard('staff')->user()->staffRole === 'Burser')
+                        )
+                            <x-dropdown-link :href="route('BurserPage')">
+                                {{ __('Burser Page') }}
+                            </x-dropdown-link>  
                         @endif
 
-                        @if(Auth::user()->Role === 'Admin')   
-                        <x-dropdown-link :href="route('searchuser')">
-                            {{ __('User Setting') }}
-                        </x-dropdown-link>  
+                        @if(
+                            (Auth::guard('web')->check() && Auth::user()->Role === 'Admin') || 
+                            (Auth::guard('staff')->check() && Auth::guard('staff')->user()->staffRole === 'Admin')
+                        )
+                            <x-dropdown-link :href="route('searchuser')">
+                                {{ __('User Setting') }}
+                            </x-dropdown-link>  
                         @endif
 
-                        @if(Auth::user()->Role === 'Admin')   
-                        <x-dropdown-link :href="route('AdminStudentFirstMidtermresult')">
-                            {{ __('Studentresult') }}
-                        </x-dropdown-link>  
+                        @if(
+                            (Auth::guard('web')->check() && Auth::user()->Role === 'Admin') || 
+                            (Auth::guard('staff')->check() && Auth::guard('staff')->user()->staffRole === 'Admin')
+                        )
+                            <x-dropdown-link :href="route('AdminStudentFirstMidtermresult')">
+                                {{ __('Studentresult') }}
+                            </x-dropdown-link>  
                         @endif
 
-                        @if(Auth::user()->Role === 'Burser')   
-                        <x-dropdown-link :href="route('StudentPaymentStatus')">
-                            {{ __('StudentPaymentStatus') }}
-                        </x-dropdown-link>  
-                        @endif
-                        @if(Auth::user()->Role === 'Student')   
-                        <x-dropdown-link :href="route('CommentPage')">
-                            {{ __('Send your Comment') }}
-                        </x-dropdown-link>  
-                        @endif
-                       
-                        
-                        @if(Auth::user()->Role === 'HeadTeacher')   
-                        <x-dropdown-link :href="route('NewCommentPage')">
-                            {{ __('New Comment') }}
-                        </x-dropdown-link>  
+                        @if(
+                            (Auth::guard('web')->check() && Auth::user()->Role === 'Burser') || 
+                            (Auth::guard('staff')->check() && Auth::guard('staff')->user()->staffRole === 'Burser')
+                        )
+                            <x-dropdown-link :href="route('StudentPaymentStatus')">
+                                {{ __('StudentPaymentStatus') }}
+                            </x-dropdown-link>  
                         @endif
 
-                        @if(Auth::user()->Role === 'HeadTeacher'|| Auth::user()->Role ==='Admin')   
-                        <x-dropdown-link :href="route('SchoolInformationPage')">
-                            {{ __('School Information') }}
-                        </x-dropdown-link>  
+                        {{-- Check if the user is a Student in the 'web' guard --}}
+                        @if(
+                            (Auth::guard('web')->check() && Auth::user()->Role === 'Student')
+                        )
+                            <x-dropdown-link :href="route('CommentPage')">
+                                {{ __('Send your Comment') }}
+                            </x-dropdown-link>  
                         @endif
 
-                        @if(Auth::user()->Role === 'Admin')   
-                        <x-dropdown-link :href="route('EditSchoolInformationPage')">
-                            {{ __('Edit ShoolInformation Page') }}
-                        </x-dropdown-link>  
+                        {{-- Check if the user is a HeadTeacher in either 'web' or 'staff' guards --}}
+                        @if(
+                            (Auth::guard('web')->check() && Auth::user()->Role === 'HeadTeacher') || 
+                            (Auth::guard('staff')->check() && Auth::guard('staff')->user()->staffRole === 'HeadTeacher')
+                        )
+                            <x-dropdown-link :href="route('NewCommentPage')">
+                                {{ __('New Comment') }}
+                            </x-dropdown-link>  
                         @endif
 
-                        @if(Auth::user()->Role === 'Admin')   
-                        <x-dropdown-link :href="route('Deactivateview')">
-                            {{ __('Activate and Deactivate') }}
-                        </x-dropdown-link>  
+                        {{-- Check if the user is a HeadTeacher or Admin in either guard --}}
+                        @if(
+                            (Auth::guard('web')->check() && in_array(Auth::user()->Role, ['HeadTeacher', 'Admin'])) || 
+                            (Auth::guard('staff')->check() && in_array(Auth::guard('staff')->user()->staffRole, ['HeadTeacher', 'Admin']))
+                        )
+                            <x-dropdown-link :href="route('SchoolInformationPage')">
+                                {{ __('School Information') }}
+                            </x-dropdown-link>  
                         @endif
+
+                        {{-- Check if the user is an Admin in either guard --}}
+                        @if(
+                            (Auth::guard('web')->check() && Auth::user()->Role === 'Admin') || 
+                            (Auth::guard('staff')->check() && Auth::guard('staff')->user()->staffRole === 'Admin')
+                        )
+                            <x-dropdown-link :href="route('EditSchoolInformationPage')">
+                                {{ __('Edit School Information Page') }}
+                            </x-dropdown-link>  
+                        @endif
+
+                        {{-- Check if the user is an Admin in either guard --}}
+                        @if(
+                            (Auth::guard('web')->check() && Auth::user()->Role === 'Admin') || 
+                            (Auth::guard('staff')->check() && Auth::guard('staff')->user()->staffRole === 'Admin')
+                        )
+                            <x-dropdown-link :href="route('Deactivateview')">
+                                {{ __('Activate and Deactivate') }}
+                            </x-dropdown-link>  
+                        @endif
+
 
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">

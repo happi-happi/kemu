@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Stroage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
-use App\Models\user;
+use App\Models\User;
+use App\Models\staff;
 use App\Models\attendance;
 use App\Models\standad_one;
 use App\Models\standard_four;
@@ -108,7 +109,7 @@ class ProfileController extends Controller
     public function edit(Request $request): View
     {
         return view('profile.edit', [
-            'user' => $request->user(),
+            'user' => $request->user(), 
         ]);
     }
 
@@ -6674,6 +6675,56 @@ return redirect()->back()->with('message','student registration succesful');
             
         return view('ReceiveMessage', compact('Receivemessage'));
     }
+
+    //upload result 
+    public function create()
+    {
+        $staff = auth()->guard('staff')->user(); // Get the currently authenticated staff member using 'staff' guard
+    
+        // Ensure the authenticated user is a staff member and has one of the allowed roles
+        $allowedRoles = ['Teacher', 'HeadTeacher', 'SecondHeadTeacher'];
+        if (!$staff || !in_array($staff->staffRole, $allowedRoles)) {
+            abort(403, 'Unauthorized action.');
+        }
+    
+        // Fetch subjects associated with the staff member (assuming a relationship exists in the Staff model)
+        $subjects = $staff->subjects; 
+    
+        // Get students in the staff member's class (assuming class is associated with the staff)
+        $students = user::where('class', $staff->class)->get();
+    
+        // Fetch all schools (assuming Schoolinformation model represents schools)
+        $schools = Schoolinformation::all(); 
+    
+        // Return the view with the fetched data
+        return view('Testuploadresults', compact('subjects', 'students', 'schools'));
+    }
+    
+    
+
+public function store(Request $request)
+{
+    $request->validate([
+        'id' => 'required|exists:students,id',
+        'id' => 'required|exists:subjects,id',
+        'id' => 'required|exists:schools,id',
+        'term' => 'required|in:first_midterm,semi_annual,second_midterm,annual',
+        'academic_year' => 'required|integer|min:2000|max:2100',
+        'score' => 'required|integer|min:0|max:100',
+    ]);
+
+    Result::create([
+        'id' => $request->student_id,
+        'id' => $request->subject_id,
+        'id' => auth()->staff()->id,
+        'id' => $request->school_id,
+        'term' => $request->term,
+        'academic_year' => $request->academic_year,
+        'score' => $request->score,
+    ]);
+
+    return redirect()->back()->with('success', 'Result uploaded successfully!');
+}
 
     
 

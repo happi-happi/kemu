@@ -1,12 +1,13 @@
 <x-app-layout>
 <div class="dropdown">
-  <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown">
+  <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
     Message
   </button>
   <ul class="dropdown-menu">
-    <li><a class="dropdown-item" href="{{route('GetyourMessage')}}"> SENT</a></li>
+    <li><a class="dropdown-item" href="{{ route('GetyourMessage') }}">SENT</a></li>
   </ul>
-</div> 
+</div>
+ 
 <table class="table">
     <p>Received Message</p>
 <thead >

@@ -31,8 +31,31 @@
             <x-input-label for="Lname" :value="__('Lname')" />
             <x-text-input id="Lname" class="block mt-1 w-full" type="text" name="Lname" :value="old('Lname')" required autofocus autocomplete="Lname" />
             <x-input-error :messages="$errors->get('Lname')" class="mt-2" />
-        </div>
+           </div>
+<br>
+           <div>      
+ <select class="form-select" name="class"  aria-label="Default select example">
+  <option selected>Student Class</option>
+  <option value="Kindegerten">Kindegerten</option>
+  <option value="Standardone">Standard one</option>
+  <option value="Standardtwo">Standard two</option>
+  <option value="Standardthree">Standard three</option>
+  <option value="Standardfour">Standard four</option>
+  <option value="Standardfive">Standard five</option>
+  <option value="Standardsix">Standard six</option>
+  <option value="Standardseven">Standard seven</option>
+  <option value="Formone">Form one</option>
+  <option value="Formtwo">Form two</option>
+  <option value="Formthree">Form three</option>
+  <option value="Formfour">Form four</option>
+  <option value="Formfive">Form five</option>
+  <option value="Formsix">Form six</option>
+  <option value="FinanceDepartment">Finance Department</option>
+  <option value="TeacherDepartment">TeacherDepartment</option>
+</select>
+</div>
 
+<br>
         <div>
             <x-input-label for="Date of Birth" :value="__('Date of Birth' )" />
             <x-text-input id="DateofBirth" class="block mt-1 w-full" type="date" name="DateofBirth" :value="old('DateofBirth')" required autofocus autocomplete="DateofBirth" />
@@ -78,6 +101,18 @@
             <option value="{{ $school->SchoolName}}">{{ $school->SchoolName }}</option>
         @endforeach
     </select>
+
+      <div>
+        <x-input-label for="SchoolName ID" :value="__('School Name ID')" />
+         <select id="school_id" name="school_id" class="block mt-1 w-full">
+        <option value="">Select School</option>
+        @foreach($SchoolName as $school)
+            <option value="{{ $school->id }}">{{ $school->SchoolName }}</option>
+        @endforeach
+       </select>
+    <x-input-error :messages="$errors->get('SchoolName')" class="mt-2" />
+       </div>
+
     <x-input-error :messages="$errors->get('SchoolName')" class="mt-2" />
 </div>
   <br><br>

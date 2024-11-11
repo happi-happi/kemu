@@ -40,6 +40,11 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+    
+        'staff' => [ // Use the 'staff' guard for staff authentication
+            'driver' => 'session',
+            'provider' => 'staff',
+        ],
     ],
 
     /*
@@ -64,11 +69,11 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+    
+        'staff' => [ // Use the 'staff' provider for the staff model
+            'driver' => 'eloquent',
+            'model' => App\Models\staff::class,
+        ],
     ],
 
     /*

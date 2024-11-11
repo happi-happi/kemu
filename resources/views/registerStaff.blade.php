@@ -100,6 +100,7 @@
         <div>      
  <select class="form-select" name="class"  aria-label="Default select example">
   <option selected>Class Teacher</option>
+  <option value="NotClassTeacher">Not Class Teacher</option>
   <option value="Kindegerten">Kindegerten</option>
   <option value="Standardone">Standard one</option>
   <option value="Standardtwo">Standard two</option>
@@ -116,6 +117,9 @@
   <option value="Formsix">Form six</option>
   <option value="FinanceDepartment">Finance Department</option>
   <option value="TeacherDepartment">TeacherDepartment</option>
+  <option value="TeacherDepartment">Academic Teacher</option>
+  <option value="HeadTeacher">HeadTeacher</option>
+  <option value="SecondHeadTeacher">Second HeadTeacher</option>
 </select>
 </div>
 
@@ -138,18 +142,31 @@
       <br>
           <!-- Password -->
           <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-            <x-text-input id="password" class="block mt-1 w-full" type="password" name="Password" required autocomplete="new-password" />
+            <x-input-label for="password" :value="__('password')" />
+            <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
           </div>
 
           <!-- Confirm Password -->
           <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-            <x-text-input id="password_confirmation" class="block mt-1 w-full" type="password" name="Password_confirmation" required autocomplete="new-password" />
+            <x-input-label for="password_confirmation" :value="__('Confirm password')" />
+            <x-text-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
           </div>
           <br>
+
+          <div>
+        <x-input-label for="SchoolName ID" :value="__('School Name ID')" />
+         <select id="school_id" name="school_id" class="block mt-1 w-full">
+        <option value="">Select School</option>
+        @foreach($SchoolName as $school)
+            <option value="{{ $school->id }}">{{ $school->SchoolName }}</option>
+        @endforeach
+       </select>
+    <x-input-error :messages="$errors->get('SchoolName')" class="mt-2" />
+       </div>
+<br><br>
+
 
           <!-- Submit Button -->
           <x-primary-button class="ms-4">

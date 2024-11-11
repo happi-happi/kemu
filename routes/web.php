@@ -24,7 +24,9 @@ Route::get('/welcome', function () {
     return view('welcome');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth', 'check.active')->group(function () {
+Route::middleware('auth:web,staff', 'check.active')->group(function () {
+
+   
      
    Route::get('/Deactivateview', [ProfileController::class, 'Deactivateview'])->name('Deactivateview');
    Route::post('/deactivate', [ProfileController::class, 'deactivateUsersByRole'])->name('deactivate');
@@ -32,6 +34,10 @@ Route::middleware('auth', 'check.active')->group(function () {
 
    Route::get('Guardianregister', [ProfileController::class, 'Guardianregister'])->name('Guardianregister');
    Route::get('Staffregister', [ProfileController::class, 'Staffregister'])->name('Staffregister');
+
+   Route::get('create', [ProfileController::class, 'create'])->name('create');
+   Route::post('results', [ProfileController::class, 'store'])->name('store');
+
 
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
