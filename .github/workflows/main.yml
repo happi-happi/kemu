@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: 🚚 Get latest code
+      with:
+        submodules: true
       uses: actions/checkout@v2
       
     - name: FTP-Deploy-Action
