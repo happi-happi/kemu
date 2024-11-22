@@ -9,9 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: 🚚 Get latest code
+      uses: actions/checkout@v2
       with:
         submodules: true
-      uses: actions/checkout@v2
       
     - name: FTP-Deploy-Action
       uses: SamKirkland/FTP-Deploy-Action@2.0.0
