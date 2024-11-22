@@ -11,7 +11,9 @@ jobs:
     - name: 🚚 Get latest code
       uses: actions/checkout@v2
       with:
-        submodules: true
+          submodules: recursive
+          fetch-depth: 0
+          submodule-update-strategy: none
       
     - name: FTP-Deploy-Action
       uses: SamKirkland/FTP-Deploy-Action@2.0.0
