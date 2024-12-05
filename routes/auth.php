@@ -51,6 +51,18 @@ Route::middleware('auth:web,staff')->group(function () {
     Route::get('resultreport', [RegisteredUserController::class, 'resultreport'])->name('resultreport');
 
 
+    Route::get('createTimetable', [RegisteredUserController::class, 'createTimetable'])->name('createTimetable');
+    Route::post('storeTimetable', [RegisteredUserController::class, 'storeTimetable'])->name('storeTimetable');
+
+
+    Route::get('viewtimetable', [RegisteredUserController::class, 'viewtimetable'])->name('viewtimetable');
+    Route::get('/timetable/export-pdf', [RegisteredUserController::class, 'exportPdf'])->name('timetable.export-pdf');
+
+    Route::get('/timetable/{id}/edit', [RegisteredUserController::class, 'edit'])->name('timetable.edit');
+    Route::put('/timetable/{id}', [RegisteredUserController::class, 'update'])->name('timetable.update');
+
+
+
     Route::get('register', [RegisteredUserController::class, 'create'])
     ->name('register');
    Route::post('register', [RegisteredUserController::class, 'store']); 

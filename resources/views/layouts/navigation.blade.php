@@ -82,6 +82,8 @@
                             {{ __('Register Subject Teacher ') }}
                         </x-dropdown-link>
                         @endif
+
+                        
             
             
 
@@ -91,7 +93,7 @@
 
 
                         @if((Auth::guard('web')->check() && (Auth::user()->Role === 'Teacher' || Auth::user()->Role === 'DiscplineMaster')) || 
-                        (Auth::guard('staff')->check() && in_array(Auth::guard('staff')->user()->staffRole, ['DiscplineMaster', 'Teacher']))
+                        (Auth::guard('staff')->check() && in_array(Auth::guard('staff')->user()->staffRole, ['DiscplineMaster', 'Teacher','Admin']))
                         ) 
                         <x-dropdown-link :href="route('studentList')">
                             {{ __('StudentList') }}
@@ -100,10 +102,26 @@
 
 
                         @if((Auth::guard('web')->check() && (Auth::user()->Role === 'Teacher' || Auth::user()->Role === 'DiscplineMaster'||Auth::user()->Role === 'HeadTeacher')) || 
-                        (Auth::guard('staff')->check() && in_array(Auth::guard('staff')->user()->staffRole, ['DiscplineMaster', 'Teacher','HeadTeacher']))
+                        (Auth::guard('staff')->check() && in_array(Auth::guard('staff')->user()->staffRole, ['DiscplineMaster', 'Teacher','HeadTeacher','Admin']))
                         ) 
                         <x-dropdown-link :href="route('resultreport')">
                             {{ __('Student Result Report') }}
+                        </x-dropdown-link>  
+                        @endif
+
+                        @if((Auth::guard('web')->check() && (Auth::user()->Role === 'Teacher' || Auth::user()->Role === 'DiscplineMaster'||Auth::user()->Role === 'HeadTeacher')) || 
+                        (Auth::guard('staff')->check() && in_array(Auth::guard('staff')->user()->staffRole, ['DiscplineMaster', 'Teacher','HeadTeacher','Admin']))
+                        ) 
+                        <x-dropdown-link :href="route('createTimetable')">
+                            {{ __('Create Time Table') }}
+                        </x-dropdown-link>  
+                        @endif
+
+                        @if((Auth::guard('web')->check() && (Auth::user()->Role === 'Teacher' || Auth::user()->Role === 'DiscplineMaster'||Auth::user()->Role === 'HeadTeacher')) || 
+                        (Auth::guard('staff')->check() && in_array(Auth::guard('staff')->user()->staffRole, ['DiscplineMaster', 'Teacher','HeadTeacher','Admin']))
+                        ) 
+                        <x-dropdown-link :href="route('viewtimetable')">
+                            {{ __('view timetable') }}
                         </x-dropdown-link>  
                         @endif
 

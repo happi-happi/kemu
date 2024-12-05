@@ -333,6 +333,18 @@ Route::get('FormFourSM', [ProfileController::class, 'FormFourSM'])->name('FormFo
      Route::get('AttendancePage', [ProfileController::class, 'AttendancePage'])->name('AttendancePage');
      Route::post('Attendance', [ProfileController::class, 'Attendance'])->name('Attendance');
 
+
+
+
+});
+
+
+Route::get('/test-email', function () {
+   Mail::raw('This is a test email from Kemu System.', function ($message) {
+       $message->to('happistephen@gmail.com') // Replace with a valid email
+               ->subject('Test Email');
+   });
+   return 'Test email sent successfully!';
 });
 
 require __DIR__.'/auth.php';

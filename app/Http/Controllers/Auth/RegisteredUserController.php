@@ -1,6 +1,10 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\StudentRegisterNotification;
+use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -8,6 +12,7 @@ use App\Models\staff;
 use App\Models\guardian;
 use App\Models\subjects;
 use App\Models\results;
+use App\Models\timetable;
 use App\Models\teacher_subject;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
@@ -96,6 +101,9 @@ class RegisteredUserController extends Controller
         Auth::login($user);
 
         return redirect(RouteServiceProvider::HOME);*/
+
+        // Send the email
+        Mail::to($user->email)->send(new StudentRegisterNotification());
 
         return redirect()->back()->with('message','student registration succesful');
     }
@@ -435,4 +443,151 @@ $studentsWithAverage = $studentsWithAverage->groupBy(function ($studentData) {
 //return response()->json($studentsWithAverage);
 return view('resultreport', ['students' => $studentsWithAverage]);
 }
+
+
+public function createTimetable()
+{
+    // Get the school_id of the authenticated user
+    $schoolId = auth()->guard('staff')->user()->school_id;
+
+    // Fetch subjects and teachers belonging to the authenticated user's school
+    $subjects = subjects::all(); // Ensure the Subject model has a school_id if needed
+    $teachers = staff::where('school_id', $schoolId)->get(); 
+
+    // Return the view with subjects and teachers data
+    return view('timetable', compact('subjects', 'teachers'));
+}
+
+public function storeTimetable (Request $request)
+{
+    $request->validate([
+        'schoolinformation_id' => 'required',
+        'class_name' => 'required',
+        'subject_id' => 'required|exists:subjects,id',
+        'staff_id' => 'required|exists:staff,id', // New validation
+        'day' => 'required|string',
+        'start_time' => 'required|date_format:H:i',
+        'end_time' => 'required|date_format:H:i|after:start_time',
+    ]);
+
+    //timetable::create
+    
+    timetable::create([
+        'schoolinformation_id' => $request->input('schoolinformation_id'),
+        'class_name' => $request->input('class_name'),
+        'subject_id' => $request->input('subject_id'),
+        'staff_id' => $request->input('staff_id'), // Store teacher ID
+        'day' => $request->input('day'),
+        'start_time' => $request->input('start_time'),
+        'end_time' => $request->input('end_time'),
+    ]);
+
+    return redirect()->route('createTimetable')->with('success', 'Timetable created successfully.');
+}
+
+public function viewtimetable(Request $request)
+{
+    $schoolId = auth()->guard('staff')->user()->school_id;
+
+    // Start query
+    $query = timetable::where('schoolinformation_id', $schoolId);
+
+    // Filter by class_name
+    if ($request->has('class_name') && !empty($request->class_name)) {
+        $query->where('class_name', $request->class_name);
+    }
+
+    // Filter by staff
+    if ($request->has('staff_id') && !empty($request->staff_id)) {
+        $query->where('staff_id', $request->staff_id);
+    }
+
+    // Filter by day (convert input to date format if provided)
+    if ($request->has('day') && !empty($request->day)) {
+        $query->whereDate('day', Carbon::parse($request->day)->format('Y-m-d'));
+    }
+
+    // Filter by subject
+    if ($request->has('subject_id') && !empty($request->subject_id)) {
+        $query->where('subject_id', $request->subject_id);
+    }
+
+    // Execute query and get results
+    $timetable = $query->get();
+
+    // Pass additional data for dropdown filters (staff and subjects)
+    $staff = \App\Models\staff::all();
+    $subjects = \App\Models\subjects::all();
+
+    return view('viewtimetable', compact('timetable', 'staff', 'subjects'));
+}
+
+
+public function exportPdf(Request $request)
+{
+    $schoolId = auth()->guard('staff')->user()->school_id;
+
+    // Start query
+    $query = timetable::where('schoolinformation_id', $schoolId);
+
+    // Apply filters
+    if ($request->has('class_name') && !empty($request->class_name)) {
+        $query->where('class_name', $request->class_name);
+    }
+
+    if ($request->has('staff_id') && !empty($request->staff_id)) {
+        $query->where('staff_id', $request->staff_id);
+    }
+
+    if ($request->has('day') && !empty($request->day)) {
+        $query->whereDate('day', Carbon::parse($request->day)->format('Y-m-d'));
+    }
+
+    if ($request->has('subject_id') && !empty($request->subject_id)) {
+        $query->where('subject_id', $request->subject_id);
+    }
+
+    // Fetch the filtered timetable
+    $timetable = $query->get();
+
+    // Generate PDF
+    $pdf = Pdf::loadView('timetable-pdf', compact('timetable'));
+
+    // Download the PDF
+    return $pdf->download('timetable.pdf');
+}
+
+
+public function edit($id)
+{
+    $timetable = timetable::findOrFail($id);
+    $staff = \App\Models\staff::all();
+    $subjects = \App\Models\subjects::all();
+
+    return view('edit_timetable', compact('timetable', 'staff', 'subjects'));
+}
+
+public function update(Request $request, $id)
+{
+    $request->validate([
+        'class_name' => 'required',
+        'subject_id' => 'required',
+        'staff_id' => 'required',
+        'day' => 'required|date',
+        'start_time' => 'required',
+        'end_time' => 'required',
+    ]);
+
+    $timetable = timetable::findOrFail($id);
+    $timetable->class_name = $request->class_name;
+    $timetable->subject_id = $request->subject_id;
+    $timetable->staff_id = $request->staff_id;
+    $timetable->day = $request->day;
+    $timetable->start_time = $request->start_time;
+    $timetable->end_time = $request->end_time;
+    $timetable->save();
+
+    return redirect()->route('viewtimetable')->with('success', 'Timetable updated successfully!');
+}
+
 }
