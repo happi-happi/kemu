@@ -1,4 +1,5 @@
 <x-app-layout>
+   
     <form method="GET" action="{{ route('viewtimetable') }}">
         <div class="row mb-3">
             <!-- Class Name Filter -->
@@ -100,5 +101,5 @@
     <input type="hidden" name="subject_id" value="{{ request('subject_id') }}">
     <button type="submit" class="btn btn-primary">Export as PDF</button>
 </form>
- 
+
 </x-app-layout>

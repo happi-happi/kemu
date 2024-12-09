@@ -39,4 +39,10 @@ return new class extends Migration
     {
         Schema::dropIfExists('staff');
     }
+
+    public function schoolinformation()
+{
+    return $this->belongsTo(App\Models\Schoolinformation::class, 'school_id');
+}
+
 };

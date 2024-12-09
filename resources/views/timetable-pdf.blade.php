@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+  
     <title>Timetable</title>
     <style>
         body {
@@ -23,7 +24,15 @@
     </style>
 </head>
 <body>
-    <h2>School Timetable</h2>
+            <!-- Banner -->
+            <div style="text-align: center; margin-bottom: 20px;">
+        <img src="{{ public_path('images/banner.jpg') }}" alt="School Banner" style="width: 50%; height: auto;">
+        <h1 style="margin: 0;">{{ $schoolName}} Secondary school</h1>
+        <p> Official Timetable</p>
+    </div>
+   
+</div>
+
     <table>
         <thead>
             <tr>

@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
@@ -60,6 +61,12 @@ Route::middleware('auth:web,staff')->group(function () {
 
     Route::get('/timetable/{id}/edit', [RegisteredUserController::class, 'edit'])->name('timetable.edit');
     Route::put('/timetable/{id}', [RegisteredUserController::class, 'update'])->name('timetable.update');
+
+    //chatroute
+    Route::get('chat/index', [ChatController::class, 'index'])->name('index');
+    Route::post('/chat/send', [ChatController::class, 'send'])->name('chat.send');
+    Route::get('/chat/messages/{receiver_id}', [ChatController::class, 'fetchMessages']);
+
 
 
 

@@ -124,7 +124,12 @@
                             {{ __('view timetable') }}
                         </x-dropdown-link>  
                         @endif
+                         
 
+
+                      <x-dropdown-link :href="route('index')">
+                            {{ __('Chat here ') }}
+                        </x-dropdown-link>  
 
 
                         @if((Auth::guard('web')->check() && (Auth::user()->Role === 'Teacher' || Auth::user()->Role === 'DiscplineMaster')) || 

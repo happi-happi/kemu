@@ -24,6 +24,7 @@ use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 use App\Models\schoolinformation;
 
+
 class RegisteredUserController extends Controller
 {
     /**
@@ -492,6 +493,8 @@ public function viewtimetable(Request $request)
     // Start query
     $query = timetable::where('schoolinformation_id', $schoolId);
 
+    $staff = staff::where('school_id', $schoolId)->get();
+
     // Filter by class_name
     if ($request->has('class_name') && !empty($request->class_name)) {
         $query->where('class_name', $request->class_name);
@@ -516,7 +519,8 @@ public function viewtimetable(Request $request)
     $timetable = $query->get();
 
     // Pass additional data for dropdown filters (staff and subjects)
-    $staff = \App\Models\staff::all();
+  //  $staff = \App\Models\staff::all();
+
     $subjects = \App\Models\subjects::all();
 
     return view('viewtimetable', compact('timetable', 'staff', 'subjects'));
@@ -529,6 +533,8 @@ public function exportPdf(Request $request)
 
     // Start query
     $query = timetable::where('schoolinformation_id', $schoolId);
+
+    $schoolName = \App\Models\schoolinformation::where('id', $schoolId)->value('SchoolName');
 
     // Apply filters
     if ($request->has('class_name') && !empty($request->class_name)) {
@@ -551,7 +557,7 @@ public function exportPdf(Request $request)
     $timetable = $query->get();
 
     // Generate PDF
-    $pdf = Pdf::loadView('timetable-pdf', compact('timetable'));
+    $pdf = Pdf::loadView('timetable-pdf', compact('timetable','schoolName'));
 
     // Download the PDF
     return $pdf->download('timetable.pdf');
@@ -560,8 +566,9 @@ public function exportPdf(Request $request)
 
 public function edit($id)
 {
+    $schoolId = auth()->guard('staff')->user()->school_id;
     $timetable = timetable::findOrFail($id);
-    $staff = \App\Models\staff::all();
+    $staff = staff::where('school_id', $schoolId)->get(); 
     $subjects = \App\Models\subjects::all();
 
     return view('edit_timetable', compact('timetable', 'staff', 'subjects'));
