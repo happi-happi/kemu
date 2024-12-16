@@ -100,4 +100,15 @@ class staff extends Authenticatable implements
         return $this->hasMany(User::class, 'class', 'class')
                     ->where('school_id', $this->school_id);
     }
+
+    
+    public function sentMessages()
+    {
+        return $this->hasMany(messages::class, 'sender_id');
+    }
+
+    public function receivedMessages()
+    {
+        return $this->hasMany(messages::class, 'receiver_id');
+    }
 }

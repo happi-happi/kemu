@@ -18,12 +18,12 @@ class messages extends Model
     // Define the relationship with the Sender
     public function sender()
     {
-        return $this->belongsTo(User::class, 'sender_id');
+        return $this->belongsTo(staff::class, 'sender_id');
     }
 
     // Define the relationship with the Receiver
     public function receiver()
     {
-        return $this->belongsTo(User::class, 'receiver_id');
+        return $this->belongsTo(staff::class, 'receiver_id');
     }
 }

@@ -117,15 +117,30 @@
                         </x-dropdown-link>  
                         @endif
 
-                        @if((Auth::guard('web')->check() && (Auth::user()->Role === 'Teacher' || Auth::user()->Role === 'DiscplineMaster'||Auth::user()->Role === 'HeadTeacher')) || 
+                        @if((Auth::guard('web')->check() && (Auth::user()->Role === 'Teacher' || Auth::user()->Role === 'DiscplineMaster'||Auth::user()->Role === 'HeadTeacher'||Auth::user()->Role === 'Admin')) || 
                         (Auth::guard('staff')->check() && in_array(Auth::guard('staff')->user()->staffRole, ['DiscplineMaster', 'Teacher','HeadTeacher','Admin']))
                         ) 
                         <x-dropdown-link :href="route('viewtimetable')">
                             {{ __('view timetable') }}
                         </x-dropdown-link>  
                         @endif
-                         
 
+                        @if((Auth::guard('web')->check() && (Auth::user()->Role === 'Teacher' || Auth::user()->Role === 'DiscplineMaster'||Auth::user()->Role === 'HeadTeacher'||Auth::user()->Role === 'Admin')) || 
+                        (Auth::guard('staff')->check() && in_array(Auth::guard('staff')->user()->staffRole, ['DiscplineMaster', 'Teacher','HeadTeacher','Admin']))
+                        ) 
+                        <x-dropdown-link :href="route('lessonplanview')">
+                            {{ __('lesson plan') }}
+                        </x-dropdown-link>  
+                        @endif
+
+                        @if((Auth::guard('web')->check() && (Auth::user()->Role === 'DiscplineMaster'||Auth::user()->Role === 'HeadTeacher'||Auth::user()->Role === 'Admin')) || 
+                        (Auth::guard('staff')->check() && in_array(Auth::guard('staff')->user()->staffRole, ['DiscplineMaster','HeadTeacher','Admin']))
+                        ) 
+                        <x-dropdown-link :href="route('reportlessonplan')">
+                            {{ __('lesson plan Report') }}
+                        </x-dropdown-link>  
+                        @endif
+                         
 
                       <x-dropdown-link :href="route('index')">
                             {{ __('Chat here ') }}

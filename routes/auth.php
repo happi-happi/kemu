@@ -69,6 +69,17 @@ Route::middleware('auth:web,staff')->group(function () {
 
 
 
+    //Lesson plan layout 
+    Route::get('lessonplanview', [RegisteredUserController::class, 'lessonplanview'])->name('lessonplanview'); 
+    Route::post('lessonplan', [RegisteredUserController::class, 'lessonplan'])->name('lessonplan');
+
+      //lesson plan layout report
+      Route::get('/reportlessonplan', [RegisteredUserController::class, 'reportlessonplanview'])->name('reportlessonplan');
+      Route::post('/searchLessonPlans', [RegisteredUserController::class, 'searchLessonPlans'])->name('searchLessonPlans');
+      
+
+      
+
 
     Route::get('register', [RegisteredUserController::class, 'create'])
     ->name('register');

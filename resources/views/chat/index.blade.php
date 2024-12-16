@@ -7,7 +7,7 @@
         <!-- Loop through all receivers -->
         @foreach($receivers as $receiver)
             <div class="chat-box-container">
-                <h2>Chat with {{ $receiver->Fname}}{{ $receiver->Mname}}{{ $receiver->Lname}}</h2>
+                <h2>Chat with {{ $receiver->staffFname }} {{ $receiver->staffMname }} {{ $receiver->staffLname }}</h2>
 
                 <!-- Display the chat messages for this receiver -->
                 <div id="chat-box-{{ $receiver->id }}">
@@ -27,14 +27,31 @@
 </div>
 
 <div id="chat-box">
+
     @foreach($messages as $message)
         <div>
-            <strong>{{ $message->sender->Fname }}:</strong> {{ $message->message }}
+            @if($message->sender) <!-- Check if sender exists -->
+                <strong>{{ $message->sender->staffFname }}{{ $message->sender->staffMname }}{{ $message->sender->staffLname }}:</strong> {{ $message->message }}
+            @else
+                <strong>Unknown Sender:</strong> {{ $message->message }}
+            @endif
         </div>
     @endforeach
+
+  
 </div>
 
-2
+
+<!--
+<div id="chat-box">
+    @foreach($messages as $message)
+        <div>
+            <strong>{{ $message->sender->staffFname}}:</strong> {{ $message->message }}
+        </div>
+    @endforeach
+</div>-->
+
+
 
 <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
 <script src="{{ mix('js/app.js') }}"></script> <!-- Ensure this file includes Echo and Pusher setup -->

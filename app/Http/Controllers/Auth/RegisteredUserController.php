@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\StudentRegisterNotification;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -14,6 +15,8 @@ use App\Models\subjects;
 use App\Models\results;
 use App\Models\timetable;
 use App\Models\teacher_subject;
+use App\Models\lessonplannurserytostdii;
+use App\Models\lessonplanstdiiitostdvi;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -597,4 +600,175 @@ public function update(Request $request, $id)
     return redirect()->route('viewtimetable')->with('success', 'Timetable updated successfully!');
 }
 
+//lesson plan 
+
+public function lessonplanview()
+{
+    $staff = auth()->guard('staff')->user();
+    $subjects = subjects::all();
+    $school_id = auth()->guard('staff')->user()->school_id;
+
+
+    return view('lessonplanview', [
+        'staff' => $staff,
+        'subjects' => $subjects,
+        'school_id' => $school_id,
+    ]);
 }
+
+
+ // Check the class to determine which table to use
+ public function lessonplan(Request $request)
+{
+    // Check incoming data
+    // Validate the incoming data
+    $validatedData = $request->validate([
+        'staff_id' => 'required|exists:staff,id',
+        'school_id'=> 'required|exists:staff,school_id',
+        'class' => 'required|string|max:255',
+        'date' => ['required', 'regex:/^(?:2[0-3]|[01][0-9]):[0-5][0-9]$/'],
+        'subject_id' => 'required|exists:subjects,id',
+        'registeredgirls' => 'required|integer',
+        'registeredboys' => 'required|integer',
+        'presentgirls' => 'required|integer',
+        'presentboys' => 'required|integer',
+        'maincompetence' => 'required|string',
+        'specificcompetence' => 'required|string',
+        'mainactivity' => 'required|string',
+        'specificactivity' => 'required|string',
+        'teachingandlearningresources' => 'required|string',
+        'references' => 'required|string',
+        'IntroductionTime' => 'required|string',
+        'IntroductionTeachingActivities' => 'required|string',
+        'IntroductionLearningActivities' => 'required|string',
+        'IntroductionAssessmentCriteria' => 'required|string',
+        'CompetenceDevelopementTime' => 'required|string',
+        'CompetenceDevelopementTeachingActivities' => 'required|string',
+        'CompetenceDevelopementLearningActivities' => 'required|string',
+        'CompetenceDevelopementAssessmentCriteria' => 'required|string',
+        'DesignTime' => 'required|string',
+        'DesignTeachingActivities' => 'required|string',
+        'DesignLearningActivities' => 'required|string',
+        'DesignAssessmentCriteria' => 'required|string',
+        'RealisationTime' => 'required|string',
+        'RealisationTeachingActivities' => 'required|string',
+        'RealisationLearningActivities' => 'required|string',
+        'RealisationAssessmentCriteria' => 'required|string',
+        'Remarks' => 'nullable|string',
+    ]);
+
+    lessonplanstdiiitostdvi::create([
+        'staff_id' => $request->input('staff_id'),
+        'school_id' => $request->input('school_id'),
+        'class' => $request->input('class'),
+        'date' => $request->input('date'),
+        'subject_id' => $request->input('subject_id'),
+        'registeredgirls' => $request->input('registeredgirls'),
+        'registeredboys' => $request->input('registeredboys'),
+        'presentgirls' => $request->input('presentgirls'),
+        'presentboys' => $request->input('presentboys'),
+        'maincompetence' => $request->input('maincompetence'),
+        'specificcompetence' => $request->input('specificcompetence'),
+        'mainactivity' => $request->input('mainactivity'),
+        'specificactivity' => $request->input('specificactivity'),
+        'teachingandlearningresources' => $request->input('teachingandlearningresources'),
+        'references' => $request->input('references'),
+        'IntroductionTime' => $request->input('IntroductionTime'),
+        'IntroductionTeachingActivities' => $request->input('IntroductionTeachingActivities'),
+        'IntroductionLearningActivities' => $request->input('IntroductionLearningActivities'),
+        'IntroductionAssessmentCriteria' => $request->input('IntroductionAssessmentCriteria'),
+        'CompetenceDevelopementTime' => $request->input('CompetenceDevelopementTime'),
+        'CompetenceDevelopementTeachingActivities' => $request->input('CompetenceDevelopementTeachingActivities'),
+        'CompetenceDevelopementLearningActivities' => $request->input('CompetenceDevelopementLearningActivities'),
+        'CompetenceDevelopementAssessmentCriteria' => $request->input('CompetenceDevelopementAssessmentCriteria'),
+        'DesignTime' => $request->input('DesignTime'),
+        'DesignTeachingActivities' => $request->input('DesignTeachingActivities'),
+        'DesignLearningActivities' => $request->input('DesignLearningActivities'),
+        'DesignAssessmentCriteria' => $request->input('DesignAssessmentCriteria'),
+        'RealisationTime' => $request->input('RealisationTime'),
+        'RealisationTeachingActivities' => $request->input('RealisationTeachingActivities'),
+        'RealisationLearningActivities' => $request->input('RealisationLearningActivities'),
+        'RealisationAssessmentCriteria' => $request->input('RealisationAssessmentCriteria'),
+        'Remarks' => $request->input('Remarks'),
+    ]);
+    
+
+   // Debugging output: This will show the validated data (if validation passes)
+   //dd($validatedData);
+
+   // Insert the filtered data into the lessonplanstdiiitostdvi table
+  // lessonplanstdiiitostdvi::create($validatedData);
+
+   return redirect()->route('lessonplanview')->with('success', 'Lesson plan stored successfully!');
+}
+
+
+    public function reportlessonplanview()
+    {
+        // Initialize an empty collection to avoid undefined variable issues
+        $lessonPlans = collect();
+
+        return view('reportlessonplan', compact('lessonPlans'));
+    }
+
+    public function searchLessonPlans(Request $request)
+    {
+        // Get the authenticated user's school_id
+        $school_id = auth()->guard('staff')->user()->school_id;
+    
+        // Retrieve all subjects to populate the dropdown
+        $subjects = subjects::all();
+    
+        // Validate the search inputs
+        $request->validate([
+            'staffFname' => 'nullable|string|max:255',
+            'staffMname' => 'nullable|string|max:255',
+            'staffLname' => 'nullable|string|max:255',
+            'date' => 'nullable|date',
+            'class' => 'nullable|string|max:255',
+            'subject_id' => 'nullable|integer|exists:subjects,id',
+        ]);
+    
+        // Retrieve the search inputs
+        $staffFname = $request->input('staffFname');
+        $staffMname = $request->input('staffMname');
+        $staffLname = $request->input('staffLname');
+        $date = $request->input('date');
+        $class = $request->input('class');
+        $subject_id = $request->input('subject_id');
+    
+        // Perform the query with conditions
+        $lessonPlans = DB::table('lessonplanstdiiitostdvi')
+            ->join('staff', 'lessonplanstdiiitostdvi.staff_id', '=', 'staff.id')
+            ->join('subjects', 'lessonplanstdiiitostdvi.subject_id', '=', 'subjects.id')
+            ->select('lessonplanstdiiitostdvi.*', 'staff.staffFname', 'staff.staffMname', 'staff.staffLname', 'subjects.name as subject_name')
+            ->where('lessonplanstdiiitostdvi.school_id', $school_id)
+            ->when($staffFname, function ($query, $staffFname) {
+                return $query->where('staff.staffFname', 'LIKE', "%{$staffFname}%");
+            })
+            ->when($staffMname, function ($query, $staffMname) {
+                return $query->where('staff.staffMname', 'LIKE', "%{$staffMname}%");
+            })
+            ->when($staffLname, function ($query, $staffLname) {
+                return $query->where('staff.staffLname', 'LIKE', "%{$staffLname}%");
+            })
+            ->when($date, function ($query, $date) {
+                return $query->whereDate('lessonplanstdiiitostdvi.date', $date);
+            })
+            ->when($class, function ($query, $class) {
+                return $query->where('lessonplanstdiiitostdvi.class', 'LIKE', "%{$class}%");
+            })
+            ->when($subject_id, function ($query, $subject_id) {
+                return $query->where('lessonplanstdiiitostdvi.subject_id', $subject_id);
+            })
+            ->get();
+    
+        // Return the results to the view, including subjects
+        return view('reportlessonplan', compact('lessonPlans', 'subjects'));
+
+    }
+    
+        
+}
+
+

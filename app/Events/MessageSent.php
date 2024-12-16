@@ -3,7 +3,7 @@
 namespace App\Events;
 
 use App\Models\Message;
-use App\Models\User;
+use App\Models\staff;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -18,7 +18,7 @@ class MessageSent implements ShouldBroadcast
     public $sender;
     public $message;
 
-    public function __construct(User $sender, string $message)
+    public function __construct(staff $sender, string $message)
     {
         $this->sender = $sender;
         $this->message = $message;
