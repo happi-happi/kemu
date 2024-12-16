@@ -49,16 +49,6 @@
                 </select>
     </div>
 
-    <div class="form-group col-md-12">
-    <label for="subject_id" class="form-label">Subject</label>
-                <select name="subject_id" id="subject_id" class="form-control" required>
-                    @foreach ($subjects as $subjects)
-                        <option value="{{ $subjects->id }}">{{ $subjects->name }}</option>
-                    @endforeach
-                </select>
-    </div>
-
-
 
     <button type="submit" class="btn btn-primary mt-3">Search</button>
 </form>

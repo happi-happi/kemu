@@ -12,10 +12,12 @@
     <label for="subjects_id">Register Teacher to Subject</label>
     <select name="subjects_id" id="subjects_id" class="form-control">
         <option value="">Select a Subject</option>
-        @foreach ($subjects as $subject)
-            <option value="{{ $subject->id }}">{{ $subject->name }}</option>
+        @foreach ($subjects as $subjects)
+            <option value="{{ $subjects->id }}">{{ $subjects->name }}</option>
         @endforeach
     </select>
+   
+    
 
  
     <button type="submit" class="btn btn-primary">Submit</button>

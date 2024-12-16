@@ -717,7 +717,7 @@ public function lessonplanview()
         $school_id = auth()->guard('staff')->user()->school_id;
     
         // Retrieve all subjects to populate the dropdown
-        $subjects = subjects::all();
+        $getallsubjects = subjects::all();
     
         // Validate the search inputs
         $request->validate([
@@ -762,13 +762,13 @@ public function lessonplanview()
                 return $query->where('lessonplanstdiiitostdvi.subject_id', $subject_id);
             })
             ->get();
+
     
         // Return the results to the view, including subjects
-        return view('reportlessonplan', compact('lessonPlans', 'subjects'));
+        return view('reportlessonplan',['lessonPlans' => $lessonPlans,
+                                        'getallsubjects' => $getallsubjects
+                                      ]); 
 
-    }
-    
-        
-}
+    }}
 
 
