@@ -48,6 +48,15 @@
                     <option value="Formsix">Form Six</option>
                 </select>
     </div>
+    <br>
+
+    <select name="subjects_id" id="subjects_id" class="form-control">
+        <option value="">Select a Subject</option>
+        @foreach ($getallsubjects as $getallsubjects)
+            <option value="{{ $getallsubjects->id }}">{{ $getallsubjects->name }}</option>
+        @endforeach
+    </select>
+   
 
 
     <button type="submit" class="btn btn-primary mt-3">Search</button>
@@ -110,6 +119,7 @@
                         <th>Realisation Learning Activities</th>
                         <th>Realisation Assessment Criteria</th>
                         <th>Remarks</th>
+                        <th>Total periods</th>
                     </tr>
                 </thead>
 
@@ -150,6 +160,7 @@
                             <td>{{ $plan->RealisationLearningActivities }}</td>
                             <td>{{ $plan->RealisationAssessmentCriteria }}</td>
                             <td>{{ $plan->Remarks }}</td>
+                            <td>{{$staffCount}}</td>
                         </tr>
                     @endforeach
                 </tbody>

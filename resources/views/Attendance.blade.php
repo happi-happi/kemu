@@ -1,67 +1,65 @@
 <x-app-layout>
-<form action="{{ route('Attendance') }}" method="POST">
-    @csrf
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Fname</th>
-                <th>Mname</th>
-                <th>Lname</th>
-                <th>Attendance Status</th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach ($studentAttendance as $student)
-            <tr>
-                <!-- Hidden field for teacher_id -->
-                <input type="hidden" name="teacher_id[]" value="{{ $userId }}">
+    <form action="{{ route('Attendance') }}" method="POST">
+        @csrf
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Fname</th>
+                    <th>Mname</th>
+                    <th>Lname</th>
+                    <th>Attendance Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($studentAttendance as $student)
+                <tr>
+                    <!-- Hidden field for student_id -->
+                    <input type="hidden" name="student_id[]" value="{{ $student->id }}">
 
-                <!-- Hidden field for user_id -->
-                <input type="hidden" name="user_id[]" value="{{ $student->id }}">
+                    <!-- Hidden field for teacher_id -->
+                    <input type="hidden" name="teacher_id[]" value="{{ auth()->guard('staff')->user()->id }}">
 
-                <!-- Display student information -->
-                <td>{{ $student->id }}</td>
-                <td>{{ $student->Fname }}</td>
-                <td>{{ $student->Mname }}</td>
-                <td>{{ $student->Lname }}</td>
+                    <!-- Hidden field for schoolinformation_id -->
+                    <input type="hidden" name="schoolinformation_id[]" value="{{ auth()->guard('staff')->user()->school_id }}">
 
-                <!-- Status checkboxes -->
-                <td>
-                    <label>Present</label>
-                    <input type="checkbox" name="status[{{ $student->id }}][]" value="present">
+                    <!-- Hidden field for current date -->
+                    <input type="hidden" name="date[]" id="current-date" value="">
 
-                    <label>Absent</label>
-                    <input type="checkbox" name="status[{{ $student->id }}][]" value="absent">
+                    <!-- Display student information -->
+                    <td>{{ $student->id }}</td>
+                    <td>{{ $student->Fname }}</td>
+                    <td>{{ $student->Mname }}</td>
+                    <td>{{ $student->Lname }}</td>
 
-                    <label>Late</label>
-                    <input type="checkbox" name="status[{{ $student->id }}][]" value="late">
-                </td>
+                    <!-- Radio buttons for status (only one can be selected per student) -->
+                    <td>
+                        <label>Present</label>
+                        <input type="radio" name="status[{{ $student->id }}]" value="present" class="attendance-checkbox">
 
-                <!-- Hidden field for nameofschool -->
-                <input type="hidden" name="nameofschool[]" value="{{ Auth::user()->nameofschool }}">
-            </tr>
-        @endforeach
-        </tbody>
-          
+                        <label>Absent</label>
+                        <input type="radio" name="status[{{ $student->id }}]" value="absent" class="attendance-checkbox">
+
+                        <label>Late</label>
+                        <input type="radio" name="status[{{ $student->id }}]" value="late" class="attendance-checkbox">
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+              
             <button type="submit" class="btn btn-success">Submit</button>
-     
-    </table>
-</form>
-
+        </table>
+    </form>
 
 <script>
-    document.querySelectorAll('.attendance-checkbox').forEach(function(checkbox) {
-        checkbox.addEventListener('change', function() {
-            // Uncheck all checkboxes in the same row
-            const row = this.closest('tr');
-            row.querySelectorAll('.attendance-checkbox').forEach(function(cb) {
-                if (cb !== checkbox) {
-                    cb.checked = false;
-                }
-            });
+    // Set the current date to the hidden input field
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get the current date in the format YYYY-MM-DD
+        const currentDate = new Date().toISOString().split('T')[0]; // Format to YYYY-MM-DD
+        document.querySelectorAll('input[name="date[]"]').forEach(function(input) {
+            input.value = currentDate; // Set the current date as the value of the hidden input
         });
     });
 </script>
-</x-app-layout>
 
+</x-app-layout>

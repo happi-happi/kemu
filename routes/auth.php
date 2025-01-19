@@ -67,6 +67,8 @@ Route::middleware('auth:web,staff')->group(function () {
     Route::post('/chat/send', [ChatController::class, 'send'])->name('chat.send');
     Route::get('/chat/messages/{receiver_id}', [ChatController::class, 'fetchMessages']);
 
+    Route::get('yourattendance', [ChatController::class, 'yourattendance'])->name('yourattendance');
+
 
 
     //Lesson plan layout 

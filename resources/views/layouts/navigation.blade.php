@@ -146,6 +146,10 @@
                             {{ __('Chat here ') }}
                         </x-dropdown-link>  
 
+                        <x-dropdown-link :href="route('yourattendance')">
+                            {{ __('your attendance') }}
+                        </x-dropdown-link>  
+
 
                         @if((Auth::guard('web')->check() && (Auth::user()->Role === 'Teacher' || Auth::user()->Role === 'DiscplineMaster')) || 
                         (Auth::guard('staff')->check() && in_array(Auth::guard('staff')->user()->staffRole, ['DiscplineMaster', 'Teacher']))

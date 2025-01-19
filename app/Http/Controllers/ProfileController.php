@@ -6590,37 +6590,36 @@ return redirect()->back()->with('message','student registration succesful');
      {
          // Validate the incoming request data
          $validatedData = $request->validate([
+             'student_id.*' => 'required|integer',
              'teacher_id.*' => 'required|integer',
-             'user_id.*' => 'required|integer',
-             'status.*' => 'array',
-             'status.*.*' => 'string',
-             'nameofschool.*' => 'required|string'
+             'schoolinformation_id.*' => 'required|integer',
+             'status.*' => 'required|string', // Changed to ensure status is a string
          ]);
      
-         $teacher_ids = $validatedData['teacher_id'];
-         $user_ids = $validatedData['user_id'];
+         // Extract the validated data
+         $student_id = $validatedData['student_id'];
+         $teacher_id = $validatedData['teacher_id'];
+         $schoolinformation_id = $validatedData['schoolinformation_id'];
          $status = $validatedData['status'];
-         $nameofschools = $validatedData['nameofschool'];
      
-         // Ensure that each user_id corresponds to a unique teacher_id, nameofschool, and status
-         foreach ($user_ids as $index => $user_id) {
+         // Ensure that each student_id corresponds to a unique teacher_id, school_id, and status
+         foreach ($student_id as $index => $student_id_value) {
+             // Create a new attendance record
              $data = new attendance();
-             $data->teacher_id = $teacher_ids[$index];
-             $data->user_id = $user_id;
-             $data->nameofschool = $nameofschools[$index];
+             $data->student_id = $student_id_value;
+             $data->teacher_id = $teacher_id[$index];
+             $data->schoolinformation_id = $schoolinformation_id[$index];
      
-             // Save each status as a separate record
-             if (isset($status[$user_id])) {
-                 foreach ($status[$user_id] as $status_value) {
-                     $data->status = $status_value;
-                     $data->save();
-                 }
-             }
+             // Store the status, since only one status should be selected for each student, we just use the validated status value.
+             $data->status = $status[$student_id_value]; // Store the selected status (present/absent/late)
+             $data->save();
          }
      
          // Redirect back with a success message
          return redirect()->back()->with('success', 'Attendance submitted successfully');
      }
+     
+
      
 
      Public function SchoolInformation(Request $request){
@@ -6727,21 +6726,24 @@ public function store(Request $request)
 }
 
     
+public function AttendancePage()
+{
+    // Get the authenticated staff member using the 'staff' guard
+    $user = auth()->guard('staff')->user(); // Get the authenticated staff
 
-    public function AttendancePage()
-    {
-        $userId = Auth::id();
-        $user = User::find($userId);
-        $class = $user->class;
-        $nameSchool = $user->nameofschool;
-    
-        // Directly query the User model without using relationships
-        $studentAttendance = User::where('class', $class )
-            ->where('nameofschool', $nameSchool)
-            ->get();
-    
-        return view('Attendance', compact('studentAttendance', 'userId'));
-    }
+    // Get the school ID and class from the authenticated staff record
+    $school_id = auth()->guard('staff')->user()->school_id;
+    $class = auth()->guard('staff')->user()->class;
+
+    // Fetch students from the User table who belong to the same school and class
+    $studentAttendance = user::where('school_id', $school_id)
+        ->where('class', $class)
+        ->get();
+
+    // Return the Attendance view with the necessary data
+    return view('Attendance', compact('studentAttendance', 'user'));
+}
+
 
    
     

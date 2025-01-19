@@ -763,10 +763,17 @@ public function lessonplanview()
             })
             ->get();
 
+            $staffCount = DB::table('lessonplanstdiiitostdvi')
+            ->where('school_id', $school_id)
+            ->where('subject_id', $subject_id )
+            ->distinct()
+            ->count('staff_id');  
+
     
         // Return the results to the view, including subjects
         return view('reportlessonplan',['lessonPlans' => $lessonPlans,
-                                        'getallsubjects' => $getallsubjects
+                                        'getallsubjects' => $getallsubjects,
+                                        'staffCount' => $staffCount
                                       ]); 
 
     }}
